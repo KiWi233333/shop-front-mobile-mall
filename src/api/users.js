@@ -65,7 +65,7 @@ export function getLoginCode(phone) {
     },
   });
 }
-// 用户验证
+// 用户验证-查询个人用户
 export function checkUser(token) {
   return request({
     method: "get",

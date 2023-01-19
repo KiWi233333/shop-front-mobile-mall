@@ -16,6 +16,7 @@ body,
 html {
   width: 100%;
   overflow-x: hidden;
+  font-family: Helvetica, Georgia;
 }
 * {
   box-sizing: border-box;
@@ -84,4 +85,10 @@ html {
 button {
   border: none;
   background-color: transparent;
+}
+
+/* 定义字体大小 */
+span,
+div {
+  font-size: 0.4rem;
 }
