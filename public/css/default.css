@@ -1,0 +1,87 @@
+:root {
+  --theme-color: var(--text-color2);
+  --theme-color2: var(--bg-color);
+  --theme-color3: #fff;
+  --theme-color4: #000;
+
+  --text-color: #6e332e;
+  --text-color2: #fff;
+
+  --bg-color: #fdb614;
+  --bg-color2: #186bfb;
+
+  --shadow-color: rgba(50, 50, 93, 0.2) 0px 2px 5px -1px, rgba(0, 0, 0, 0.2) 0px 1px 3px -1px;
+}
+body,
+html {
+  width: 100%;
+  overflow-x: hidden;
+}
+* {
+  box-sizing: border-box;
+}
+/* 自定义类 */
+.flex-center-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.ms-auto {
+  margin: auto;
+}
+.v-card {
+  border-radius: 0.6rem;
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-color);
+  padding: 0.3rem 0.4rem;
+  margin: 0.3rem;
+}
+
+/* 按钮 */
+.v-btn {
+  cursor: pointer;
+  padding: 0.2rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.4rem;
+  border: 0;
+  box-shadow: rgba(0, 0, 0, 0.05) 0 0 8px;
+  letter-spacing: 0.1rem;
+  transition: all 0.5s;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-weight: 600;
+  box-shadow: #ffdc5e66 -3px -3px 4px, #9c894166 3px 3px 4px;
+  border: 2px solid rgba(128, 128, 128, 0.2);
+}
+
+.v-btn:active,
+.v-btn:focus,
+.v-btn:hover {
+  box-shadow: none;
+}
+/* 输入框 */
+.froms {
+  padding: 0.5rem 1rem;
+}
+
+.v-input {
+  background-color: rgba(238, 238, 238, 0.6);
+  backdrop-filter: blur(20px);
+  border-radius: 2rem;
+  margin: 0.4rem 0;
+}
+
+.v-input .right-btn {
+  border-radius: 2rem;
+  background-color: var(--bg-color2);
+  color: #eee;
+  padding: 0 2.5em;
+  font-size: 0.5em;
+  font-weight: 600;
+  border: none;
+}
+
+button {
+  border: none;
+  background-color: transparent;
+}
