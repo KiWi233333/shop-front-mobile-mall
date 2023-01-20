@@ -11,7 +11,7 @@
   --bg-color2: #186bfb;
 
   --shadow-color: rgba(50, 50, 93, 0.3) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-  --shadow-color2: rgba(101, 101, 101, 0.4) 0px 2px 5px -1px, rgba(101, 101, 101, 0.4) 0px 1px 3px -1px;
+  --shadow-color2: rgba(122, 122, 122, 0.3) 0px 2px 5px 4px, rgba(101, 101, 101, 0.4) 0px 1px 3px -1px;
 }
 body,
 html {
@@ -52,8 +52,8 @@ html {
   background-color: var(--bg-color);
   color: var(--text-color);
   font-weight: 600;
-  box-shadow: #ffdc5e66 -3px -3px 4px, #9c894166 3px 3px 4px;
-  border: 2px solid rgba(128, 128, 128, 0.2);
+  box-shadow: #ffe99966 -3px -3px 4px, #9c894166 3px 3px 4px;
+  border: 2px solid rgba(179, 179, 179, 0.3);
 }
 
 .v-btn:active,

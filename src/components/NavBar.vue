@@ -1,5 +1,5 @@
 <template>
-  <div class="nav-bar">
+  <div class="animate__animated animate__fadeIn nav-bar">
     <div
       class="item"
       v-for="(p, i) in option"

@@ -215,8 +215,10 @@ export default {
         // 记住密码
         if (this.savePwd) {
           localStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
-          this.$store.commit("setToken", res.data.data);
+        } else {
+          sessionStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
         }
+        this.$store.commit("setToken", res.data.data);
         Notify({ type: "success", message: "登录成功！" });
         this.$router.push({
           name: "home",
@@ -240,8 +242,10 @@ export default {
         // 记住密码
         if (this.savePwd) {
           localStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
-          this.$store.commit("setToken", res.data.data);
+        } else {
+          sessionStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
         }
+        this.$store.commit("setToken", res.data.data);
         Notify({ type: "success", message: "登录成功！" });
         this.$router.push({
           name: "home",

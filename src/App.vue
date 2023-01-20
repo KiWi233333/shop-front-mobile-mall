@@ -30,14 +30,11 @@ export default {
     this.isNavBar = !(this.$route.meta.lv !== 1);
     // 验证用户登录状态
     const token =
-      localStorage.getItem(this.$store.state.TOKEN_NAME) !== "" // 获取token
-        ? localStorage.getItem(this.$store.state.TOKEN_NAME)
-        : false;
-    console.log(token);
+      localStorage.getItem(this.$store.state.TOKEN_NAME) ||
+      sessionStorage.getItem(this.$store.state.TOKEN_NAME);
     if (!token) return;
     const res = await checkUser(token); // 验证token
     if (res.data.success) {
-      console.log(res.data.data);
       this.$store.commit("setUserInfo", res.data.data);
       this.$store.commit("setLoginState", res.data.success);
       this.$store.commit("setToken", token);
@@ -50,7 +47,7 @@ export default {
       } else if (to.params.animate === "toback") {
         this.routerAnimate = "toback";
       } else {
-        this.routerAnimate = "";
+        this.routerAnimate = "toback";
       }
       // 导航栏显示
       this.isNavBar = !(to.meta.lv !== 1);
