@@ -78,6 +78,7 @@ export default {
   bottom: 0;
   width: 100%;
   display: inline-flex;
+  box-shadow: var(--shadow-color2);
 }
 .nav-bar > .item {
   flex: 1;

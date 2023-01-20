@@ -1,5 +1,6 @@
-import request from "@/util/request";
+import { request } from "@/util/request";
 
+// --------------用户注册、登录---------------
 /**
  *  用户注册
  *@userInfo  {
@@ -77,9 +78,9 @@ export function checkUser(token) {
 }
 
 /**
+ * 忘记密码：发送验证码 phone
  * @修改密码
  */
-// 忘记密码：发送验证码 phone
 export function getUpdatePwdCode(phone) {
   return request({
     method: "get",
@@ -89,9 +90,9 @@ export function getUpdatePwdCode(phone) {
     },
   });
 }
-// 验证验证码
+
 /**
- *
+ *  验证验证码
  * @param {*} userInfo{phone&code}
  * @returns
  */
@@ -106,7 +107,7 @@ export function checkUpdatePwdCode(userInfo) {
     },
   });
 }
-// 修改密码 phone newPassword
+// 忘记密码 phone newPassword
 export function updatePwd(userInfo) {
   const { phone, newPassword } = userInfo;
   return request({
@@ -115,6 +116,57 @@ export function updatePwd(userInfo) {
     data: {
       phone,
       newPassword,
+    },
+  });
+}
+
+// --------------------修改用户-------------------
+/**
+ * 上传用户头像
+ * @param {file:icon} fromData
+ * @returns res
+ */
+export function setUserIcon(fromData) {
+  return request({
+    method: "put",
+    url: "/users/updatePassword",
+    data: fromData,
+  });
+}
+/**
+ * 修改用户头像地址
+ * @param {地址:string} icon
+ * @param {登录token:string} token
+ * @returns
+ */
+export function updateUserIcon(icon, token) {
+  return request({
+    method: "put",
+    url: "/users/updateIcon",
+    headers: {
+      Authorization: token,
+    },
+    data: {
+      icon,
+    },
+  });
+}
+
+/**
+ *
+ * @param {昵称:string} nickName
+ * @param {string} token
+ * @returns
+ */
+export function updateUserNickName(nickName, token) {
+  return request({
+    method: "put",
+    url: "/users/updateNickName",
+    headers: {
+      Authorization: token,
+    },
+    data: {
+      nickName,
     },
   });
 }

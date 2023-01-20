@@ -10,9 +10,7 @@
     <!-- 2)无需缓存页面 -->
     <router-view v-if="keepAlive" />
     <!-- 底部导航栏 -->
-    <keep-alive>
-      <NavBar v-if="isNavBar" />
-    </keep-alive>
+    <NavBar v-if="isNavBar" />
   </div>
 </template>
 <script>
@@ -27,22 +25,22 @@ export default {
       isNavBar: false,
     };
   },
-  async mounted() {
+  async created() {
     // 导航栏显示
-    this.isNavBar = this.$route.meta.lv === 1;
+    this.isNavBar = !(this.$route.meta.lv !== 1);
     // 验证用户登录状态
     const token =
-      localStorage.getItem(this.$store.state.TOKEN_NAME).trim() !== ""
+      localStorage.getItem(this.$store.state.TOKEN_NAME) !== "" // 获取token
         ? localStorage.getItem(this.$store.state.TOKEN_NAME)
         : false;
+    console.log(token);
     if (!token) return;
-    const res = await checkUser(token);
+    const res = await checkUser(token); // 验证token
     if (res.data.success) {
       console.log(res.data.data);
+      this.$store.commit("setUserInfo", res.data.data);
       this.$store.commit("setLoginState", res.data.success);
       this.$store.commit("setToken", token);
-    } else {
-      console.log("登录过期");
     }
   },
   watch: {
@@ -54,6 +52,8 @@ export default {
       } else {
         this.routerAnimate = "";
       }
+      // 导航栏显示
+      this.isNavBar = !(to.meta.lv !== 1);
     },
   },
 };

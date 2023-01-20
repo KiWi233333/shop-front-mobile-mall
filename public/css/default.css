@@ -10,7 +10,8 @@
   --bg-color: #fdb614;
   --bg-color2: #186bfb;
 
-  --shadow-color: rgba(50, 50, 93, 0.2) 0px 2px 5px -1px, rgba(0, 0, 0, 0.2) 0px 1px 3px -1px;
+  --shadow-color: rgba(50, 50, 93, 0.3) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  --shadow-color2: rgba(101, 101, 101, 0.4) 0px 2px 5px -1px, rgba(101, 101, 101, 0.4) 0px 1px 3px -1px;
 }
 body,
 html {
@@ -31,7 +32,7 @@ html {
   margin: auto;
 }
 .v-card {
-  border-radius: 0.6rem;
+  border-radius: 16px;
   backdrop-filter: blur(20px);
   box-shadow: var(--shadow-color);
   padding: 0.3rem 0.4rem;
@@ -91,4 +92,8 @@ button {
 span,
 div {
   font-size: 0.4rem;
+}
+label {
+  font-size: 0.7rem;
+  font-weight: 600;
 }

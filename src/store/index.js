@@ -5,9 +5,10 @@ Vue.use(Vuex);
 // Store
 export default new Vuex.Store({
   state: {
-    TOKEN_NAME: "SD_SHOP_TOKEN",
-    token: "",
-    isLoginState: false,
+    token: "", // token
+    TOKEN_NAME: "SD_SHOP_TOKEN", // 本地存储的key值
+    isLoginState: false, // 登录状态
+    userInfo: {}, // 用户信息
   },
   getters: {},
   mutations: {
@@ -16,6 +17,12 @@ export default new Vuex.Store({
     },
     setLoginState(state, val) {
       state.isLoginState = val;
+    },
+    // 修改个人信息
+    setUserInfo(state, userInfo) {
+      for (const key in userInfo) {
+        Vue.set(state.userInfo, key, userInfo[key]);
+      }
     },
   },
   actions: {},
