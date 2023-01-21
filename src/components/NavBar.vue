@@ -78,6 +78,7 @@ export default {
   bottom: 0;
   width: 100%;
   display: inline-flex;
+  background-color: var(--theme-color3);
   box-shadow: var(--shadow-color2);
 }
 .nav-bar > .item {

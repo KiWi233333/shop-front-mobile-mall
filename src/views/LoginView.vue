@@ -132,7 +132,7 @@ import {
   getUpdatePwdCode,
   checkUpdatePwdCode,
   updatePwd,
-} from "@/api/users";
+} from "@/api/user/users";
 export default {
   name: "LoginFrom",
   components: { TopNav },

@@ -4,11 +4,13 @@
   --theme-color3: #fff;
   --theme-color4: #000;
 
-  --text-color: #6e332e;
+  --text-color: #653913;
   --text-color2: #fff;
 
   --bg-color: #fdb614;
   --bg-color2: #186bfb;
+  --bg-color3: rgba(216, 216, 216, 0.76);
+  --bg-color4: #ffc714;
 
   --shadow-color: rgba(50, 50, 93, 0.3) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
   --shadow-color2: rgba(122, 122, 122, 0.3) 0px 2px 5px 4px, rgba(101, 101, 101, 0.4) 0px 1px 3px -1px;
@@ -35,8 +37,7 @@ html {
   border-radius: 16px;
   backdrop-filter: blur(20px);
   box-shadow: var(--shadow-color);
-  padding: 0.3rem 0.4rem;
-  margin: 0.3rem;
+  padding: 0.4rem;
 }
 
 /* 按钮 */
@@ -60,6 +61,7 @@ html {
 .v-btn:focus,
 .v-btn:hover {
   box-shadow: none;
+  transform: scale(0.8);
 }
 /* 输入框 */
 .froms {
@@ -78,8 +80,7 @@ html {
   background-color: var(--bg-color2);
   color: #eee;
   padding: 0 2.5em;
-  font-size: 0.5em;
-  font-weight: 600;
+  font-size: 0.8em;
   border: none;
 }
 

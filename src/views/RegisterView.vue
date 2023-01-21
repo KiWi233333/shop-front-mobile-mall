@@ -67,7 +67,7 @@
   </div>
 </template>
 <script>
-import { register, getRegisterCode } from "@/api/users";
+import { register, getRegisterCode } from "@/api/user/users";
 import router from "@/router";
 import TopNav from "@/components/TopNav.vue";
 import { Notify } from "vant";

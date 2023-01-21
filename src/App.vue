@@ -15,7 +15,7 @@
 </template>
 <script>
 import NavBar from "./components/NavBar.vue";
-import { checkUser } from "@/api/users";
+import { checkUser } from "@/api/user/users";
 export default {
   components: { NavBar },
   data() {
@@ -34,6 +34,7 @@ export default {
       sessionStorage.getItem(this.$store.state.TOKEN_NAME);
     if (!token) return;
     const res = await checkUser(token); // 验证token
+    console.log(res.data.data, token);
     if (res.data.success) {
       this.$store.commit("setUserInfo", res.data.data);
       this.$store.commit("setLoginState", res.data.success);
