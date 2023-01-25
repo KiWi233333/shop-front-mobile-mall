@@ -21,10 +21,19 @@ html {
   overflow-x: hidden;
   font-family: Helvetica, Georgia;
 }
+a {
+  color: var(--theme-color4);
+}
+a:active {
+  color: var(--text-color);
+}
 * {
   box-sizing: border-box;
 }
 /* 自定义类 */
+.animate__animated {
+  animation-delay: 0.4s;
+}
 .flex-center-center {
   display: flex;
   justify-content: center;

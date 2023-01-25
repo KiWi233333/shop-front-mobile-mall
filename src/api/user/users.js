@@ -170,18 +170,3 @@ export function updateUserNickName(nickName, token) {
     },
   });
 }
-
-/**
- * 获取钱包信息
- * @param {*} token
- * @returns
- */
-export function getPurseInfo(token) {
-  return request({
-    method: "get",
-    url: "/account/query",
-    headers: {
-      Authorization: token,
-    },
-  });
-}

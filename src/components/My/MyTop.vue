@@ -15,7 +15,7 @@
     </div>
     <div class="right" v-if="$store.state.isLoginState">
       <label class="title">{{ userInfo.nickname }}</label>
-      <span class="userid">ID: {{ userInfo.phone }}</span>
+      <span class="userid">ID: {{ userInfo.username }}</span>
     </div>
     <img src="@/assets/image/bg/shopcard_bg.png" class="bg" />
   </div>
@@ -96,7 +96,7 @@ export default {
 .my-top .bg {
   z-index: -1;
   display: block;
-  width: 4rem;
+  width: 3rem;
   object-fit: contain;
   position: absolute;
   right: 0.5rem;

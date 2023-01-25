@@ -1,5 +1,5 @@
 <template>
-  <div class="v-card purse-card">
+  <div class="animate__animated animate__fadeInLeft v-card purse-card">
     <!-- 积分 -->
     <div class="top">
       <div class="left">
@@ -24,7 +24,7 @@
   
   <script>
 import router from "@/router";
-import { getPurseInfo } from "@/api/user/users";
+import { getPurseInfo } from "@/api/user/purse";
 export default {
   name: "PurseCard",
   data() {

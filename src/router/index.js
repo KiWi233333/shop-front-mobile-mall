@@ -7,6 +7,8 @@ import NotFund from "../views/NotFund.vue";
 import ShopcarView from "../views/ShopcarView.vue";
 import CategoryView from "../views/CategoryView.vue";
 import MyView from "../views/MyView.vue";
+import OrderView from "../views/OrderView.vue";
+import CollectView from "../views/CollectView.vue";
 
 Vue.use(VueRouter);
 const routes = [
@@ -60,6 +62,27 @@ const routes = [
       lv: 1,
       keepAlive: true,
     },
+
+    children: [
+      // 订单页面
+      {
+        path: "/order",
+        name: "order",
+        component: OrderView,
+        meta: {
+          lv: 2,
+        },
+      },
+      // 收藏页面
+      {
+        path: "/collect",
+        name: "collect",
+        component: CollectView,
+        meta: {
+          lv: 2,
+        },
+      },
+    ],
   },
 
   // 登录页面
