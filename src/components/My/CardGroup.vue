@@ -1,5 +1,5 @@
 <template>
-  <div class="v-card CardGroup">
+  <div class="animate__animated animate__fadeInLeft v-card CardGroup">
     <div class="v-click left-card" @click="toView('order')">
       <div class="left">
         <span>我的订单</span>
@@ -25,17 +25,14 @@ export default {
     return {};
   },
   methods: {
+    // 二级页面跳转
     toView(target) {
-      let path = "";
-      if (this.$store.state.isLoginState) {
-        path = `/my/${target}`;
-      } else {
-        path = "/login";
-      }
+      const _this = this;
       router.push({
-        path,
+        name: _this.$store.state.isLoginState ? target : "login",
         params: {
           animate: "forward",
+          toBack: true,
         },
       });
     },
@@ -44,6 +41,7 @@ export default {
 </script>
 <style scoped>
 .CardGroup {
+  animation-delay: var(--router-delay);
   display: flex;
   align-items: center;
   margin: 0.4rem 0;

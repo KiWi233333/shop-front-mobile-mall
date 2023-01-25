@@ -41,6 +41,7 @@ export default {
         name: "login",
         params: {
           animate: "forward",
+          toBack: true,
         },
       });
     },

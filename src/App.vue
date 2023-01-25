@@ -30,6 +30,7 @@ export default {
   },
   watch: {
     $route(to) {
+      console.log(to.params);
       if (to.params.animate === "forward") {
         this.routerAnimate = "forward";
       } else if (to.params.animate === "toback") {

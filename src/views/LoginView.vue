@@ -161,7 +161,11 @@ export default {
       this.username = this.$route.params.username;
     }
     // 获取登录状态
-    const token = localStorage.getItem(this.$store.state.TOKEN_NAME) ?? "";
+    const token =
+      localStorage.getItem(this.$store.state.TOKEN_NAME) ||
+      sessionStorage.getItem(this.$store.state.TOKEN_NAME) ||
+      "";
+    console.log(token);
     this.$store.commit("setToken", token); // vuex保存token
     if (token) {
       const res = await checkUser(token);
@@ -194,6 +198,7 @@ export default {
     }
   },
   methods: {
+    // 表单提交
     toSubmit() {
       if (this.isUserPwd) {
         this.toLoginByPwd(); // 密码登录

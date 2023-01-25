@@ -17,22 +17,23 @@ const routes = [
     path: "/",
     name: "index",
     component: HomeView,
+    children: [
+      {
+        path: "home",
+        name: "home",
+        component: HomeView,
+        meta: {
+          lv: 1,
+          keepAlive: true,
+        },
+      },
+    ],
     meta: {
       lv: 1,
       keepAlive: true,
     },
   },
 
-  // 首页页面
-  {
-    path: "/home",
-    name: "home",
-    component: HomeView,
-    meta: {
-      lv: 1,
-      keepAlive: true,
-    },
-  },
   // 分类页面
   {
     path: "/category",
@@ -43,6 +44,7 @@ const routes = [
       keepAlive: true,
     },
   },
+
   // 购物车页面
   {
     path: "/shopcar",
@@ -53,42 +55,41 @@ const routes = [
       keepAlive: true,
     },
   },
+
   // 我的页面
   {
-    path: "/my",
     name: "my",
+    path: "/my",
     component: MyView,
     meta: {
+      title: "个人中心",
       lv: 1,
       keepAlive: true,
     },
-
-    children: [
-      // 订单页面
-      {
-        path: "/order",
-        name: "order",
-        component: OrderView,
-        meta: {
-          lv: 2,
-        },
-      },
-      // 收藏页面
-      {
-        path: "/collect",
-        name: "collect",
-        component: CollectView,
-        meta: {
-          lv: 2,
-        },
-      },
-    ],
+  },
+  // 订单页面
+  {
+    name: "order",
+    path: "/my/order",
+    component: OrderView,
+    meta: {
+      lv: 2,
+    },
+  },
+  // 收藏页面
+  {
+    name: "collect",
+    path: "/my/collect",
+    component: CollectView,
+    meta: {
+      lv: 2,
+    },
   },
 
   // 登录页面
   {
-    path: "/login",
     name: "login",
+    path: "/login",
     component: LoginView,
     meta: {
       lv: 2, // 二级页面
@@ -96,8 +97,8 @@ const routes = [
   },
   // 注册页面
   {
-    path: "/regist",
     name: "regist",
+    path: "/regist",
     component: RegisterView,
     meta: {
       lv: 2,
@@ -107,8 +108,8 @@ const routes = [
 
   // 404页面
   {
-    path: "/404",
     name: "notFund",
+    path: "/404",
     component: NotFund,
   },
 ];

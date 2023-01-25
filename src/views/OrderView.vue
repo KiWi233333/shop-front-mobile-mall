@@ -1,5 +1,5 @@
 <template>
-  <div>订单页面</div>
+  <h1>订单页面</h1>
 </template>
 <script>
 export default {
