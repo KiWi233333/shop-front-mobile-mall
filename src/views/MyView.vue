@@ -8,7 +8,8 @@
     <!-- 卡片组 -->
     <card-group />
     <!-- 菜单栏列表 -->
-    <menu-list />
+    <menu-list v-if="$store.state.isLoginState" />
+    <!-- 了解更多 -->
     <span
       v-if="!$store.state.isLoginState"
       class="animate__animated animate__fadeIn bottom-span"
@@ -45,13 +46,15 @@ export default {
       this.$store.commit("setToken", token);
     }
   },
-  methods: {},
 };
 </script>
 <style scoped>
 .my-view {
+  user-select: none;
   width: 100%;
-  padding: 0.4rem;
+  padding: 0 0.4rem;
+  /* 底部 */
+  padding-bottom: 2rem;
 }
 .bottom-span {
   animation-delay: var(--router-delay);
@@ -60,5 +63,6 @@ export default {
   text-align: center;
   font-size: 0.32rem;
   color: var(--bg-color3);
+  margin: 0.4rem 0;
 }
 </style>

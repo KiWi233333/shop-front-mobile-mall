@@ -1,5 +1,5 @@
 <template>
-  <div class="v-click item">
+  <div class="v-click item" @click="toView">
     <span>{{ title }}</span>
     <van-icon name="arrow" size="0.42rem" />
   </div>
@@ -12,7 +12,7 @@ export default {
   methods: {
     toView() {
       router.push({
-        name: "",
+        name: this.targetName ?? "my",
       });
     },
   },
@@ -28,6 +28,6 @@ export default {
 }
 .item span {
   font-size: 0.4rem;
-  font-weight: 600;
+  letter-spacing: 0.1em;
 }
 </style>

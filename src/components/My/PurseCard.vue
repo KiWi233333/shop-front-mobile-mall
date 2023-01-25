@@ -1,7 +1,7 @@
 <template>
   <div class="animate__animated animate__fadeInLeft v-card purse-card">
     <!-- 积分 -->
-    <div class="top">
+    <div class="v-click top">
       <div class="left">
         <img class="bg" src="@/assets/image/icon/balance_icon.png" />
       </div>
@@ -44,6 +44,7 @@ export default {
 </script>
 <style scoped>
 .purse-card {
+  user-select: none;
   background-color: var(--theme-color2);
   backdrop-filter: blur(20px);
   padding: 0.3rem;
@@ -98,6 +99,12 @@ span {
   right: 0;
   padding: 0.2rem 0.3rem;
   background-color: var(--bg-color4);
+  transition: 0.5s;
+}
+.tip:hover,
+.tip:active {
+  transform: scale(0.9);
+  transform-origin: 100% 100%;
 }
 .bottom .tip .bg {
   width: 0.8rem;

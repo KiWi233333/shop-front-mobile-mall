@@ -31,8 +31,13 @@ export default {
   justify-content: space-between;
   padding: 0.35rem 0.4rem;
   font-size: 0.4rem;
+  /* border-bottom: 1px solid var(--bg-color3); */
+  position: relative;
 }
 .top-nav .title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 0.5rem;
   font-weight: 600;
 }

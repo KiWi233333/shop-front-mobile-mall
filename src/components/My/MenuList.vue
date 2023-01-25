@@ -1,6 +1,11 @@
 <template>
-  <div>
-    <menu-item v-for="(p, i) in option" :title="p.title" :key="i" />
+  <div class="MenuList">
+    <menu-item
+      v-for="(p, i) in option"
+      :title="p.title"
+      :target-name="p.targetName"
+      :key="i"
+    />
     <button class="v-btn lg-off" @click="cannelLogin">退出登录</button>
   </div>
 </template>
@@ -21,7 +26,9 @@ export default {
   },
   methods: {
     // 退出登录
-    cannelLogin() {},
+    cannelLogin() {
+      console.log(1);
+    },
   },
 };
 </script>

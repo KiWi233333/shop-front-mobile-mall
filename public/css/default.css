@@ -9,7 +9,7 @@
 
   --bg-color: #fdb614;
   --bg-color2: #186bfb;
-  --bg-color3: rgba(216, 216, 216, 0.76);
+  --bg-color3: rgba(216, 216, 216, 0.7);
   --bg-color4: #ffc714;
 
   --shadow-color: rgba(50, 50, 93, 0.3) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
@@ -73,11 +73,9 @@ a:active {
   transition: 0.5s;
 }
 .v-click:active,
-.v-click:focus,
-.v-btn:active,
-.v-btn:focus {
+.v-btn:active {
   box-shadow: none;
-  transform: scale(0.95);
+  transform: scale(0.98);
 }
 /* 输入框 */
 .froms {
