@@ -1,14 +1,13 @@
 <template>
   <div id="app">
     <transition :name="routerAnimate">
-      <router-view />
+      <!-- 1)需缓存页面 -->
+      <keep-alive v-if="keepAlive">
+        <router-view />
+      </keep-alive>
+      <!-- 2)无需缓存页面 -->
+      <router-view v-if="!keepAlive" />
     </transition>
-    <!-- 1)需缓存页面 -->
-    <keep-alive>
-      <router-view v-if="keepAlive" />
-    </keep-alive>
-    <!-- 2)无需缓存页面 -->
-    <router-view v-if="keepAlive" />
     <!-- 底部导航栏 -->
     <NavBar v-if="isNavBar" />
   </div>
@@ -19,7 +18,7 @@ export default {
   components: { NavBar },
   data() {
     return {
-      routerAnimate: "forward",
+      routerAnimate: "toback",
       keepAlive: false,
       isNavBar: false,
     };
@@ -29,8 +28,12 @@ export default {
     this.isNavBar = !(this.$route.meta.lv !== 1);
   },
   watch: {
+    // 监控路由并添加动画
     $route(to) {
       console.log(to.params);
+
+      this.keepAlive = this.$route.meta?.keepAlive ?? false;
+      // console.log(this.keepAlive);
       if (to.params.animate === "forward") {
         this.routerAnimate = "forward";
       } else if (to.params.animate === "toback") {

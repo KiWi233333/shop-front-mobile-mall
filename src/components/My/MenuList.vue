@@ -52,7 +52,7 @@ export default {
 </script>
 <style scoped>
 .MenuList {
-  margin: 0.5rem 0;
+  margin-top: 0.5rem;
 }
 .lg-off {
   width: 100%;

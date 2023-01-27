@@ -74,6 +74,7 @@ const routes = [
     component: OrderView,
     meta: {
       lv: 2,
+      keepAlive: true,
     },
   },
   // 收藏页面
@@ -83,6 +84,7 @@ const routes = [
     component: CollectView,
     meta: {
       lv: 2,
+      keepAlive: true,
     },
   },
 

@@ -136,6 +136,7 @@ import {
 export default {
   name: "LoginFrom",
   components: { TopNav },
+
   data() {
     return {
       title: "登 录",
@@ -155,8 +156,9 @@ export default {
         /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/,
     };
   },
+
   async mounted() {
-    if (this.$route.params.username) {
+    if (this.$route.params?.username) {
       // 获取注册的用户信息
       this.username = this.$route.params.username;
     }
@@ -165,7 +167,6 @@ export default {
       localStorage.getItem(this.$store.state.TOKEN_NAME) ||
       sessionStorage.getItem(this.$store.state.TOKEN_NAME) ||
       "";
-    console.log(token);
     this.$store.commit("setToken", token); // vuex保存token
     if (token) {
       const res = await checkUser(token);
@@ -188,9 +189,7 @@ export default {
         timer = setInterval(() => {
           second--;
           if (!second) {
-            this.$router.push({
-              name: "home",
-            });
+            this.toView(); // 跳转主页
             Dialog.close(); // 关闭弹窗
           }
         }, 1000);
@@ -225,10 +224,9 @@ export default {
         }
         this.$store.commit("setToken", res.data.data);
         Notify({ type: "success", message: "登录成功！" });
-        this.$router.push({
-          name: "home",
-        });
+        this.toView();
       } else {
+        console.log(res.data);
         Notify({
           type: "danger",
           message: this.isUserPwd ? "账号密码错误！" : "验证码有误！",
@@ -252,13 +250,11 @@ export default {
         }
         this.$store.commit("setToken", res.data.data);
         Notify({ type: "success", message: "登录成功！" });
-        this.$router.push({
-          name: "home",
-        });
+        this.toView();
       } else {
         Notify({
           type: "danger",
-          message: this.isUserPwd ? "账号密码错误！" : "验证码有误！",
+          message: res.data?.message ?? "用户不存在，请进行注册",
         });
       }
     },
@@ -349,6 +345,13 @@ export default {
           });
         }
       }
+    },
+    // 跳转
+    toView() {
+      this.$router.push({
+        name: this.$route.params.toBack ? "my" : "home",
+        animate: this.$route.params.toBack ? "toback" : "forward",
+      });
     },
 
     // 顶部导航栏

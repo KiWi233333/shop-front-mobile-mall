@@ -4,13 +4,25 @@ import App from "./App.vue"; // App.js
 import router from "./router"; // vue-router
 import store from "./store"; // vuex
 import "../public/css/animate.min.css";
-import { Button, Tabbar, TabbarItem, Form, Field, Toast, NavBar, Notify, Switch, Checkbox, Icon, Dialog } from "vant";
-// vant注册组件
-Vue.use(Button).use(Tabbar).use(TabbarItem).use(Form).use(Icon).use(Field).use(Toast).use(NavBar).use(Notify).use(Switch).use(Checkbox).use(Dialog);
+import { Button, Tabbar, TabbarItem, Form, Field, Toast, NavBar, Notify, Switch, Checkbox, Icon, Dialog, Loading } from "vant";
+// van按需t注册组件
+Vue.use(Button)
+  .use(Tabbar)
+  .use(TabbarItem)
+  .use(Form)
+  .use(Icon)
+  .use(Field)
+  .use(Toast)
+  .use(NavBar)
+  .use(Notify)
+  .use(Switch)
+  .use(Checkbox)
+  .use(Dialog)
+  .use(Loading);
 Vue.config.productionTip = false;
 
 new Vue({
   router,
   store,
-  render: (h) => h(App),
+  render: h => h(App),
 }).$mount("#app");
