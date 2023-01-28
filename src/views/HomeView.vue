@@ -7,6 +7,7 @@
     <swipe-card />
     <!-- 分类栏目 -->
     <sort-class />
+    <!-- 精品推荐 -->
   </div>
 </template>
 
