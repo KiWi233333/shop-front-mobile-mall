@@ -1,6 +1,6 @@
 
 <template>
-  <div class="my-view">
+  <div class="wind-init my-view">
     <!-- 顶部个人信息 -->
     <my-top :userInfo="userInfo" />
     <!-- 钱包卡片 -->
@@ -51,10 +51,6 @@ export default {
 <style scoped>
 .my-view {
   user-select: none;
-  width: 100%;
-  padding: 0 0.4rem;
-  /* 底部 */
-  padding-bottom: 2rem;
 }
 .bottom-span {
   animation-delay: var(--router-delay);

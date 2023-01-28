@@ -1,10 +1,10 @@
 import Vue from "vue";
-import "amfe-flexible"; // 移动端适配
 import App from "./App.vue"; // App.js
 import router from "./router"; // vue-router
 import store from "./store"; // vuex
-import "../public/css/animate.min.css";
-import { Button, Tabbar, TabbarItem, Form, Field, Toast, NavBar, Notify, Switch, Checkbox, Icon, Dialog, Loading } from "vant";
+import "amfe-flexible"; // 移动端适配
+import "../public/css/animate.min.css"; // 动画库
+import { Button, Tabbar, TabbarItem, Form, Field, Toast, NavBar, Notify, Switch, Checkbox, Icon, Dialog, Loading, Swipe, SwipeItem, Lazyload } from "vant";
 // van按需t注册组件
 Vue.use(Button)
   .use(Tabbar)
@@ -18,7 +18,10 @@ Vue.use(Button)
   .use(Switch)
   .use(Checkbox)
   .use(Dialog)
-  .use(Loading);
+  .use(Swipe)
+  .use(SwipeItem)
+  .use(Loading)
+  .use(Lazyload);
 Vue.config.productionTip = false;
 
 new Vue({

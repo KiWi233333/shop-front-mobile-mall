@@ -30,10 +30,9 @@ export default {
   watch: {
     // 监控路由并添加动画
     $route(to) {
-      console.log(to.params);
+      // console.log(to.params);
 
       this.keepAlive = this.$route.meta?.keepAlive ?? false;
-      // console.log(this.keepAlive);
       if (to.params.animate === "forward") {
         this.routerAnimate = "forward";
       } else if (to.params.animate === "toback") {

@@ -14,7 +14,8 @@
 
   --shadow-color: rgba(50, 50, 93, 0.3) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
   --shadow-color2: rgba(122, 122, 122, 0.3) 0px 2px 5px 4px, rgba(101, 101, 101, 0.4) 0px 1px 3px -1px;
-
+  /* 边框 */
+  --border-color: rgba(140, 140, 140, 0.2);
   /* 延迟 */
   --router-delay: 0.8s;
 }
@@ -33,9 +34,17 @@ a:active {
 * {
   box-sizing: border-box;
 }
+/* 初始窗口大小边距 */
+.wind-init {
+  width: 100%;
+  padding: 0.4rem;
+  /* 底部 */
+  padding-bottom: 2rem;
+}
+
 /* 自定义类 */
 .animate__animated {
-  animation-delay: 0.4s;
+  animation-delay: calc(var(--router-delay) / 2);
 }
 .flex-center-center {
   display: flex;
@@ -82,8 +91,9 @@ a:active {
   padding: 0.5rem 1rem;
 }
 
+/* 输入框 */
 .v-input {
-  background-color: rgba(238, 238, 238, 0.6);
+  background-color: rgba(240, 240, 240, 0.4);
   backdrop-filter: blur(20px);
   border-radius: 2rem;
   margin: 0.4rem 0;

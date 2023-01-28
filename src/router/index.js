@@ -12,7 +12,7 @@ import CollectView from "../views/CollectView.vue";
 
 Vue.use(VueRouter);
 const routes = [
-  // 主页
+  // 1.主页
   {
     path: "/",
     name: "index",
@@ -23,8 +23,8 @@ const routes = [
         name: "home",
         component: HomeView,
         meta: {
-          lv: 1,
           keepAlive: true,
+          lv: 1,
         },
       },
     ],
@@ -34,7 +34,7 @@ const routes = [
     },
   },
 
-  // 分类页面
+  // 2.分类页面
   {
     path: "/category",
     name: "category",
@@ -45,7 +45,7 @@ const routes = [
     },
   },
 
-  // 购物车页面
+  // 3.购物车页面
   {
     path: "/shopcar",
     name: "shopcar",
@@ -56,7 +56,7 @@ const routes = [
     },
   },
 
-  // 我的页面
+  // 4.我的页面
   {
     name: "my",
     path: "/my",
@@ -67,7 +67,8 @@ const routes = [
       keepAlive: true,
     },
   },
-  // 订单页面
+
+  // 4.1.订单页面
   {
     name: "order",
     path: "/my/order",
@@ -77,7 +78,8 @@ const routes = [
       keepAlive: true,
     },
   },
-  // 收藏页面
+
+  // 4.2 收藏页面
   {
     name: "collect",
     path: "/my/collect",
@@ -88,7 +90,7 @@ const routes = [
     },
   },
 
-  // 登录页面
+  // 4.3 登录页面
   {
     name: "login",
     path: "/login",
