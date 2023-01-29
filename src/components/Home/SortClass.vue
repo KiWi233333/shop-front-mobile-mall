@@ -1,7 +1,7 @@
 <template>
   <div class="sort-class">
     <div
-      class="item"
+      class="v-click item"
       v-for="(p, i) in firstSortList"
       :key="p.id"
       v-show="i < 9"
