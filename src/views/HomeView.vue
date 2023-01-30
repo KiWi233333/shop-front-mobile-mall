@@ -8,7 +8,7 @@
     <!-- 分类栏目 -->
     <sort-class />
     <!-- 精品推荐 -->
-    <quality-good />
+    <toggle-goods />
   </div>
 </template>
 
@@ -16,10 +16,10 @@
 import SearchNav from "@/components/Home/SearchNav.vue";
 import SwipeCard from "@/components/Home/SwipeCard.vue";
 import SortClass from "@/components/Home/SortClass.vue";
-import QualityGood from "@/components/Home/QualityGood.vue";
+import ToggleGoods from "@/components/Home/ToggleGoods.vue";
 export default {
   name: "HomeView",
-  components: { SearchNav, SwipeCard, SortClass, QualityGood },
+  components: { SearchNav, SwipeCard, SortClass, ToggleGoods },
 };
 </script>
 

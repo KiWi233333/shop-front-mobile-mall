@@ -6,12 +6,12 @@ import { request } from "@/util/request";
  * @param {number} size
  * @param {"name": "string","cid": "string","recommend": 0,"isNew": 0,"saleSort": "string","priceSort": "string"} data
  * @returns
- *  name: string,
-    cid: string,
-    recommend: // 0, 1是0否推荐
+ *  name: "string",
+    cid: "string",
+    recommend: 0, // 0, 1是0否推荐
     isNew: 0, // 1是0否新品
-    saleSort: "Asc"// Asc/Des,销量排序
-    priceSort: "Asc"// Asc/Des,价格排序
+    saleSort: "Asc", // Asc/Des,销量排序
+    priceSort: "Asc", // Asc/Des,价格排序
  */
 export function getGoodsListByPageSize(page, size, data) {
   return request({
@@ -20,16 +20,6 @@ export function getGoodsListByPageSize(page, size, data) {
     data,
   });
 }
-getGoodsListByPageSize(1, 6, {
-  name: "",
-  cid: "",
-  // recommend: 1, // 0, 1是0否推荐
-  isNew: 0, // 1是0否新品
-  saleSort: "Asc", // Asc/Des,销量排序
-  // priceSort: "Asc", // Asc/Des,价格排序
-}).then(res => {
-  console.log(res.data.data);
-});
 
 /**
  * 根据id查询商品详细信息

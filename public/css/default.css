@@ -6,18 +6,21 @@
 
   --text-color: #653913;
   --text-color2: #fff;
+  /* 点缀色 */
+  --tip-color: #ea8833;
 
   --bg-color: #fdb614;
   --bg-color2: #186bfb;
   --bg-color3: rgba(216, 216, 216, 0.7);
   --bg-color4: #ffc714;
 
-  --shadow-color: rgba(50, 50, 93, 0.3) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-  --shadow-color2: rgba(122, 122, 122, 0.3) 0px 2px 5px 4px, rgba(101, 101, 101, 0.4) 0px 1px 3px -1px;
+  --shadow-color: rgba(50, 50, 93, 0.2) 0px 2px 5px -1px, rgba(0, 0, 0, 0.2) 0px 1px 3px -1px;
+  --shadow-color2: rgba(122, 122, 122, 0.2) 0px 2px 5px 4px, rgba(101, 101, 101, 0.4) 0px 1px 3px -1px;
+  --shadow-color3: rgba(0, 0, 0, 0.14) 0px 1px 2px 0px;
   /* 边框 */
   --border-color: rgba(140, 140, 140, 0.2);
   /* 延迟 */
-  --router-delay: 0.8s;
+  --router-delay: 0.35s;
 }
 body,
 html {
@@ -67,15 +70,14 @@ a:active {
   padding: 0.2rem 1rem;
   border-radius: 2rem;
   font-size: 0.4rem;
-  border: 0;
   box-shadow: rgba(0, 0, 0, 0.05) 0 0 8px;
   letter-spacing: 0.1rem;
   transition: all 0.5s;
   background-color: var(--bg-color);
   color: var(--text-color);
   font-weight: 600;
-  box-shadow: #ffe99966 -3px -3px 4px, #9c894166 3px 3px 4px;
-  border: 2px solid rgba(179, 179, 179, 0.3);
+  box-shadow: #bfaa5d66 -3px -3px 4px, #d6bb5729 3px 3px 4px;
+  border: 0.05rem solid rgba(179, 179, 179, 0.3);
 }
 
 .v-click {
@@ -84,7 +86,7 @@ a:active {
 .v-click:active,
 .v-btn:active {
   box-shadow: none;
-  transform: scale(0.98);
+  transform: scale(0.96);
 }
 /* 输入框 */
 .froms {

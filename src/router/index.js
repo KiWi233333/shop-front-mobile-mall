@@ -15,23 +15,21 @@ const routes = [
   // 1.主页
   {
     path: "/",
-    name: "index",
     component: HomeView,
     children: [
       {
+        path: "",
+        redirect: "/home",
+      },
+      {
         path: "home",
         name: "home",
-        component: HomeView,
         meta: {
           keepAlive: true,
           lv: 1,
         },
       },
     ],
-    meta: {
-      lv: 1,
-      keepAlive: true,
-    },
   },
 
   // 2.分类页面

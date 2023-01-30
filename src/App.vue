@@ -52,7 +52,7 @@ export default {
 .forward-enter-active,
 .forward-leave-active {
   width: 100%;
-  transition: all 0.8s;
+  transition: all var(--router-delay);
   position: absolute;
   opacity: 1;
 }
@@ -70,7 +70,7 @@ export default {
 .toback-enter-active,
 .toback-leave-active {
   opacity: 1;
-  transition: all 0.8s;
+  transition: all var(--router-delay);
   position: absolute;
   width: 100%;
 }

@@ -25,6 +25,7 @@ import {
   Tabs,
   Tab,
   List,
+  Image as VanImage,
 } from "vant";
 // van按需t注册组件
 Vue.use(Button)
@@ -46,7 +47,8 @@ Vue.use(Button)
   .use(Tabs)
   .use(Tab)
   .use(List)
-  .use(Empty);
+  .use(Empty)
+  .use(VanImage);
 Vue.config.productionTip = false;
 
 new Vue({

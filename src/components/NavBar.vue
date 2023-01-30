@@ -80,6 +80,7 @@ export default {
   display: inline-flex;
   background-color: var(--theme-color3);
   box-shadow: var(--shadow-color2);
+  z-index: 999;
 }
 .nav-bar > .item {
   flex: 1;
