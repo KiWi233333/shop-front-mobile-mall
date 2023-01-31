@@ -58,3 +58,6 @@ export function getAllSortList() {
     url: `/goodsCategory/select`,
   });
 }
+// getAllSortList().then(res => {
+//   console.log(res.data.data);
+// });

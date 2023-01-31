@@ -21,7 +21,7 @@ import { getGoodsListByPageSize } from "@/api/good/good";
 import GoodCard from "./GoodCard.vue";
 export default {
   components: { GoodCard },
-  props: ["active", "type"],
+  props: ["type"],
   name: "GoodsList",
   data() {
     return {
@@ -37,21 +37,24 @@ export default {
     onLoad() {
       if (this.type === undefined) return;
       this.loading = true;
-      getGoodsListByPageSize(this.currentPage, 8, this.type)
+      getGoodsListByPageSize(this.currentPage, 8, { ...this.type })
         .then((res) => {
           if (res.data.success) {
             const data = res.data.data;
             data.records.forEach((p) => {
               this.goodsList.push(p);
             });
-            // console.log(this.goodsList);
 
             // 加载状态结束
-            this.loading = false;
+            this.loading = false; // 下一页
 
             // 数据全部加载完成
             if (this.goodsList.length === data.total) {
+              // console.log(this.currentPage, data.pages);// 数据页数
               this.finished = true;
+            } else {
+              this.currentPage = data.current;
+              this.currentPage++;
             }
           } else {
             this.isHttpError = true;
@@ -60,6 +63,29 @@ export default {
         .catch(() => {
           this.isHttpError = true;
         });
+    },
+
+    // 重新加载
+    reStart() {
+      new Promise((res) => {
+        this.currentPage = 1;
+        this.goodsList.splice(0); // 清空数组
+        return res(true);
+      }).then(() => {
+        this.onLoad();
+      });
+    },
+  },
+  watch: {
+    type(newVal, oldVal) {
+      // 销量升降序
+      if (newVal.saleSort !== oldVal.saleSort) {
+        this.reStart();
+      }
+      // 价格升降序
+      if (newVal.priceSort !== oldVal.priceSort) {
+        this.reStart();
+      }
     },
   },
 };

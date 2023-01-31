@@ -1,21 +1,38 @@
 <template>
   <div class="wind-init search-view">
-    <search-nav />
-    <goods-list :type="params" />
+    <search-nav
+      @submitSearch="submitSearch"
+      @focusKeywords="focusKeywords"
+      :isResult="isResult"
+    />
+    <search-toggle :keyWords="keyWords" v-if="isResult" />
   </div>
 </template>
 <script>
-import SearchNav from "@/components/Home/SearchNav.vue";
-import GoodsList from "@/components/Home/GoodsList.vue";
+import SearchNav from "@/components/Search/SearchNav.vue";
+import SearchToggle from "@/components/Search/SearchToggle.vue";
+import { Toast } from "vant";
 export default {
-  components: { SearchNav, GoodsList },
+  components: { SearchNav, SearchToggle },
   name: "SearchView",
   data() {
     return {
-      params: { name: "" },
+      keyWords: "", // 关键字
+      isResult: false,
     };
   },
-  methods: {},
+  methods: {
+    submitSearch(value) {
+      this.isResult = false;
+      if (value === "") return Toast({ message: " 请输入搜索内容！" });
+      this.keyWords = value;
+      this.isResult = true;
+    },
+    focusKeywords(value) {
+      this.keyWords = value;
+      this.isResult = false;
+    },
+  },
 };
 </script>
 <style scoped>

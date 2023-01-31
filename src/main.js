@@ -26,6 +26,7 @@ import {
   Tab,
   List,
   Image as VanImage,
+  Badge,
 } from "vant";
 // van按需t注册组件
 Vue.use(Button)
@@ -48,7 +49,8 @@ Vue.use(Button)
   .use(Tab)
   .use(List)
   .use(Empty)
-  .use(VanImage);
+  .use(VanImage)
+  .use(Badge);
 Vue.config.productionTip = false;
 
 new Vue({

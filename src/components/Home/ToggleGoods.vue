@@ -22,13 +22,13 @@
     >
       <!-- 四种商品栏目 -->
       <van-tab v-for="(p, i) in option" :key="i">
-        <goods-list :type="{ ...p.type }" :active="active" />
+        <goods-list :type="p.type" :active="active" />
       </van-tab>
     </van-tabs>
   </div>
 </template>
 <script>
-import GoodsList from "./GoodsList.vue";
+import GoodsList from "@/components/GoodsList.vue";
 export default {
   components: { GoodsList },
   name: "ToggleGoods",

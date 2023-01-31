@@ -40,7 +40,6 @@ const routes = [
     meta: {
       title: "搜索",
       lv: 2,
-      keepAlive: true,
     },
   },
   // 2.分类页面
