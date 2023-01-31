@@ -27,6 +27,8 @@ import {
   List,
   Image as VanImage,
   Badge,
+  Sidebar,
+  SidebarItem,
 } from "vant";
 // van按需t注册组件
 Vue.use(Button)
@@ -50,7 +52,9 @@ Vue.use(Button)
   .use(List)
   .use(Empty)
   .use(VanImage)
-  .use(Badge);
+  .use(Badge)
+  .use(Sidebar)
+  .use(SidebarItem);
 Vue.config.productionTip = false;
 
 new Vue({

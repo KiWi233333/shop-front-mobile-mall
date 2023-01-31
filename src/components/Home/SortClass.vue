@@ -5,11 +5,12 @@
       v-for="(p, i) in firstSortList"
       :key="p.id"
       v-show="i < 9"
+      @click="toCategoryView(i)"
     >
       <img :src="getImgSrc(p.icon)" class="img" />
       <span>{{ p.name }}</span>
     </div>
-    <div class="item">
+    <div class="item" @click="toCategoryView(0)">
       <van-icon name="qr" class="img" size="0.8rem" />
       <span>更多</span>
     </div>
@@ -30,6 +31,16 @@ export default {
     this.firstSortList = res.data.data;
   },
   methods: {
+    // 跳转到分类页面
+    toCategoryView(id) {
+      this.$router.push({
+        name: "category",
+        params: {
+          animate: "forward",
+        },
+        query: { id },
+      });
+    },
     // 获取图片地址
     getImgSrc(url) {
       return getResourImageByName(url);

@@ -3,15 +3,19 @@
     <search-nav
       @submitSearch="submitSearch"
       @focusKeywords="focusKeywords"
-      :isResult="isResult"
+      @clearKeywords="clearKeywords"
+      :is-result="isResult"
     />
-    <search-toggle :keyWords="keyWords" v-if="isResult" />
+    <search-toggle
+      :key-words="keyWords"
+      :cid="this.$route.query?.cid"
+      v-if="isResult"
+    />
   </div>
 </template>
 <script>
 import SearchNav from "@/components/Search/SearchNav.vue";
 import SearchToggle from "@/components/Search/SearchToggle.vue";
-import { Toast } from "vant";
 export default {
   components: { SearchNav, SearchToggle },
   name: "SearchView",
@@ -21,16 +25,25 @@ export default {
       isResult: false,
     };
   },
+  created() {
+    if (this.$route.query?.cid) {
+      this.isResult = false;
+      this.submitSearch();
+      this.isResult = true;
+    }
+  },
   methods: {
     submitSearch(value) {
       this.isResult = false;
-      if (value === "") return Toast({ message: " 请输入搜索内容！" });
       this.keyWords = value;
       this.isResult = true;
     },
     focusKeywords(value) {
       this.keyWords = value;
       this.isResult = false;
+    },
+    clearKeywords(value) {
+      this.keyWords = value;
     },
   },
 };

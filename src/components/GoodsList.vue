@@ -8,6 +8,7 @@
     finished-text="没有更多商品了"
     @load="onLoad"
   >
+    <!-- 商品卡片 -->
     <good-card
       :item="item"
       v-for="item in goodsList"
@@ -108,5 +109,6 @@ export default {
 .good-list >>> .van-list__finished-text,
 .good-list >>> .van-list__error-text {
   width: 100%;
+  font-size: 0.35rem;
 }
 </style>

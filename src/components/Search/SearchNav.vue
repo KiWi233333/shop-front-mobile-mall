@@ -1,23 +1,36 @@
 <template>
   <div class="search-nav">
     <div class="nav">
+      <!-- 返回 -->
       <van-icon
         name="arrow-left"
         size="0.6rem"
         @click="toBack"
         class="toback-btn"
       />
+      <!-- 输入框 -->
       <van-field
         v-model="keyWords"
         @focus="focusKeywords"
-        class="v-input search search2"
+        class="v-input search"
         placeholder="输入商品名称"
         :autofocus="true"
         left-icon="search"
       />
+      <!-- 清除输入 -->
+      <van-icon
+        name="clear"
+        size="0.6rem"
+        class="clear"
+        v-show="keyWords"
+        color="var(--text-color3)"
+        @click="clearKeywords"
+      />
+      <!-- 搜索按钮 -->
       <input type="button" value="搜 索" class="btn" @click="toSearchGoods" />
     </div>
     <div class="history" v-show="!isResult">
+      <!-- 历史搜索记录 -->
       <div class="top">
         <span class="title">历史搜索</span>
         <van-icon
@@ -27,6 +40,7 @@
           @click="deleteHistory"
         />
       </div>
+      <!-- 搜索列表 -->
       <div class="list">
         <div
           @touchstart="touchStartHistory"
@@ -43,7 +57,7 @@
   </div>
 </template>
 <script>
-import { Dialog } from "vant";
+import { Dialog, Toast } from "vant";
 export default {
   name: "SearchNav",
   props: ["isResult"],
@@ -66,15 +80,21 @@ export default {
   methods: {
     // 搜索商品
     toSearchGoods() {
-      if (this.keyWords.trim() === "") return;
+      if (this.keyWords.trim() === "")
+        return Toast({ message: " 请输入搜索内容！" });
       // 显示搜索结果
       this.$emit("submitSearch", this.keyWords.trim());
       // 记录搜索历史
       this.searchHistory.unshift(this.keyWords.trim());
     },
-    // 关键字更新
+    // 聚焦输入框
     focusKeywords() {
       this.$emit("focusKeywords", this.keyWords.trim());
+    },
+    // 关键字清空
+    clearKeywords() {
+      this.keyWords = "";
+      this.$emit("clearKeywords", this.keyWords);
     },
 
     // 历史记录
@@ -85,6 +105,7 @@ export default {
     },
     // 删除历史记录
     deleteHistory() {
+      if (this.searchHistory.length === 0) return;
       Dialog.confirm({
         message: "删除全部记录？",
         beforeClose: (action, done) => {
@@ -121,7 +142,7 @@ export default {
 
     // 返回
     toBack() {
-      if (this.isResult) {
+      if (this.isResult && this.keyWords !== "") {
         this.focusKeywords(); // 回到历史记录
       } else {
         this.$router.back(); // 回到主页
@@ -144,6 +165,7 @@ export default {
 </script>
 <style scoped>
 .nav {
+  z-index: 99;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -163,11 +185,15 @@ export default {
 }
 .search {
   width: 100%;
-  padding: 0.15rem 0.5rem;
+  padding: 0.15rem 0.3rem;
   margin: auto;
-  border: 1px solid var(--theme-color2);
+  border: 2px solid var(--theme-color2);
 }
-
+.clear {
+  position: absolute;
+  right: 2.1rem;
+  cursor: pointer;
+}
 .history {
   padding: 0.4rem 0rem;
 }
@@ -194,5 +220,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0 0.2rem;
+}
+.delete {
+  cursor: pointer;
 }
 </style>

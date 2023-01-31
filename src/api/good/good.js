@@ -51,6 +51,7 @@ export function getSecondSortList(id) {
     url: `/goodsCategory/query/child/${id}`,
   });
 }
+
 // 获取全部分类列表
 export function getAllSortList() {
   return request({
@@ -58,6 +59,3 @@ export function getAllSortList() {
     url: `/goodsCategory/select`,
   });
 }
-// getAllSortList().then(res => {
-//   console.log(res.data.data);
-// });

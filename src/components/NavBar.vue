@@ -48,15 +48,8 @@ export default {
       active: 0,
     };
   },
-  mounted() {
-    // 初始化地址
-    for (let i = 0; i < this.option.length; i++) {
-      if (this.$route.name === this.option[i].path) {
-        return (this.active = i);
-      }
-    }
-  },
   methods: {
+    // 导航切换
     toPage(i) {
       if (i !== this.active) {
         router.push({
@@ -67,6 +60,19 @@ export default {
         });
         this.active = i;
       }
+    },
+  },
+  watch: {
+    $route: {
+      immediate: true,
+      handler(to) {
+        // 初始化地址
+        for (let i = 0; i < this.option.length; i++) {
+          if (to.name === this.option[i].path) {
+            return (this.active = i);
+          }
+        }
+      },
     },
   },
 };

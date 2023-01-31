@@ -21,6 +21,7 @@
     >
       <!-- 筛选条件 -->
       <van-tab v-for="(p, i) in option" :key="i">
+        <!-- 商品列表 -->
         <goods-list :type="{ ...p.type }" />
       </van-tab>
     </van-tabs>
@@ -31,17 +32,29 @@ import GoodsList from "@/components/GoodsList.vue";
 export default {
   name: "SearchToggle",
   components: { GoodsList },
-  props: ["keyWords"],
+  props: ["keyWords", "cid"],
   data() {
     return {
       active: 0,
       isSaleDes: true, // 是否降序
       isPriceDes: false, // 是否降序
       option: [
-        { title: "全部", type: { name: this.keyWords } },
-        { title: "新品", type: { name: this.keyWords, isNew: 1 } },
-        { title: "销量降序", type: { name: this.keyWords, saleSort: "Des" } },
-        { title: "价格升序", type: { name: this.keyWords, priceSort: "Asc" } },
+        {
+          title: "全部",
+          type: { cid: this.cid, name: this.keyWords },
+        },
+        {
+          title: "新品",
+          type: { cid: this.cid, name: this.keyWords, isNew: 1 },
+        },
+        {
+          title: "销量降序",
+          type: { cid: this.cid, name: this.keyWords, saleSort: "Des" },
+        },
+        {
+          title: "价格升序",
+          type: { cid: this.cid, name: this.keyWords, priceSort: "Asc" },
+        },
       ],
     };
   },
