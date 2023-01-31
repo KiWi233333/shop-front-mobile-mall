@@ -8,6 +8,7 @@
   --text-color2: #fff;
   /* 点缀色 */
   --tip-color: #ea8833;
+  --tip-color2: #ff1034;
 
   --bg-color: #fdb614;
   --bg-color2: #186bfb;
@@ -40,7 +41,8 @@ a:active {
 /* 初始窗口大小边距 */
 .wind-init {
   width: 100%;
-  padding: 0.4rem;
+  padding: 0.3rem;
+  padding-top: 0.5rem;
   /* 底部 */
   padding-bottom: 2rem;
 }

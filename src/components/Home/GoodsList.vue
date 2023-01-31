@@ -35,6 +35,7 @@ export default {
   methods: {
     // 加载对应的商品列表
     onLoad() {
+      if (this.type === undefined) return;
       this.loading = true;
       getGoodsListByPageSize(this.currentPage, 8, this.type)
         .then((res) => {
@@ -43,7 +44,7 @@ export default {
             data.records.forEach((p) => {
               this.goodsList.push(p);
             });
-            console.log(this.goodsList);
+            // console.log(this.goodsList);
 
             // 加载状态结束
             this.loading = false;

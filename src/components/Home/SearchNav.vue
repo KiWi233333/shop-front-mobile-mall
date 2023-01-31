@@ -1,45 +1,29 @@
 <template>
-  <div class="search-nav" @click="toSearchView">
+  <div class="search-nav">
     <input
       type="text"
-      class="v-input search"
-      placeholder="搜索"
-      v-model="key"
-      @focus="searchGoods"
+      class="v-input search search2"
+      placeholder="输入商品名称"
+      v-model="keyWords"
       @change="changeSearch"
     />
-    <van-icon name="search" class="icon" />
-    <input type="button" v-if="!isRouter" value="搜索" class="v-btn" />
+    <van-icon name="search" class="icon" size="0.5rem" color="grey" />
+    <input type="button" value="搜索" class="btn" />
   </div>
 </template>
 <script>
-import router from "@/router";
 export default {
   name: "SearchNav",
-  props: ["isRouter"],
   data() {
     return {
-      key: "",
+      keyWords: "",
     };
   },
   methods: {
-    // 搜索商品
-    searchGoods() {},
-
     // 输入框改变事件
     changeSearch() {},
-
-    // 导航到搜索页面
-    toSearchView() {
-      if (this?.isRouter) {
-        router.push({
-          name: "search",
-          params: {
-            animate: "forward",
-          },
-        });
-      }
-    },
+    // 搜索商品
+    searchGoods() {},
   },
 };
 </script>
@@ -48,19 +32,27 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
-
+.btn {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.4rem;
+  padding: 0 0.3rem;
+}
 .search {
   width: 100%;
   padding: 0.25rem 0.5rem;
   margin: auto;
   border: 1px solid var(--border-color);
   padding-left: 1rem;
-  position: relative;
 }
-
+.search2 {
+  border: 1px solid var(--theme-color2);
+}
 .search-nav .icon {
   position: absolute;
-  left: 0.8rem;
+  left: 0.4rem;
 }
 </style>

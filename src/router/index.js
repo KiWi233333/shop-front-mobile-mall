@@ -9,7 +9,7 @@ import CategoryView from "../views/CategoryView.vue";
 import MyView from "../views/MyView.vue";
 import OrderView from "../views/OrderView.vue";
 import CollectView from "../views/CollectView.vue";
-
+import SearchView from "../views/SearchView.vue";
 Vue.use(VueRouter);
 const routes = [
   // 1.主页
@@ -25,19 +25,31 @@ const routes = [
         path: "home",
         name: "home",
         meta: {
+          title: "水院商城",
           keepAlive: true,
           lv: 1,
         },
       },
     ],
   },
-
+  // 1.1 搜索页面
+  {
+    path: "/search",
+    name: "search",
+    component: SearchView,
+    meta: {
+      title: "搜索",
+      lv: 2,
+      keepAlive: true,
+    },
+  },
   // 2.分类页面
   {
     path: "/category",
     name: "category",
     component: CategoryView,
     meta: {
+      title: "分类",
       lv: 1,
       keepAlive: true,
     },
@@ -45,10 +57,11 @@ const routes = [
 
   // 3.购物车页面
   {
-    path: "/shopcar",
     name: "shopcar",
+    path: "/shopcar",
     component: ShopcarView,
     meta: {
+      title: "购物车",
       lv: 1,
       keepAlive: true,
     },
@@ -72,6 +85,7 @@ const routes = [
     path: "/my/order",
     component: OrderView,
     meta: {
+      title: "订单",
       lv: 2,
       keepAlive: true,
     },
@@ -83,6 +97,7 @@ const routes = [
     path: "/my/collect",
     component: CollectView,
     meta: {
+      title: "收藏",
       lv: 2,
       keepAlive: true,
     },
@@ -94,6 +109,7 @@ const routes = [
     path: "/login",
     component: LoginView,
     meta: {
+      title: "登录",
       lv: 2, // 二级页面
     },
   },
@@ -103,6 +119,7 @@ const routes = [
     path: "/regist",
     component: RegisterView,
     meta: {
+      title: "注册新用户",
       lv: 2,
       keepAlive: true,
     },
@@ -123,15 +140,18 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  // 浏览器标题设置
+  document.title = to.meta?.title ?? "水院商城";
+  // 权限设置
   if (to.meta.permission) {
-    router.push({
+    router.replace({
       name: "notFund",
       params: {
         text: "还未登录！",
       },
     });
-  } else {
-    next();
+    return;
   }
+  next();
 });
 export default router;
