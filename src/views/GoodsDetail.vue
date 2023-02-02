@@ -270,8 +270,6 @@ export default {
   justify-content: space-between;
 }
 /* 规格 */
-.content .center {
-}
 
 body >>> .van-goods-action {
   z-index: 99;
