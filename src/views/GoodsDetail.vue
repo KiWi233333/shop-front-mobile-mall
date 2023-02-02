@@ -18,20 +18,22 @@
     <!-- 主内容 -->
     <div class="content" v-show="!isError">
       <!-- 标题 -->
-      <div class="top">
-        <div class="v-card">
-          <div class="price">
-            ￥<span class="big">{{ item?.price || "0.0" }}</span>
-          </div>
-          <div class="title">{{ item?.goods?.name }}</div>
-          <div class="lable-group">
-            <div class="lable">总销量：{{ item?.goods?.sale }}</div>
-            <div class="lable">
-              <van-icon name="location-o" />
-              {{ item?.goods?.city }}
-            </div>
+      <div class="v-card top">
+        <div class="price">
+          ￥<span class="big">{{ item?.price || "0.0" }}</span>
+        </div>
+        <div class="title">{{ item?.goods?.name }}</div>
+        <div class="lable-group">
+          <div class="lable">总销量：{{ item?.goods?.sale }}</div>
+          <div class="lable">
+            <van-icon name="location-o" />
+            {{ item?.goods?.city }}
           </div>
         </div>
+      </div>
+      <!-- 规格 -->
+      <div class="v-card center">
+        <div class="label-group"></div>
       </div>
     </div>
     <!-- 底部导航 -->
@@ -65,6 +67,7 @@
 
 <script>
 import { getGoodDetailById } from "@/api/good/good";
+import { getGoodPropsById } from "@/api/good/props";
 import {
   getTheCollectByGid,
   addCollectByGid,
@@ -83,7 +86,7 @@ export default {
       TOKEN: this.$store.state.token,
       GOOD_ID: this.$route.query?.id || "",
       item: {}, // 商品信息
-
+      props: {}, //商品规格
       current: 0, // 图片
       isCollect: false, // 是否收藏
     };
@@ -91,6 +94,7 @@ export default {
 
   created() {
     this.getGoodDetail(); // 获取商品详情
+    this.getGoodProps(); // 获取商品规格
     this.getTheCollect(); // 获取是否收藏
   },
 
@@ -104,13 +108,31 @@ export default {
           this.isError = !res.data.success;
           if (res.data.success) {
             this.item = res.data.data;
-            console.log(this.item);
           }
         })
         .catch(() => {
           this.isError = true;
         });
     },
+
+    // 获取商品规格
+    getGoodProps() {
+      // 获取路由的信息
+      if (this.GOOD_ID === "") return (this.isError = true);
+      getGoodPropsById(this.GOOD_ID)
+        .then((res) => {
+          this.isError = !res.data.success;
+          if (res.data.success) {
+            console.log(res.data.data);
+            this.props = res.data.data;
+          }
+        })
+        .catch(() => {
+          this.isError = true;
+        });
+    },
+
+    //
 
     // 获取本商品是否收藏
     getTheCollect() {
@@ -181,8 +203,6 @@ export default {
       return getResourImageByName(url);
     },
   },
-
-  computed: {},
 };
 </script>
 
@@ -194,7 +214,19 @@ export default {
   padding: 0;
   padding-bottom: 1.2rem;
 }
-/* 图片 */
+/* 轮播商品图 */
+.custom-indicator {
+  position: absolute;
+  right: 0.4rem;
+  bottom: 0.6rem;
+  padding: 0.1rem 0.24rem;
+  letter-spacing: 0.1em;
+  font-size: 0.4rem;
+  color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(128, 128, 128, 0.4);
+  backdrop-filter: blur(20px);
+  border-radius: 0.8rem;
+}
 .imags {
   width: 100%;
   height: 10rem;
@@ -213,6 +245,7 @@ export default {
 .v-card {
   padding: 0.2rem 0.3rem;
   background-color: var(--theme-color3);
+  margin-bottom: 0.3rem;
 }
 .top .price {
   font-size: 0.4rem;
@@ -236,18 +269,8 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-
-/* 轮播商品图 */
-.custom-indicator {
-  position: absolute;
-  right: 0.4rem;
-  bottom: 0.4rem;
-  padding: 0.1rem 0.24rem;
-  font-size: 0.4rem;
-  color: rgba(255, 255, 255, 0.8);
-  background-color: rgba(128, 128, 128, 0.4);
-  backdrop-filter: blur(20px);
-  border-radius: 0.8rem;
+/* 规格 */
+.content .center {
 }
 
 body >>> .van-goods-action {
