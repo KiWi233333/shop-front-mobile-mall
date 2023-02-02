@@ -29,6 +29,12 @@ import {
   Badge,
   Sidebar,
   SidebarItem,
+  PullRefresh,
+  ShareSheet,
+  ImagePreview,
+  GoodsAction,
+  GoodsActionButton,
+  GoodsActionIcon,
 } from "vant";
 // van按需t注册组件
 Vue.use(Button)
@@ -54,7 +60,13 @@ Vue.use(Button)
   .use(VanImage)
   .use(Badge)
   .use(Sidebar)
-  .use(SidebarItem);
+  .use(SidebarItem)
+  .use(PullRefresh)
+  .use(ShareSheet)
+  .use(ImagePreview)
+  .use(GoodsAction)
+  .use(GoodsActionButton)
+  .use(GoodsActionIcon);
 Vue.config.productionTip = false;
 
 new Vue({

@@ -23,7 +23,6 @@ import MyTop from "@/components/My/MyTop.vue";
 import PurseCard from "@/components/My/PurseCard.vue";
 import CardGroup from "@/components/My/CardGroup.vue";
 import MenuList from "@/components/My/MenuList.vue";
-import { checkUser } from "@/api/user/users";
 export default {
   components: { MyTop, PurseCard, CardGroup, MenuList },
   name: "MyView",
@@ -31,20 +30,6 @@ export default {
     return {
       userInfo: this.$store.state.userInfo,
     };
-  },
-  async created() {
-    // 验证用户登录状态
-    const token =
-      localStorage.getItem(this.$store.state.TOKEN_NAME) ||
-      sessionStorage.getItem(this.$store.state.TOKEN_NAME);
-    if (!token) return;
-    const res = await checkUser(token); // 验证token
-    // console.log(res.data.data, token);
-    if (res.data.success) {
-      this.$store.commit("setUserInfo", res.data.data);
-      this.$store.commit("setLoginState", res.data.success);
-      this.$store.commit("setToken", token);
-    }
   },
 };
 </script>

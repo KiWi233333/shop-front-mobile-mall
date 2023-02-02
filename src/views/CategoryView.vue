@@ -12,7 +12,7 @@
       <div class="right">
         <div
           class="item v-click"
-          @click="toSortView(p.fid)"
+          @click="toSortView(p.id)"
           v-for="(p, i) in secondSortList"
           :key="i"
         >
@@ -47,9 +47,13 @@ export default {
           for (let p of res.data.data) {
             this.firstSortList.push(p);
           }
+
           if (this.$route.query.id >= 0 && this.$route.name == "category") {
             // 获取首页分类的下标
             this.activeKey = this.$route.query.id;
+          } else {
+            // 初始化
+            this.activeKey = 0;
           }
         }
       })
@@ -111,9 +115,6 @@ export default {
 };
 </script>
 <style scoped>
-.content .left-nav {
-  width: 20%;
-}
 .content {
   position: relative;
 }
@@ -144,7 +145,9 @@ export default {
 }
 
 .van-sidebar {
-  width: 100%;
+  height: 100vh;
+  width: 20%;
+  background-color: #f7f8fa;
 }
 .van-sidebar-item {
   font-size: 0.4rem;

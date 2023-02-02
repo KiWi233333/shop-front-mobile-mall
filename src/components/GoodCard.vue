@@ -24,7 +24,6 @@
 </template>
 <script>
 import { getResourImageByName } from "@/api/res";
-import router from "@/router";
 export default {
   props: ["item"],
   name: "SortClass",
@@ -34,10 +33,10 @@ export default {
   methods: {
     // 点击跳转对应的商品详情页面
     toGoodsDetail(id) {
-      console.log(1);
-      router.push({
-        name: "goodsDetail",
-        params: { id },
+      this.$router.push({
+        name: "detail",
+        query: { id },
+        params: { animate: "forward" },
       });
     },
     // 获取图片地址

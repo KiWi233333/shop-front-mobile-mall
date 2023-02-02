@@ -1,5 +1,5 @@
 <template>
-  <div class="sort-class">
+  <div class="sort-class" v-show="firstSortList">
     <div
       class="v-click item"
       v-for="(p, i) in firstSortList"

@@ -14,6 +14,7 @@
 </template>
 <script>
 import NavBar from "./components/NavBar.vue";
+import { checkUser } from "@/api/user/users";
 export default {
   components: { NavBar },
   data() {
@@ -26,6 +27,26 @@ export default {
   created() {
     // 导航栏显示
     this.isNavBar = !(this.$route.meta.lv !== 1);
+    // 验证用户登录状态
+    const token =
+      localStorage.getItem(this.$store.state.TOKEN_NAME) ||
+      sessionStorage.getItem(this.$store.state.TOKEN_NAME);
+    if (!token) return;
+    // 请求
+    checkUser(token)
+      .then((res) => {
+        if (res.data.success) {
+          this.$store.commit("setUserInfo", res.data.data);
+          this.$store.commit("setLoginState", res.data.success);
+          this.$store.commit("setToken", token);
+        }
+      })
+      .catch(() => {
+        this.$store.commit("setUserInfo", {});
+        this.$store.commit("setLoginState", false);
+        this.$store.commit("setToken", "");
+      }); // 验证token
+    // console.log(res.data.data, token);
   },
   watch: {
     // 监控路由并添加动画

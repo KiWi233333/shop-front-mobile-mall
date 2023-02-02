@@ -10,6 +10,7 @@ import MyView from "../views/MyView.vue";
 import OrderView from "../views/OrderView.vue";
 import CollectView from "../views/CollectView.vue";
 import SearchView from "../views/SearchView.vue";
+import GoodsDetail from "../views/GoodsDetail.vue";
 Vue.use(VueRouter);
 const routes = [
   // 1.主页
@@ -124,6 +125,16 @@ const routes = [
     },
   },
 
+  // 5.商品详情页
+  {
+    name: "detail",
+    path: "/detail",
+    component: GoodsDetail,
+    meta: {
+      title: "商品详情",
+      lv: 2,
+    },
+  },
   // 404页面
   {
     name: "notFund",

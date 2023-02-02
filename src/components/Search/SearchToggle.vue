@@ -41,23 +41,26 @@ export default {
       option: [
         {
           title: "全部",
-          type: { cid: this.cid, name: this.keyWords },
+          type: { cid: this.cid, name: this.keyWords || "" },
         },
         {
           title: "新品",
-          type: { cid: this.cid, name: this.keyWords, isNew: 1 },
+          type: { cid: this.cid, name: this.keyWords || "", isNew: 1 },
         },
         {
           title: "销量降序",
-          type: { cid: this.cid, name: this.keyWords, saleSort: "Des" },
+          type: { cid: this.cid, name: this.keyWords || "", saleSort: "Des" },
         },
         {
           title: "价格升序",
-          type: { cid: this.cid, name: this.keyWords, priceSort: "Asc" },
+          type: { cid: this.cid, name: this.keyWords || "", priceSort: "Asc" },
         },
       ],
     };
   },
+  // mounted() {
+  //   console.log(this.option);
+  // },
   methods: {
     changeNav(i) {
       if (this.active == i) {

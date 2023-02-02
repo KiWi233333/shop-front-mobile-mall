@@ -6,10 +6,10 @@
 
   --text-color: #653913;
   --text-color2: #fff;
-  --text-color3: rgba(128, 128, 128, 0.8);
+  --text-color3: rgba(80, 80, 80, 0.8);
   /* 点缀色 */
   --tip-color: #ea8833;
-  --tip-color2: #ff1034;
+  --tip-color2: #f62109;
 
   --bg-color: #fdb614;
   --bg-color2: #186bfb;
@@ -126,4 +126,17 @@ div {
 label {
   font-size: 0.7rem;
   font-weight: 600;
+}
+
+/* 空白框重新定义 */
+.van-empty {
+  width: 100%;
+  font-size: 0.4rem;
+}
+.van-empty .v-btn {
+  font-size: 0.35rem;
+  padding: 0.12rem 0.6rem;
+}
+.van-empty >>> .van-empty__description {
+  font-size: 0.36rem;
 }
