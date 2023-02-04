@@ -20,6 +20,7 @@ import SwipeCard from "@/components/Home/SwipeCard.vue";
 import SortClass from "@/components/Home/SortClass.vue";
 import ToggleGoods from "@/components/Home/ToggleGoods.vue";
 import router from "@/router";
+import { getNoticeByPage } from "@/api/system/notice";
 export default {
   name: "HomeView",
   components: { SwipeCard, SortClass, ToggleGoods },
@@ -33,6 +34,11 @@ export default {
         },
       });
     },
+  },
+  created() {
+    getNoticeByPage(1, 8).then((res) => {
+      console.log(res.data);
+    });
   },
 };
 </script>

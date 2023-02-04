@@ -15,6 +15,7 @@
   --bg-color2: #186bfb;
   --bg-color3: rgba(216, 216, 216, 0.7);
   --bg-color4: #ffc714;
+  --bg-color5: rgba(216, 216, 216, 0.4);
 
   --shadow-color: rgba(50, 50, 93, 0.2) 0px 2px 5px -1px, rgba(0, 0, 0, 0.2) 0px 1px 3px -1px;
   --shadow-color2: rgba(122, 122, 122, 0.2) 0px 2px 5px 4px, rgba(101, 101, 101, 0.4) 0px 1px 3px -1px;
@@ -49,6 +50,15 @@ a:active {
 }
 
 /* 自定义类 */
+.w-100 {
+  width: 100%;
+}
+.w-80 {
+  width: 80%;
+}
+.w-50 {
+  width: 50%;
+}
 .animate__animated {
   animation-delay: calc(var(--router-delay) / 2);
 }
@@ -56,6 +66,14 @@ a:active {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+.flex-between {
+  display: flex;
+  justify-content: space-between;
 }
 .ms-auto {
   margin: auto;
