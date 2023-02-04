@@ -36,6 +36,8 @@ import {
   GoodsActionButton,
   GoodsActionIcon,
   Sku,
+  Tag,
+  Rate,
 } from "vant";
 // van按需t注册组件
 Vue.use(Button)
@@ -68,7 +70,9 @@ Vue.use(Button)
   .use(GoodsAction)
   .use(GoodsActionButton)
   .use(GoodsActionIcon)
-  .use(Sku);
+  .use(Sku)
+  .use(Tag)
+  .use(Rate);
 Vue.config.productionTip = false;
 
 new Vue({

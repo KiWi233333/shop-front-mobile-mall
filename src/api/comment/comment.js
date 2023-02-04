@@ -26,7 +26,7 @@ export function getGoodCommentById(token, goodsId, sort) {
  * @param {string} token
  * @returns
  */
-export function getCommentlikedByGid(id, token) {
+export function addCommentLiked(id, token) {
   return request({
     method: "put",
     url: `/evaluation/liked/${id}`,

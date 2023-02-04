@@ -1,5 +1,6 @@
 <template>
   <div class="comment-card comments" v-show="comment">
+    <!-- 头像时间 -->
     <div class="lable-group">
       <div class="lable top">
         <van-image
@@ -9,10 +10,14 @@
           class="icon"
         />
         <div class="name">{{ comment?.nickname }}</div>
+        <van-tag plain color="var(--tip-color2)" v-if="!comment?.isMe"
+          >我的评价</van-tag
+        >
       </div>
       <div class="lable">{{ comment?.time }}</div>
     </div>
     <div class="lable contents">{{ comment?.content }}</div>
+    <!-- 评论照片 -->
     <div class="good-imgs" v-if="comment?.images">
       <van-image
         lazy-load
@@ -24,19 +29,63 @@
         @click="showPreImg(comment?.images, i)"
       />
     </div>
-    <div class="lable-group">
-      <div class="lable"></div>
-      <div class="lable"></div>
+    <!-- 点赞留言 -->
+    <div class="lable-group tips">
+      <div class="lable">
+        评分：<van-rate v-model="stars" readonly size="0.4rem" gutter="0" />
+      </div>
+      <div class="lable">
+        <div class="left" @click="addCommentPick">
+          <!-- 喜欢 -->
+          <van-icon
+            name="like"
+            color="var(--tip-color2)"
+            v-show="comment?.isLiked"
+          />
+          <!-- 未喜欢 -->
+          <van-icon name="like-o" v-show="!comment?.isLiked" />
+          <span class="text">{{ comment?.liked || "赞" }}</span>
+        </div>
+        <div class="right" @click="toView">
+          <van-icon name="comment-o" />
+          <span class="text">{{ comment?.comment || "" }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { addCommentLiked } from "@/api/comment/comment";
 import { getResourImageByName } from "@/api/res";
-import { ImagePreview } from "vant";
+import { ImagePreview, Toast } from "vant";
 export default {
-  props: ["comment"],
+  props: {
+    comment: {
+      type: Object,
+      default() {
+        return {
+          stars: 0,
+        };
+      },
+    },
+  },
   name: "CommentCard",
+  data() {
+    return {
+      pickTimer: "",
+      stars: 0,
+    };
+  },
+  watch: {
+    "comment.stars": {
+      deep: true,
+      immediate: true,
+      handler(newVal) {
+        this.stars = newVal;
+      },
+    },
+  },
   methods: {
     // 展示图片预览
     async showPreImg(imgs, i) {
@@ -48,6 +97,32 @@ export default {
       // 图片预览
       ImagePreview({ images, closeable: true, startPosition: i });
     },
+
+    // 添加评论点赞
+    async addCommentPick() {
+      if (this.pickTimer) return;
+      const res = await addCommentLiked(
+        this.comment.id,
+        this.$store.state.token
+      );
+      if (res.data.success) {
+        if (res.data?.data) {
+          Toast("取消点赞");
+          this.$emit("setIsLike", false);
+        } else {
+          this.$emit("setIsLike", true);
+        }
+      }
+    },
+
+    // toView
+    toView() {
+      this.$router.push({
+        name: "commentdetail",
+        params: { animate: "forward" },
+      });
+    },
+
     // 获取图片地址
     getImgSrc(url) {
       return getResourImageByName(url);
@@ -93,5 +168,20 @@ export default {
   border-radius: 8px;
   object-fit: cover;
   overflow: hidden;
+}
+.tips {
+  cursor: pointer;
+  color: var(--text-color4);
+  padding: 0.1rem 0.2rem;
+}
+.tips .lable {
+  color: var(--text-color4);
+}
+.tips .lable div {
+  padding: 0 0.1rem;
+}
+.tips .lable .text {
+  font-size: 0.36rem;
+  padding: 0 0.1rem;
 }
 </style>

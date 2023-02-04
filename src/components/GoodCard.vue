@@ -54,6 +54,8 @@ export default {
   overflow: hidden;
   border-radius: 10px;
   margin: 0.2rem 0;
+  backdrop-filter: blur(20px);
+  background-color: rgba(255, 255, 255, 0.8);
 }
 .bg {
   display: block;

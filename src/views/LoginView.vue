@@ -364,6 +364,7 @@ export default {
       const res = await checkUser(token);
       if (res.data.success) {
         this.$store.commit("setUserInfo", res.data.data);
+        this.$store.commit("setLoginTime", new Date());
       }
     },
     // 顶部导航栏

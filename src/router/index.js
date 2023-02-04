@@ -12,6 +12,9 @@ import CollectView from "../views/CollectView.vue";
 import SearchView from "../views/SearchView.vue";
 import GoodsDetail from "../views/GoodsDetail.vue";
 import EventView from "../views/EventView.vue";
+import CommentDetail from "../views/comment/CommentDetail";
+import store from "@/store";
+import { checkUser } from "@/api/user/users";
 Vue.use(VueRouter);
 const routes = [
   // 1.主页
@@ -144,6 +147,19 @@ const routes = [
     meta: {
       title: "商品详情",
       lv: 2,
+      permission: true,
+    },
+  },
+
+  // 6 评论详情页面
+  {
+    path: "/commentdetail",
+    name: "commentdetail",
+    component: CommentDetail,
+    meta: {
+      title: "评论",
+      lv: 2,
+      permission: true,
     },
   },
   // 404页面
@@ -165,14 +181,23 @@ router.beforeEach((to, from, next) => {
   document.title = to.meta?.title ?? "水院商城";
   // 权限设置
   if (to.meta.permission) {
-    router.replace({
-      name: "notFund",
-      params: {
-        text: "还未登录！",
-      },
-    });
+    (async () => {
+      const res = await checkUser(store.state.token);
+      console.log(res);
+      if (res.data.success) {
+        next();
+      } else {
+        router.replace({
+          name: "login",
+          params: {
+            animate: "forward",
+          },
+        });
+      }
+    })();
     return;
   }
   next();
 });
+
 export default router;

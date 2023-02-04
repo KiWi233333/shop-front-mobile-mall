@@ -118,7 +118,7 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 0.2rem;
-  background-color: var(--theme-color);
+  background-color: transparent;
 }
 .top-nav {
   position: fixed;
@@ -126,7 +126,7 @@ export default {
   left: 0;
   z-index: 99;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(182, 182, 182, 0.1);
   backdrop-filter: blur(20px);
   display: flex;
   justify-content: space-between;

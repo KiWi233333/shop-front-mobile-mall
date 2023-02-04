@@ -1,26 +1,40 @@
 <template>
-  <div class="event-view animate__animated animate__fadeIn">
+  <div
+    class="event-view"
+    :style="themeColor.color ? `background-color:${themeColor.color};` : ''"
+  >
     <!-- 顶部导航 -->
     <share-nav />
     <!-- 背景 -->
-    <div class="top animate__animated animate__headShake" v-show="active?.name">
+    <div
+      class="top animate__animated animate__fadeIn"
+      v-show="themeColor.color"
+    >
       <van-image
-        lazy-load
         :src="getImgSrc(active?.icon)"
         fit="cover"
         width="100%"
         height="5rem"
+        radius="8px"
       />
-      <label class="title">{{ active?.name ?? "暂无活动信息" }}</label>
+      <div
+        class="shade"
+        :style="
+          themeColor.color
+            ? `background-image:linear-gradient(rgba(255, 255, 255, 0),${themeColor.color} 60%);`
+            : ''
+        "
+      ></div>
     </div>
     <!-- 内容 -->
-    <div class="content">
+    <div class="content animate__animated delay animate__fadeIn">
       <goods-list :req-type="'eid'" />
     </div>
   </div>
 </template>
 
 <script>
+import analyze from "rgbaster"; // 色调分析器
 import GoodsList from "@/components/GoodsList.vue";
 import ShareNav from "@/components/Detail/ShareNav.vue";
 import { getEventActives, getResourImageByName } from "@/api/res";
@@ -30,6 +44,7 @@ export default {
   data() {
     return {
       active: {},
+      themeColor: {}, // 主色调
     };
   },
   created() {
@@ -40,10 +55,20 @@ export default {
         res.data.data.forEach((p) => {
           if (p.id == this.$route.query?.eid) {
             this.active = p;
+            // 浏览器标题设置
+            document.title = p.name || this.$route.meta?.title;
           }
         });
       }
-    })();
+      return res.data.success;
+    })().then(() => {
+      const url = this.getImgSrc(this.active?.icon);
+      analyze(url, { scale: 0.1 })
+        .then((res) => {
+          this.themeColor = res[0];
+        })
+        .catch(() => {});
+    });
   },
   methods: {
     getImgSrc(url) {
@@ -58,12 +83,25 @@ export default {
   width: 100%;
   min-height: 100vh;
 }
-.top .title {
-  font-size: 0.5rem;
-  text-align: center;
-  width: 100%;
+
+.top {
+  position: relative;
 }
-.animate__animated {
-  animation-delay: calc(var(--router-delay));
+.shade {
+  position: absolute;
+  bottom: -1rem;
+  width: 100%;
+  height: 2rem;
+  z-index: 1;
+}
+.animate__animated.delay {
+  animation-delay: calc(var(--router-delay) * 2);
+}
+.content {
+  padding: 0.2rem 0.3rem;
+}
+.content >>> .van-list__finished-text {
+  opacity: 0.7;
+  font-size: 0.4rem;
 }
 </style>

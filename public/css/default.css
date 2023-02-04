@@ -175,7 +175,7 @@ div {
   font-size: 0.4rem;
 }
 label {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-weight: 600;
 }
 
@@ -190,4 +190,29 @@ label {
 }
 .van-empty >>> .van-empty__description {
   font-size: 0.36rem;
+}
+
+/* 购物 */
+/* 底部 */
+.wind-init >>> .van-goods-action {
+  z-index: 99;
+  height: 1.6rem;
+}
+.van-goods-action >>> .van-goods-action-icon {
+  width: 0.6rem;
+  height: 0.6rem;
+}
+.van-goods-action >>> .van-goods-action-button {
+  height: 65%;
+}
+.van-goods-action >>> .van-button__text {
+  font-size: 0.36rem;
+  font-weight: 600;
+}
+
+.van-goods-action >>> .van-goods-action-icon__icon {
+  font-size: 0.5rem;
+}
+.van-goods-action >>> .van-goods-action-icon {
+  font-size: 0.25rem;
 }

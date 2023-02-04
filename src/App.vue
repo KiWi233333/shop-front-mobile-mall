@@ -39,20 +39,24 @@ export default {
           this.$store.commit("setUserInfo", res.data.data);
           this.$store.commit("setLoginState", res.data.success);
           this.$store.commit("setToken", token);
+          // 设置初始登录时间
+          this.$store.commit(
+            "setLoginTime",
+            +localStorage.getItem("loginTime")
+          );
         }
       })
       .catch(() => {
         this.$store.commit("setUserInfo", {});
         this.$store.commit("setLoginState", false);
         this.$store.commit("setToken", "");
+        this.$store.commit("setLoginTime", 0);
       }); // 验证token
-    // console.log(res.data.data, token);
   },
   watch: {
     // 监控路由并添加动画
     $route(to) {
       // 修改标题
-      this.metaTitle = to.meta?.title || "水院商城";
       this.keepAlive = to.meta?.keepAlive ?? false;
       if (to.params.animate === "forward") {
         this.routerAnimate = "forward";

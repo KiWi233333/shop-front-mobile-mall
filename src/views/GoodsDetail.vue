@@ -77,8 +77,12 @@
             更多<van-icon name="arrow" color="var(--tip-color2)" class="icon" />
           </div>
         </div>
-        <!-- 更新条评论 -->
-        <comment-card :comment="comments[0]" v-show="comments.length" />
+        <!-- 单条评论 -->
+        <comment-card
+          :comment="comments[0]"
+          v-show="comments.length"
+          @setIsLike="changeCommentLike"
+        />
       </div>
     </div>
 
@@ -353,6 +357,15 @@ export default {
         })
         .catch(() => {});
     },
+    // 修改评论点赞和喜欢
+    changeCommentLike(i) {
+      let liked = this.comments[0].liked;
+      // 喜欢状态
+      this.$set(this.comments[0], "isLiked", i);
+      // 点赞数
+      i ? liked++ : liked--;
+      this.$set(this.comments[0], "liked", liked);
+    },
 
     // 获取评论
     getCommentList() {
@@ -501,7 +514,9 @@ export default {
   font-weight: 600;
   font-size: 0.45rem;
 }
-
+.shop-nav {
+  z-index: 999;
+}
 /* 规格组 */
 .lable-group {
   padding: 0.2rem 0;
@@ -536,28 +551,8 @@ export default {
   white-space: nowrap;
   overflow: hidden;
 }
-
-/* 底部 */
-.wind-init >>> .van-goods-action {
-  z-index: 99;
-  height: 1.6rem;
-}
-.van-goods-action >>> .van-goods-action-icon {
-  width: 0.6rem;
-  height: 0.6rem;
-}
-.van-goods-action >>> .van-goods-action-button {
-  height: 65%;
-}
-.van-goods-action >>> .van-button__text {
-  font-size: 0.36rem;
-  font-weight: 600;
-}
-
-.van-goods-action >>> .van-goods-action-icon__icon {
-  font-size: 0.5rem;
-}
-.van-goods-action >>> .van-goods-action-icon {
-  font-size: 0.25rem;
+/* 评论框 */
+.comments {
+  position: relative;
 }
 </style>

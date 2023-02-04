@@ -24,12 +24,12 @@ export function addNewComment(evaluationId, fid, content, token) {
 }
 
 /**
- *  对评论点赞
+ *  对评论的子评论点赞
  * @param {string} id
  * @param {string} token
  * @returns
  */
-export function getCommentlikedByGid(id, token) {
+export function addCommentlikedByGid(id, token) {
   return request({
     method: "put",
     url: `/evaluation/liked/${id}`,
