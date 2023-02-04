@@ -223,6 +223,8 @@ export default {
           sessionStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
         }
         this.$store.commit("setToken", res.data.data);
+        // 查询用户信息
+        this.reqUserInfo(res.data.data);
         Notify({ type: "success", message: "登录成功！" });
         this.toView();
       } else {
@@ -249,6 +251,8 @@ export default {
           sessionStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
         }
         this.$store.commit("setToken", res.data.data);
+        // 查询用户信息
+        this.reqUserInfo(res.data.data);
         Notify({ type: "success", message: "登录成功！" });
         this.toView();
       } else {
@@ -348,12 +352,20 @@ export default {
     },
     // 跳转
     toView() {
+      this.$store.commit("setLoginState", true); // vuex保存登录状态
       this.$router.push({
         name: this.$route.params.toBack ? "my" : "home",
         animate: this.$route.params.toBack ? "toback" : "forward",
       });
     },
 
+    // 登录成功请求用户信息
+    async reqUserInfo(token) {
+      const res = await checkUser(token);
+      if (res.data.success) {
+        this.$store.commit("setUserInfo", res.data.data);
+      }
+    },
     // 顶部导航栏
     onClickLeft() {
       router.back();

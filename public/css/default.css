@@ -84,6 +84,39 @@ a:active {
   box-shadow: var(--shadow-color);
   padding: 0.4rem;
 }
+.lable-group {
+  padding: 0.2rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.lable-group .lable {
+  color: var(--text-color3);
+  font-size: 0.32rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.lable-group .black {
+  color: var(--text-color4);
+}
+/* 暗色规格 */
+.lable-group .props {
+  width: 80%;
+}
+.lable-group .box {
+  cursor: pointer;
+  display: inline-block;
+  max-width: calc(100% - 4em);
+  color: var(--text-color3);
+  background-color: var(--bg-color5);
+  border-radius: 0.4em;
+  padding: 0.08rem 0.15rem;
+  font-size: 0.25rem;
+  text-overflow: clip;
+  white-space: nowrap;
+  overflow: hidden;
+}
 
 /* 按钮 */
 .v-btn {

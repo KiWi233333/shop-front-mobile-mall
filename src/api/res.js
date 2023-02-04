@@ -11,3 +11,17 @@ export function getEventActives() {
     url: "/events/query",
   });
 }
+
+/**
+ * 获取活动的商品
+ * @param {*} page
+ * @param {*} size
+ * @param {*} id
+ * @returns
+ */
+export function getEventGoodsById(page, size, id) {
+  return request({
+    method: "get",
+    url: `/eventsGoods/query/${page}/${size}/${id}`,
+  });
+}

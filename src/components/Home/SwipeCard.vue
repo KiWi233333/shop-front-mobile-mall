@@ -5,7 +5,11 @@
     :touchable="true"
     indicator-color="#fff"
   >
-    <van-swipe-item v-for="(p, i) in swiperData" :key="i">
+    <van-swipe-item
+      @click="toEventView(p)"
+      v-for="(p, i) in eventData"
+      :key="i"
+    >
       <img v-lazy="p.icon" />
     </van-swipe-item>
   </van-swipe>
@@ -16,17 +20,33 @@ export default {
   name: "SwipeCard",
   data() {
     return {
-      swiperData: [],
+      eventData: [],
     };
   },
-  async mounted() {
-    const res = await getEventActives();
-    if (res.data.success) {
-      res.data.data.forEach((p) => {
-        p.icon = getResourImageByName(p.icon);
-        this.swiperData.push(p);
+  mounted() {
+    // 请求活动
+    (async () => {
+      const res = await getEventActives();
+      if (res.data.success) {
+        res.data.data.forEach((p) => {
+          p.icon = getResourImageByName(p.icon);
+          this.eventData.push(p);
+        });
+      }
+    })();
+  },
+  methods: {
+    toEventView(p) {
+      // 跳转
+      this.$router.push({
+        name: "active",
+        params: { animate: "forward" },
+        query: {
+          eid: p.id,
+          event: p,
+        },
       });
-    }
+    },
   },
 };
 </script>

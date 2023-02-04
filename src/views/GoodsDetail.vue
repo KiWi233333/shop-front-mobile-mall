@@ -20,7 +20,7 @@
       <!-- 标题 -->
       <div class="v-card top">
         <div class="price">
-          ￥<span class="big">{{ item?.price || "0.0" }}</span>
+          ￥<span class="big">{{ item?.price || "0.00" }}</span>
         </div>
         <div class="title">{{ item?.goods?.name }}</div>
         <div class="lable-group">
@@ -46,7 +46,7 @@
           <div class="flex-col w-80">
             <span class="lable black" style="padding-bottom: 0.2rem"
               >{{ item?.goods?.city }} | 快递：{{
-                item?.goods?.postage || "免运费"
+                item?.goods?.postage ? `${item.goods.postage} 元` : "免运费"
               }}</span
             >
             <span class="lable">配送至：{{ "请登陆，获取地址" }}</span>
@@ -62,17 +62,24 @@
           <van-icon name="arrow" />
         </div>
       </div>
-      <div class="lable-group">
-        商品评价
-        <div
-          class="lable"
-          @click="toView(5)"
-          style="color: var(--tip-color2); font-size: 0.3rem"
-        >
-          更多<van-icon name="arrow" color="var(--tip-color2)" class="icon" />
+      <!-- 评论 -->
+      <div
+        class="v-card comments animate__animated animate__fadeIn"
+        v-show="comments.length"
+      >
+        <div class="lable-group">
+          商品评价 ({{ comments.length }})
+          <div
+            class="lable"
+            @click="toView(5)"
+            style="color: var(--tip-color2); font-size: 0.3rem"
+          >
+            更多<van-icon name="arrow" color="var(--tip-color2)" class="icon" />
+          </div>
         </div>
+        <!-- 更新条评论 -->
+        <comment-card :comment="comments[0]" v-show="comments.length" />
       </div>
-      <div class="v-card comments"></div>
     </div>
 
     <!-- 规格详情选择 -->
@@ -135,11 +142,13 @@ import {
   deleteCollectByGid,
 } from "@/api/user/collect";
 import { getResourImageByName } from "@/api/res";
+import { getGoodCommentById } from "@/api/comment/comment";
 import ShareNav from "@/components/Detail/ShareNav.vue";
 import { Dialog, Toast } from "vant";
 import { mapState } from "vuex";
+import CommentCard from "@/components/Detail/CommentCard.vue";
 export default {
-  components: { ShareNav },
+  components: { ShareNav, CommentCard },
   name: "GoodsDetail",
   data() {
     return {
@@ -154,6 +163,7 @@ export default {
 
       current: 0, // 图片
       isCollect: false, // 是否收藏
+      comments: [], // 评论集合
 
       showProps: false,
       sku: {
@@ -248,12 +258,20 @@ export default {
       },
     };
   },
-  created() {
+  mounted() {
     this.getGoodDetail(); // 获取商品详情
     this.getGoodProps(); // 获取商品规格
-    if (this.token !== "") {
-      this.getTheCollect(); // 获取是否收藏
-    }
+  },
+  watch: {
+    // 需token请求的
+    token: {
+      immediate: true,
+      deep: true,
+      handler() {
+        this.getCommentList(); // 获取评论
+        this.getTheCollect(); // 获取是否收藏
+      },
+    },
   },
 
   methods: {
@@ -337,7 +355,19 @@ export default {
     },
 
     // 获取评论
-    getCommentList() {},
+    getCommentList() {
+      getGoodCommentById(this.token, this.GOOD_ID, 0)
+        .then((res) => {
+          if (res.data.success) {
+            console.log(res.data.data);
+            const data = res.data.data;
+            data.forEach((p) => {
+              this.comments.push(p);
+            });
+          }
+        })
+        .catch(() => {});
+    },
 
     // 添加购物车
     addShopCar() {},
@@ -450,7 +480,7 @@ export default {
   border-radius: 10px;
   padding: 0.3rem;
   /* background-color: var(--theme-color); */
-  background-color: #eeeeee5b;
+  background-color: white;
   z-index: 1;
 }
 .v-card {
@@ -471,6 +501,8 @@ export default {
   font-weight: 600;
   font-size: 0.45rem;
 }
+
+/* 规格组 */
 .lable-group {
   padding: 0.2rem 0;
   display: flex;
@@ -504,9 +536,9 @@ export default {
   white-space: nowrap;
   overflow: hidden;
 }
-/* 规格 */
 
-.goods-detail >>> .van-goods-action {
+/* 底部 */
+.wind-init >>> .van-goods-action {
   z-index: 99;
   height: 1.6rem;
 }
@@ -520,5 +552,12 @@ export default {
 .van-goods-action >>> .van-button__text {
   font-size: 0.36rem;
   font-weight: 600;
+}
+
+.van-goods-action >>> .van-goods-action-icon__icon {
+  font-size: 0.5rem;
+}
+.van-goods-action >>> .van-goods-action-icon {
+  font-size: 0.25rem;
 }
 </style>

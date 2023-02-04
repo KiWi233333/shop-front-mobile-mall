@@ -1,7 +1,7 @@
 <template>
   <div class="animate__animated animate__fadeIn my-top">
-    <div class="left" v-if="$store.state.isLoginState">
-      <img :src="getImage(userInfo.icon)" v-if="userInfo.icon !== ''" />
+    <div class="left" v-if="isLoginState">
+      <img :src="getImage(userInfo?.icon)" v-if="userInfo?.icon !== ''" />
       <img
         src="@/assets/image/camera_icon.png"
         style="padding: 0.3rem"
@@ -13,9 +13,9 @@
       <span>期待你的每次到来~</span>
       <button class="v-btn tolg-btn" @click="toLoginPage">立即登录</button>
     </div>
-    <div class="right" v-if="$store.state.isLoginState">
-      <label class="title">{{ userInfo.nickname }}</label>
-      <span class="userid">ID: {{ userInfo.username }}</span>
+    <div class="right" v-if="isLoginState">
+      <label class="title">{{ userInfo?.nickname }}</label>
+      <span class="userid">ID: {{ userInfo?.username }}</span>
     </div>
     <img src="@/assets/image/bg/shopcard_bg.png" class="bg" />
   </div>
@@ -24,8 +24,8 @@
   <script>
 import { getResourImageByName } from "@/api/res";
 import router from "@/router";
+import { mapState } from "vuex";
 export default {
-  props: ["userInfo"],
   name: "MyTop",
   data() {
     return {};
@@ -46,7 +46,9 @@ export default {
       });
     },
   },
-  computed: {},
+  computed: {
+    ...mapState(["isLoginState", "userInfo"]),
+  },
 };
 </script>
   <style scoped>

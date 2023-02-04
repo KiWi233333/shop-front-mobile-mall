@@ -2,19 +2,20 @@ import { request } from "@/util/request";
 
 /**
  *  获取商品的评论
- * @param {obj} p {token,goodsId,sort}
+ * @param {string} id
+ * @param {string} token
  * @returns
  */
-export function getGoodCommentById(p) {
+export function getGoodCommentById(token, goodsId, sort) {
   return request({
     method: "get",
     url: `/evaluation/query`,
     headers: {
-      Authorization: p.token,
+      Authorization: token,
     },
     params: {
-      goodsId: p.goodsId,
-      sort: p?.sort || 0, // 排序方式（0：默认排序，1：最新排序）
+      goodsId,
+      sort: sort || 0, // 排序方式（0：默认排序，1：最新排序）
     },
   });
 }

@@ -1,32 +1,39 @@
 <template>
-  <div class="top-nav">
-    <!-- 顶部导航 -->
-    <van-icon
-      @click="$router.back()"
-      name="arrow-left"
-      class="icon"
-      size="0.6rem"
-    />
-    <div class="right">
-      <van-icon @click="toView(1)" name="search" class="icon" size="0.6rem" />
+  <div class="share-view">
+    <div class="top-nav-bak"></div>
+    <!-- 导航 -->
+    <div class="top-nav">
+      <!-- 顶部导航 -->
       <van-icon
-        @click="showShare = true"
-        name="ellipsis"
+        @click="$router.back()"
+        name="arrow-left"
         class="icon"
         size="0.6rem"
       />
+      <div class="right">
+        <van-icon @click="toView(1)" name="search" class="icon" size="0.6rem" />
+        <van-icon
+          @click="showShare = true"
+          name="ellipsis"
+          class="icon"
+          size="0.6rem"
+        />
+      </div>
     </div>
-    <!-- 分享页面 -->
-    <van-share-sheet
-      v-model="showShare"
-      title="立即分享给好友"
-      :options="options"
-      @select="onSelect"
-    />
-    <!-- 二维码页面 -->
-    <van-dialog v-model="showDialog" title="邀你，扫一扫！">
-      <div class="qrcode" ref="qecodeImg"></div>
-    </van-dialog>
+    <!-- 分享 -->
+    <div class="share">
+      <!-- 分享页面 -->
+      <van-share-sheet
+        v-model="showShare"
+        title="立即分享给好友"
+        :options="options"
+        @select="onSelect"
+      />
+      <!-- 二维码页面 -->
+      <van-dialog v-model="showDialog" title="邀你，扫一扫！">
+        <div class="qrcode" ref="qecodeImg"></div>
+      </van-dialog>
+    </div>
   </div>
 </template>
 <script>
@@ -103,11 +110,30 @@ export default {
 </script>
 <style scoped>
 /* 顶部导航 */
-.top-nav {
+.top-nav-bak {
+  z-index: 10;
+  width: 100%;
+  height: 1.28rem;
+  backdrop-filter: blur(20px);
   display: flex;
   justify-content: space-between;
   padding: 0.2rem;
+  background-color: var(--theme-color);
 }
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem;
+  overflow: visible;
+}
+
 .top-nav .icon {
   padding: 0.14rem;
   transition: 0.3s;

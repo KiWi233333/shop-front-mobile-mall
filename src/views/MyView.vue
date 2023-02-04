@@ -2,16 +2,16 @@
 <template>
   <div class="wind-init my-view">
     <!-- 顶部个人信息 -->
-    <my-top :userInfo="userInfo" />
+    <my-top />
     <!-- 钱包卡片 -->
-    <purse-card v-if="$store.state.isLoginState" />
+    <purse-card v-if="isLoginState" />
     <!-- 卡片组 -->
     <card-group />
     <!-- 菜单栏列表 -->
-    <menu-list v-if="$store.state.isLoginState" />
+    <menu-list v-if="isLoginState" />
     <!-- 了解更多 -->
     <span
-      v-if="!$store.state.isLoginState"
+      v-if="!isLoginState"
       class="animate__animated animate__fadeIn bottom-span"
       >————— 登录了解更多 —————</span
     >
@@ -23,13 +23,16 @@ import MyTop from "@/components/My/MyTop.vue";
 import PurseCard from "@/components/My/PurseCard.vue";
 import CardGroup from "@/components/My/CardGroup.vue";
 import MenuList from "@/components/My/MenuList.vue";
+import { mapState } from "vuex";
+
 export default {
   components: { MyTop, PurseCard, CardGroup, MenuList },
   name: "MyView",
   data() {
-    return {
-      userInfo: this.$store.state.userInfo,
-    };
+    return {};
+  },
+  computed: {
+    ...mapState(["isLoginState"]),
   },
 };
 </script>

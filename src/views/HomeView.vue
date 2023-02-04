@@ -37,7 +37,8 @@ export default {
   },
   created() {
     getNoticeByPage(1, 8).then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
+      res.data.dta;
     });
   },
 };

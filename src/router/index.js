@@ -11,6 +11,7 @@ import OrderView from "../views/OrderView.vue";
 import CollectView from "../views/CollectView.vue";
 import SearchView from "../views/SearchView.vue";
 import GoodsDetail from "../views/GoodsDetail.vue";
+import EventView from "../views/EventView.vue";
 Vue.use(VueRouter);
 const routes = [
   // 1.主页
@@ -40,6 +41,16 @@ const routes = [
     component: SearchView,
     meta: {
       title: "搜索",
+      lv: 2,
+    },
+  },
+  // 1.2 活动页面
+  {
+    path: "/active",
+    name: "active",
+    component: EventView,
+    meta: {
+      title: "活动",
       lv: 2,
     },
   },
