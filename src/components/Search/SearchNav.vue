@@ -14,7 +14,6 @@
         @focus="focusKeywords"
         class="v-input search"
         placeholder="输入商品名称"
-        :autofocus="true"
         left-icon="search"
       />
       <!-- 清除输入 -->

@@ -36,10 +36,10 @@ export default {
     checkUser(token)
       .then((res) => {
         if (res.data.success) {
+          // 初始化store
           this.$store.commit("setUserInfo", res.data.data);
           this.$store.commit("setLoginState", res.data.success);
-          this.$store.commit("setToken", token);
-          // 设置初始登录时间
+          this.$store.commit("setToken", token); // 设置初始登录时间
           this.$store.commit(
             "setLoginTime",
             +localStorage.getItem("loginTime")

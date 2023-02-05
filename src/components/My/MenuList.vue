@@ -27,25 +27,26 @@ export default {
   methods: {
     // 退出登录
     cannelLogin() {
-      let _this = this;
       Dialog.confirm({
         title: "确认退出登录？",
         beforeClose: (action, done) => {
           if (action === "confirm") {
-            setTimeout(function () {
-              _this.$store.commit("setLoginState", false);
-              _this.$store.commit("setToken", "");
-              localStorage.setItem(_this.$store.state.TOKEN_NAME, "");
-              sessionStorage.setItem(_this.$store.state.TOKEN_NAME, "");
+            setTimeout(() => {
+              this.$store.commit("setLoginState", false);
+              this.$store.commit("setToken", "");
+              this.$store.commit("setLoginTime", 0);
+              this.$store.commit("setUserInfo", {});
+              // 清除登录信息
+              localStorage.removeItem(this.$store.state.TOKEN_NAME);
+              sessionStorage.removeItem(this.$store.state.TOKEN_NAME);
+              localStorage.removeItem("loginTime");
               done(); // 完成
             }, 1500);
           } else {
             done(); // 完成
           }
         },
-      }).catch((res) => {
-        _this = res;
-      });
+      }).catch(() => {});
     },
   },
 };

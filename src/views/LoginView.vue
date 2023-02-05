@@ -353,18 +353,26 @@ export default {
     // 跳转
     toView() {
       this.$store.commit("setLoginState", true); // vuex保存登录状态
-      this.$router.push({
-        name: this.$route.params.toBack ? "my" : "home",
-        animate: this.$route.params.toBack ? "toback" : "forward",
-      });
+      this.$store.commit("setLoginTime", localStorage.getItem("loginTime")); // vuex保存登录时间
+
+      if (this.$route.params.toBack) {
+        this.$router.back();
+      } else {
+        this.$router.push({
+          name: "home",
+          params: { animate: "forward" },
+        });
+      }
     },
 
-    // 登录成功请求用户信息
+    // 登录成功--查询请求用户信息
     async reqUserInfo(token) {
       const res = await checkUser(token);
       if (res.data.success) {
         this.$store.commit("setUserInfo", res.data.data);
-        this.$store.commit("setLoginTime", new Date());
+        const time = new Date().getTime(); // 获取时间戳
+        localStorage.setItem("loginTime", time);
+        this.$store.commit("setUserInfo", time);
       }
     },
     // 顶部导航栏

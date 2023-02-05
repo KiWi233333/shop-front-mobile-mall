@@ -14,7 +14,6 @@ import GoodsDetail from "../views/GoodsDetail.vue";
 import EventView from "../views/EventView.vue";
 import CommentDetail from "../views/comment/CommentDetail";
 import store from "@/store";
-import { checkUser } from "@/api/user/users";
 Vue.use(VueRouter);
 const routes = [
   // 1.主页
@@ -102,6 +101,7 @@ const routes = [
       title: "订单",
       lv: 2,
       keepAlive: true,
+      permission: true,
     },
   },
 
@@ -114,6 +114,7 @@ const routes = [
       title: "收藏",
       lv: 2,
       keepAlive: true,
+      permission: true,
     },
   },
 
@@ -181,23 +182,33 @@ router.beforeEach((to, from, next) => {
   document.title = to.meta?.title ?? "水院商城";
   // 权限设置
   if (to.meta.permission) {
-    (async () => {
-      const res = await checkUser(store.state.token);
-      console.log(res);
-      if (res.data.success) {
-        next();
-      } else {
-        router.replace({
-          name: "login",
-          params: {
-            animate: "forward",
-          },
-        });
-      }
-    })();
-    return;
+    // (async () => {
+    // const res = await checkUser(store.state.token);
+    // if (res.data.success) {
+    //   next();
+    // } else {
+    //   next({
+    //     name: "login",
+    //     params: {
+    //       animate: "forward",
+    //     },
+    //   });
+    // }
+    // })();
+    if (store.getters.token !== "") {
+      next();
+    } else {
+      router.push({
+        name: "login",
+        params: {
+          animate: "forward",
+          toBack: true,
+        },
+      });
+    }
+  } else {
+    next();
   }
-  next();
 });
 
 export default router;
