@@ -1,45 +1,67 @@
 <template>
-  <div class="animate__animated animate__fadeInLeft v-card purse-card">
+  <div class="animate__animated animate__fadeIn v-card purse-card">
     <!-- 积分 -->
-    <div class="v-click top">
+    <div class="v-click top animate__animated animate__slideInUp">
       <div class="left">
         <img class="bg" src="@/assets/image/icon/balance_icon.png" />
       </div>
-      <div class="right">
+      <div class="right" @click="toView('recharge')">
         <label>积分卡</label>
-        <span>剩余：{{ purseInfo?.recharge ?? 0 }}</span>
+        <span>剩余：{{ purseInfo?.recharge || 0 }}</span>
       </div>
     </div>
     <!-- 余额 -->
     <div class="bottom">
       <span>余额</span>
-      <label><span>￥</span>{{ purseInfo?.balance ?? 0 }}</label>
-      <div class="tip" @click="toPurseView($store)">
+      <label
+        ><span>￥</span>
+        <label v-show="!isLodaing">{{ purseInfo?.balance || "0.00" }}</label>
+        <van-loading
+          class="load"
+          v-show="isLodaing"
+          color="var(--text-color)"
+          size="0.8rem"
+        />
+      </label>
+      <div class="tip" @click="toView('purse')">
         <img src="@/assets/image/icon/coins_icon.png" class="bg" />
         <span>钱包</span>
       </div>
     </div>
   </div>
 </template>
-  
-  <script>
-import router from "@/router";
+<script>
 import { getPurseInfo } from "@/api/user/purse";
 export default {
   name: "PurseCard",
   data() {
-    return { purseInfo: {} };
+    return { purseInfo: {}, isLodaing: true };
   },
-  async created() {
-    const res = await getPurseInfo(this.$store.state.token);
-    this.purseInfo = res.data.data;
+  mounted() {
+    this.reqPurseInfo(); // 请求钱包信息
   },
+
   methods: {
-    toPurseView() {
-      router.push({ name: "purse" });
+    toView(routerName) {
+      this.$router.push({
+        name: routerName,
+        params: {
+          animate: "forward",
+        },
+      });
+    },
+
+    // 请求钱包信息
+    reqPurseInfo() {
+      (async () => {
+        const res = await getPurseInfo(this.$store.state.token);
+        this.purseInfo = res.data.data;
+        setTimeout(() => {
+          this.isLodaing = !res.data.success;
+        }, 300);
+      })();
     },
   },
-  computed: {},
 };
 </script>
 <style scoped>
@@ -105,6 +127,9 @@ span {
 .tip:active {
   transform: scale(0.9);
   transform-origin: 100% 100%;
+}
+.bottom .load {
+  display: inline-block;
 }
 .bottom .tip .bg {
   width: 0.8rem;

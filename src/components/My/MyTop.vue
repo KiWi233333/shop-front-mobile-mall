@@ -1,13 +1,20 @@
 <template>
   <div class="animate__animated animate__fadeIn my-top">
-    <div class="left" v-if="isLoginState">
-      <img :src="getImage(userInfo?.icon)" v-if="userInfo?.icon !== ''" />
+    <div class="left" v-if="isLoginState" @click="changeIcon">
+      <van-image
+        class="img"
+        round
+        v-show="userInfo.icon"
+        :src="getImage(userInfo.icon)"
+        lazy-load
+      />
       <img
-        src="@/assets/image/camera_icon.png"
-        style="padding: 0.3rem"
-        v-else
+        v-show="!userInfo.icon"
+        src="@/assets/image/icon/camera.png"
+        class="img"
       />
     </div>
+    <!-- 昵称 -->
     <div class="left" v-else>
       <label class="title2">欢迎您！</label>
       <span>期待你的每次到来~</span>
@@ -15,7 +22,7 @@
     </div>
     <div class="right" v-if="isLoginState">
       <label class="title">{{ userInfo?.nickname }}</label>
-      <span class="userid">ID: {{ userInfo?.username }}</span>
+      <span class="userid">ID：{{ userInfo?.username }}</span>
     </div>
     <img src="@/assets/image/bg/shopcard_bg.png" class="bg" />
   </div>
@@ -31,6 +38,8 @@ export default {
     return {};
   },
   methods: {
+    // 修改头像
+    changeIcon() {},
     // 返回静态资源地址
     getImage(url) {
       return getResourImageByName(url);
@@ -66,7 +75,7 @@ export default {
   padding: 0.1rem;
   padding-right: 0;
 }
-.my-top .left img {
+.my-top .left .img {
   width: 2rem;
   height: 2rem;
   display: block;
@@ -105,6 +114,7 @@ export default {
   right: 0.5rem;
 }
 .tolg-btn {
+  animation: 0.7s rubberBand 0.4s ease;
   width: 80%;
   margin: 0.2rem 0;
   padding: 0.2rem 0.1rem;

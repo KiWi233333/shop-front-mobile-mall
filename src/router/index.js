@@ -1,19 +1,28 @@
 import Vue from "vue";
+// home
 import VueRouter from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import LoginView from "../views/LoginView.vue";
-import RegisterView from "../views/RegisterView.vue";
-import NotFund from "../views/NotFund.vue";
-import ShopcarView from "../views/ShopcarView.vue";
-import CategoryView from "../views/CategoryView.vue";
-import MyView from "../views/MyView.vue";
-import OrderView from "../views/OrderView.vue";
-import CollectView from "../views/CollectView.vue";
-import SearchView from "../views/SearchView.vue";
-import GoodsDetail from "../views/GoodsDetail.vue";
-import EventView from "../views/EventView.vue";
-import CommentDetail from "../views/comment/CommentDetail";
+import HomeView from "@/views/home/HomeView";
+import MyView from "@/views/home/MyView.vue";
+import ShopcarView from "@/views/home/ShopcarView.vue";
+import CategoryView from "@/views/home/CategoryView.vue";
+// 登录注册
+import LoginView from "@/views/login/LoginView.vue";
+import RegisterView from "@/views/login/RegisterView.vue";
+// 二级页面
+import OrderView from "@/views/second/OrderView.vue";
+import CollectView from "@/views/second/CollectView.vue";
+import SearchView from "@/views/second/SearchView.vue";
+import EventView from "@/views/second/EventView.vue";
+import RechargeView from "@/views/second/RechargeView";
+import PurseView from "@/views/second/PurseView";
+// 商品详情
+import GoodsDetail from "@/views/goods/GoodsDetail.vue";
+// 评论
+import CommentDetail from "@/views/comment/CommentDetail";
+import NotFund from "@/views/NotFund.vue";
+
 import store from "@/store";
+
 Vue.use(VueRouter);
 const routes = [
   // 1.主页
@@ -117,8 +126,31 @@ const routes = [
       permission: true,
     },
   },
-
-  // 4.3 登录页面
+  // 4.3.积分页面
+  {
+    name: "recharge",
+    path: "/my/recharge",
+    component: RechargeView,
+    meta: {
+      title: "积分页面",
+      lv: 2,
+      keepAlive: true,
+      permission: true,
+    },
+  },
+  // 4.4.钱包页面
+  {
+    name: "purse",
+    path: "/my/purse",
+    component: PurseView,
+    meta: {
+      title: "钱包",
+      lv: 2,
+      keepAlive: true,
+      permission: true,
+    },
+  },
+  // 4.5 登录页面
   {
     name: "login",
     path: "/login",

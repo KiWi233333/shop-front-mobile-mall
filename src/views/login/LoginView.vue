@@ -158,10 +158,9 @@ export default {
   },
 
   async mounted() {
-    if (this.$route.params?.username) {
-      // 获取注册的用户信息
+    // 获取注册的用户信息
+    if (this.$route.params?.username)
       this.username = this.$route.params.username;
-    }
     // 获取登录状态
     const token =
       localStorage.getItem(this.$store.state.TOKEN_NAME) ||
@@ -183,7 +182,8 @@ export default {
         }).then(() => {
           clearInterval(timer);
           this.password = "";
-          localStorage.setItem(this.$store.state.TOKEN_NAME, "");
+          localStorage.removeItem(this.$store.state.TOKEN_NAME, "");
+          this.$store.commit("loginOut"); // 登出
         });
 
         timer = setInterval(() => {

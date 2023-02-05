@@ -68,7 +68,7 @@
 </template>
 <script>
 import { register, getRegisterCode } from "@/api/user/users";
-import router from "@/router";
+
 import TopNav from "@/components/TopNav.vue";
 import { Notify } from "vant";
 export default {
@@ -103,7 +103,7 @@ export default {
       if (res.data?.success) {
         Notify({ type: "success", message: "注册成功！即将返回登录" });
         setTimeout(() => {
-          router.replace({
+          this.$router.replace({
             name: "login",
             params: { username: this.username },
           }); // 两秒后跳转登录页面
@@ -170,7 +170,7 @@ export default {
     },
     // 顶部导航按钮
     onClickLeft() {
-      router.replace({
+      this.$router.replace({
         name: "login",
         params: { animate: "toback" },
       });

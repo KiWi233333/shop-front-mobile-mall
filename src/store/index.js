@@ -18,11 +18,20 @@ export default new Vuex.Store({
       if (state.token !== "") {
         const delay = new Date() - +localStorage.getItem("loginTime");
         if (delay > state.tokenLife) {
-          return state.token;
+          return state.token; // 返回token
         } else {
+          // 登录失效
+          // 清空vuex
+          state.isLoginState = false;
+          for (const key in state.userInfo) {
+            Vue.set(state.userInfo, key, "");
+          }
           state.token = "";
           state.loginTime = 0;
-          state.isLoginState = false;
+          // 清空本地存储
+          localStorage.removeItem(state.TOKEN_NAME);
+          localStorage.removeItem("loginTime");
+          sessionStorage.removeItem(state.TOKEN_NAME);
         }
       } else {
         return "";
@@ -39,11 +48,26 @@ export default new Vuex.Store({
     setLoginTime(state, val) {
       state.loginTime = val;
     },
-    // 修改个人信息
+    // 添加个人信息
     setUserInfo(state, userInfo) {
       for (const key in userInfo) {
         Vue.set(state.userInfo, key, userInfo[key]);
       }
+    },
+
+    // 登出
+    loginOut(state) {
+      // 清空vuex
+      state.isLoginState = false;
+      for (const key in state.userInfo) {
+        Vue.set(state.userInfo, key, "");
+      }
+      state.token = "";
+      state.loginTime = 0;
+      // 清空本地存储
+      localStorage.removeItem(state.TOKEN_NAME);
+      sessionStorage.removeItem(state.TOKEN_NAME);
+      localStorage.removeItem("loginTime");
     },
   },
   actions: {},
