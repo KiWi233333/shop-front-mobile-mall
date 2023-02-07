@@ -166,7 +166,9 @@ export default {
       localStorage.getItem(this.$store.state.TOKEN_NAME) ||
       sessionStorage.getItem(this.$store.state.TOKEN_NAME) ||
       "";
+
     this.$store.commit("setToken", token); // vuex保存token
+
     if (token) {
       const res = await checkUser(token);
       let second = 2;
@@ -182,7 +184,6 @@ export default {
         }).then(() => {
           clearInterval(timer);
           this.password = "";
-          localStorage.removeItem(this.$store.state.TOKEN_NAME, "");
           this.$store.commit("loginOut"); // 登出
         });
 
@@ -222,13 +223,12 @@ export default {
         } else {
           sessionStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
         }
-        this.$store.commit("setToken", res.data.data);
-        // 查询用户信息
         this.reqUserInfo(res.data.data);
+        // 查询用户信息
         Notify({ type: "success", message: "登录成功！" });
         this.toView();
       } else {
-        console.log(res.data);
+        // console.log(res.data);
         Notify({
           type: "danger",
           message: this.isUserPwd ? "账号密码错误！" : "验证码有误！",
@@ -250,7 +250,6 @@ export default {
         } else {
           sessionStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
         }
-        this.$store.commit("setToken", res.data.data);
         // 查询用户信息
         this.reqUserInfo(res.data.data);
         Notify({ type: "success", message: "登录成功！" });
@@ -353,7 +352,6 @@ export default {
     // 跳转
     toView() {
       this.$store.commit("setLoginState", true); // vuex保存登录状态
-      this.$store.commit("setLoginTime", localStorage.getItem("loginTime")); // vuex保存登录时间
 
       if (this.$route.params.toBack) {
         this.$router.back();
@@ -366,14 +364,20 @@ export default {
     },
 
     // 登录成功--查询请求用户信息
-    async reqUserInfo(token) {
-      const res = await checkUser(token);
-      if (res.data.success) {
-        this.$store.commit("setUserInfo", res.data.data);
-        const time = new Date().getTime(); // 获取时间戳
-        localStorage.setItem("loginTime", time);
-        this.$store.commit("setUserInfo", time);
-      }
+    reqUserInfo(token) {
+      // 添加用户登录状态
+      const time = new Date().getTime(); // 获取时间戳
+      localStorage.setItem("loginTime", time);
+      this.$store.commit("setToken", token);
+      this.$store.commit("setLoginTime", time);
+      // 检查用户
+      checkUser(token).then((res) => {
+        if (res.data.success) {
+          this.$store.commit("setUserInfo", res.data.data);
+        } else {
+          this.$store.commit("loginOut");
+        }
+      });
     },
     // 顶部导航栏
     onClickLeft() {

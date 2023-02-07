@@ -214,27 +214,14 @@ router.beforeEach((to, from, next) => {
   document.title = to.meta?.title ?? "水院商城";
   // 权限设置
   if (to.meta.permission) {
-    // (async () => {
-    // const res = await checkUser(store.state.token);
-    // if (res.data.success) {
-    //   next();
-    // } else {
-    //   next({
-    //     name: "login",
-    //     params: {
-    //       animate: "forward",
-    //     },
-    //   });
-    // }
-    // })();
-    if (store.getters.token !== "") {
+    if (store.getters.token) {
       next();
     } else {
-      router.push({
+      next({
         name: "login",
         params: {
           animate: "forward",
-          toBack: true,
+          toBack: "true",
         },
       });
     }

@@ -3,8 +3,8 @@
     <div class="left" @click="onClickLeft">
       <van-icon name="arrow-left" size="0.6rem" />
     </div>
-    <div class="title" v-text="title"></div>
-    <div class="right" v-text="rTitle" @click="onClickRight"></div>
+    <div class="title">{{ title }}</div>
+    <div class="right" @click="onClickRight">{{ rTitle }}</div>
   </div>
 </template>
 <script>
@@ -29,7 +29,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.35rem 0.4rem;
+  padding: 0.3rem 0.2rem;
   font-size: 0.4rem;
   /* border-bottom: 1px solid var(--bg-color3); */
   position: relative;

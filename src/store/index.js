@@ -11,13 +11,16 @@ export default new Vuex.Store({
     TOKEN_NAME: "SD_SHOP_TOKEN", // 本地存储的key值
     isLoginState: false, // 登录状态
     userInfo: {}, // 用户信息
+
+    purseInfo: {}, // 钱包信息
   },
   getters: {
     // 获取token
     token(state) {
       if (state.token !== "") {
-        const delay = new Date() - +localStorage.getItem("loginTime");
-        if (delay > state.tokenLife) {
+        const delay = (new Date().getTime() - state.loginTime) / 1000;
+        console.log(delay);
+        if (delay <= state.tokenLife) {
           return state.token; // 返回token
         } else {
           // 登录失效
@@ -39,6 +42,7 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    // 登录
     setToken(state, val) {
       state.token = val;
     },
@@ -54,6 +58,12 @@ export default new Vuex.Store({
         Vue.set(state.userInfo, key, userInfo[key]);
       }
     },
+    // 添加钱包信息
+    setPurseInfo(state, purseInfo) {
+      for (const key in purseInfo) {
+        Vue.set(state.purseInfo, key, purseInfo[key]);
+      }
+    },
 
     // 登出
     loginOut(state) {
@@ -61,6 +71,9 @@ export default new Vuex.Store({
       state.isLoginState = false;
       for (const key in state.userInfo) {
         Vue.set(state.userInfo, key, "");
+      }
+      for (const key in state.purseInfo) {
+        Vue.set(state.purseInfo, key, "");
       }
       state.token = "";
       state.loginTime = 0;

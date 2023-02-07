@@ -2,138 +2,145 @@
   <div class="wind-init goods-detail">
     <!-- 顶部导航 -->
     <share-nav />
-    <!-- 商品图片 -->
-    <van-swipe v-show="!isError">
-      <van-swipe-item>
-        <van-image
-          lazy-load
-          :src="getImgSrc(item?.goods?.images)"
-          class="imags"
-        />
-      </van-swipe-item>
-      <template #indicator>
-        <div class="custom-indicator">{{ current + 1 }}/1</div>
-      </template>
-    </van-swipe>
-    <!-- 主内容 -->
-    <div class="content" v-show="!isError">
-      <!-- 标题 -->
-      <div class="v-card top">
-        <div class="price">
-          ￥<span class="big">{{ item?.price || "0.00" }}</span>
-        </div>
-        <div class="title">{{ item?.goods?.name }}</div>
-        <div class="lable-group">
-          <div class="lable">总销量：{{ item?.goods?.sale }}</div>
-          <div class="lable">
-            <van-icon name="location-o" />
-            {{ item?.goods?.city }}
+    <div class="contents" v-if="!isError">
+      <!-- 商品图片 -->
+      <van-swipe>
+        <van-swipe-item>
+          <van-image
+            lazy-load
+            :src="getImgSrc(item?.goods?.images)"
+            class="imags"
+          />
+        </van-swipe-item>
+        <template #indicator>
+          <div class="custom-indicator">{{ current + 1 }}/1</div>
+        </template>
+      </van-swipe>
+      <!-- 主内容 -->
+      <div class="content">
+        <!-- 标题 -->
+        <div class="v-card top">
+          <div class="price">
+            ￥<span class="big">{{ item?.price || "0.00" }}</span>
+          </div>
+          <div class="title">{{ item?.goods?.name }}</div>
+          <div class="lable-group">
+            <div class="lable">总销量：{{ item?.goods?.sale }}</div>
+            <div class="lable">
+              <van-icon name="location-o" />
+              {{ item?.goods?.city }}
+            </div>
           </div>
         </div>
-      </div>
-      <!-- 规格 -->
-      <div class="v-card center">
-        <div class="lable-group" @click="showProps = true">
-          <span class="lable">选择</span>
-          <div class="lable black props">
-            已选：<span class="box">{{ getOption }}</span>
+        <!-- 规格 -->
+        <div class="v-card center">
+          <div class="lable-group" @click="showProps = true">
+            <span class="lable">选择</span>
+            <div class="lable black props">
+              已选：<span class="box">{{ getOption }}</span>
+            </div>
+            <van-icon name="arrow" />
           </div>
-          <van-icon name="arrow" />
-        </div>
-        <!-- 发货 -->
-        <div class="lable-group">
-          <span class="lable">发货</span>
-          <div class="flex-col w-80">
-            <span class="lable black" style="padding-bottom: 0.2rem"
-              >{{ item?.goods?.city }} | 快递：{{
-                item?.goods?.postage ? `${item.goods.postage} 元` : "免运费"
-              }}</span
-            >
-            <span class="lable">配送至：{{ "请登陆，获取地址" }}</span>
+          <!-- 发货 -->
+          <div class="lable-group">
+            <span class="lable">发货</span>
+            <div class="flex-col w-80">
+              <span class="lable black" style="padding-bottom: 0.2rem"
+                >{{ item?.goods?.city }} | 快递：{{
+                  item?.goods?.postage ? `${item.goods.postage} 元` : "免运费"
+                }}</span
+              >
+              <span class="lable">配送至：{{ "请登陆，获取地址" }}</span>
+            </div>
+            <van-icon name="arrow" />
           </div>
-          <van-icon name="arrow" />
-        </div>
-        <!-- 保障 -->
-        <div class="lable-group">
-          <span class="lable">保障</span>
-          <div class="flex-col w-80">
-            <span class="box">{{ getSafeInfo }}</span>
-          </div>
-          <van-icon name="arrow" />
-        </div>
-      </div>
-      <!-- 评论 -->
-      <div
-        class="v-card comments animate__animated animate__fadeIn"
-        v-show="comments.length"
-      >
-        <div class="lable-group">
-          商品评价 ({{ comments.length }})
-          <div
-            class="lable"
-            @click="toView(5)"
-            style="color: var(--tip-color2); font-size: 0.3rem"
-          >
-            更多<van-icon name="arrow" color="var(--tip-color2)" class="icon" />
+          <!-- 保障 -->
+          <div class="lable-group">
+            <span class="lable">保障</span>
+            <div class="flex-col w-80">
+              <span class="box">{{ getSafeInfo }}</span>
+            </div>
+            <van-icon name="arrow" />
           </div>
         </div>
-        <!-- 单条评论 -->
-        <comment-card
-          :comment="comments[0]"
+        <!-- 评论 -->
+        <div
+          class="v-card comments animate__animated animate__fadeIn"
           v-show="comments.length"
-          @setIsLike="changeCommentLike"
-        />
+        >
+          <div class="lable-group">
+            商品评价 ({{ comments.length }})
+            <div
+              class="lable"
+              @click="toView(5)"
+              style="color: var(--tip-color2); font-size: 0.3rem"
+            >
+              更多<van-icon
+                name="arrow"
+                color="var(--tip-color2)"
+                class="icon"
+              />
+            </div>
+          </div>
+          <!-- 单条评论 -->
+          <comment-card
+            :comment="comments[0]"
+            v-show="comments.length"
+            @setIsLike="changeCommentLike"
+          />
+        </div>
+      </div>
+
+      <!-- 规格详情选择 -->
+      <van-sku
+        v-if="!isError"
+        v-model="showProps"
+        :sku="sku"
+        :goods="item"
+        :goods-id="GOOD_ID"
+        :initial-sku="defaultOption"
+        :hide-stock="sku.hide_stock"
+        :quota="0"
+        :stock-threshold="10"
+        @buy-clicked="toView(3)"
+        @add-cart="addShopCar"
+        stepper-title="购买数量"
+      />
+      <!-- 底部导航 -->
+      <div class="shop-nav" v-if="!isError">
+        <van-goods-action>
+          <van-goods-action-icon icon="chat-o" text="客服" color="#ee0a24" />
+          <van-goods-action-icon
+            icon="cart-o"
+            text="购物车"
+            @click="toView(2)"
+          />
+          <van-goods-action-icon
+            :icon="isCollect ? 'star' : 'star-o'"
+            :text="isCollect ? '已收藏' : '收藏'"
+            color="#ff5000"
+            @click="isCollect ? deleteCollect() : addCollect()"
+          />
+          <van-goods-action-button
+            type="warning"
+            text="加入购物车"
+            @click="addShopCar"
+          />
+          <van-goods-action-button
+            type="danger"
+            text="立即购买"
+            @click="showProps = true"
+          />
+        </van-goods-action>
       </div>
     </div>
-
-    <!-- 规格详情选择 -->
-    <van-sku
-      v-model="showProps"
-      :sku="sku"
-      :goods="item"
-      :goods-id="GOOD_ID"
-      :initial-sku="defaultOption"
-      :hide-stock="sku.hide_stock"
-      :quota="0"
-      :stock-threshold="10"
-      @buy-clicked="toView(3)"
-      @add-cart="addShopCar"
-      stepper-title="购买数量"
-    />
-    <!-- 底部导航 -->
-    <div class="shop-nav">
-      <van-goods-action>
-        <van-goods-action-icon icon="chat-o" text="客服" color="#ee0a24" />
-        <van-goods-action-icon icon="cart-o" text="购物车" @click="toView(2)" />
-        <van-goods-action-icon
-          :icon="isCollect ? 'star' : 'star-o'"
-          :text="isCollect ? '已收藏' : '收藏'"
-          color="#ff5000"
-          @click="isCollect ? deleteCollect() : addCollect()"
-        />
-        <van-goods-action-button
-          type="warning"
-          text="加入购物车"
-          @click="addShopCar"
-        />
-        <van-goods-action-button
-          type="danger"
-          text="立即购买"
-          @click="showProps = true"
-        />
-      </van-goods-action>
-    </div>
-
     <!-- 网络错误 -->
-    <van-empty
-      class="error"
-      v-show="isError"
-      image-size="3rem"
-      image="network"
-      description="网络错误，请稍后再试！"
-    >
-      <button class="v-btn" @click="getGoodDetail">刷新</button>
-    </van-empty>
+    <error-card
+      v-if="isError"
+      @refresh="getGoodDetail"
+      :image="'network'"
+      text="网络错误，请稍后再试！"
+    />
   </div>
 </template>
 
@@ -151,8 +158,9 @@ import ShareNav from "@/components/Detail/ShareNav.vue";
 import { Dialog, Toast } from "vant";
 import { mapState } from "vuex";
 import CommentCard from "@/components/Detail/CommentCard.vue";
+import ErrorCard from "@/components/ErrorCard.vue";
 export default {
-  components: { ShareNav, CommentCard },
+  components: { ShareNav, CommentCard, ErrorCard },
   name: "GoodsDetail",
   data() {
     return {

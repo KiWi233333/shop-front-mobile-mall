@@ -56,3 +56,16 @@ export function getBills(token, year, month, day) {
     },
   });
 }
+
+/**
+ * 查询用户账单
+ * @param {string} token
+ * @returns
+ */
+export function getRechargeCombo(token) {
+  return request({
+    method: "get",
+    url: "/rechargeCombo/query",
+    headers: { Authorization: token },
+  });
+}

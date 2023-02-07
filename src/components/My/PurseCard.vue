@@ -1,5 +1,8 @@
 <template>
-  <div class="animate__animated animate__fadeIn v-card purse-card">
+  <div
+    class="animate__animated animate__fadeIn v-card purse-card"
+    v-show="purseInfo"
+  >
     <!-- 积分 -->
     <div class="v-click top animate__animated animate__slideInUp">
       <div class="left">
@@ -7,20 +10,20 @@
       </div>
       <div class="right" @click="toView('recharge')">
         <label>积分卡</label>
-        <span>剩余：{{ purseInfo?.recharge || 0 }}</span>
+        <span>剩余：{{ purseInfo?.points || 0 }}</span>
       </div>
     </div>
     <!-- 余额 -->
     <div class="bottom">
       <span>余额</span>
-      <label
-        ><span>￥</span>
+      <label @click="reqPurseInfo">
+        <span>￥</span>
         <label v-show="!isLodaing">{{ purseInfo?.balance || "0.00" }}</label>
         <van-loading
           class="load"
           v-show="isLodaing"
           color="var(--text-color)"
-          size="0.8rem"
+          size="0.6rem"
         />
       </label>
       <div class="tip" @click="toView('purse')">
@@ -32,11 +35,17 @@
 </template>
 <script>
 import { getPurseInfo } from "@/api/user/purse";
+import { mapState } from "vuex";
 export default {
   name: "PurseCard",
   data() {
-    return { purseInfo: {}, isLodaing: true };
+    return {
+      isLodaing: true,
+      timer: "",
+    };
   },
+  // 钱包信息
+  computed: { ...mapState(["purseInfo"]) },
   mounted() {
     this.reqPurseInfo(); // 请求钱包信息
   },
@@ -53,13 +62,18 @@ export default {
 
     // 请求钱包信息
     reqPurseInfo() {
-      (async () => {
-        const res = await getPurseInfo(this.$store.state.token);
-        this.purseInfo = res.data.data;
-        setTimeout(() => {
-          this.isLodaing = !res.data.success;
-        }, 300);
-      })();
+      if (this.timer !== "") return;
+      this.isLodaing = true;
+      this.timer = setTimeout(async () => {
+        const res = await getPurseInfo(this.$store.getters.token);
+        if (res.status == 200 && res.data.success) {
+          this.$store.commit("setPurseInfo", res.data.data);
+          this.isLodaing = false;
+          this.timer = "";
+          return;
+        }
+        this.isError = true;
+      }, 400);
     },
   },
 };
@@ -129,6 +143,7 @@ span {
   transform-origin: 100% 100%;
 }
 .bottom .load {
+  font-weight: 600;
   display: inline-block;
 }
 .bottom .tip .bg {

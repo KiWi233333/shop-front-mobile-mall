@@ -179,19 +179,6 @@ label {
   font-weight: 600;
 }
 
-/* 空白框重新定义 */
-.van-empty {
-  width: 100%;
-  font-size: 0.4rem;
-}
-.van-empty .v-btn {
-  font-size: 0.35rem;
-  padding: 0.12rem 0.6rem;
-}
-.van-empty >>> .van-empty__description {
-  font-size: 0.36rem;
-}
-
 /* 购物 */
 /* 底部 */
 .wind-init >>> .van-goods-action {
