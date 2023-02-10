@@ -21,7 +21,11 @@
         <!-- 标题 -->
         <div class="v-card top">
           <div class="price">
-            ￥<span class="big">{{ item?.price || "0.00" }}</span>
+            ￥
+            <span class="big">{{ getPrice(item?.price) || "0.00" }}</span>
+            <span class="small"
+              >原价:￥{{ getPrice(item?.price) || "0.00" }}</span
+            >
           </div>
           <div class="title">{{ item?.goods?.name }}</div>
           <div class="lable-group">
@@ -93,10 +97,9 @@
 
       <!-- 规格详情选择 -->
       <van-sku
-        v-if="isSku"
         v-model="showProps"
         :sku="initSku"
-        :goods="item"
+        :goods="{ picture: getImgSrc(goodProps?.defaultOption?.icon) }"
         :goods-id="GOOD_ID"
         :initial-sku="skuDefault"
         :hide-stock="initSku.hide_stock"
@@ -124,7 +127,7 @@
           <van-goods-action-button
             type="warning"
             text="加入购物车"
-            @click="addShopCar"
+            @click="showProps = true"
           />
           <van-goods-action-button
             type="danger"
@@ -145,6 +148,7 @@
 </template>
 
 <script>
+// res
 import { getGoodDetailById } from "@/api/good/good";
 import { getGoodPropsById } from "@/api/good/props";
 import {
@@ -154,6 +158,8 @@ import {
 } from "@/api/user/collect";
 import { getResourImageByName } from "@/api/res";
 import { getGoodCommentById } from "@/api/comment/comment";
+import { addShopCart } from "@/api/shopcart/shopcart";
+// components
 import ShareNav from "@/components/Detail/ShareNav.vue";
 import { Dialog, Toast } from "vant";
 import { mapState } from "vuex";
@@ -166,7 +172,6 @@ export default {
     return {
       isError: false, // 网络错误
       GOOD_ID: this.$route.query?.id || "",
-
       // 商品信息
       item: {}, // 商品信息
       goodProps: {}, //商品规格
@@ -177,11 +182,13 @@ export default {
       isCollect: false, // 是否收藏
       comments: [], // 评论集合
 
-      // 属性
+      // 内属性
       showProps: false,
       isSku: false, // 用于刷新
-      // isStock: false, // 是否有库存
-      initSku: {},
+      initSku: {
+        tree: [],
+        list: [],
+      },
       skuDefault: {},
     };
   },
@@ -224,7 +231,6 @@ export default {
       if (this.GOOD_ID === "") return (this.isError = true);
       const res = await getGoodPropsById(this.GOOD_ID);
       if (res.status === 200 && res.data.success) {
-        console.log(res.data.data);
         this.goodProps = res.data.data;
         // 初始化属性组合
         this.initProps();
@@ -235,6 +241,22 @@ export default {
 
     // 提交订单
     toMakeOder() {},
+
+    // 添加购物车
+    async addShopCar(info) {
+      console.log(info);
+      const res = await addShopCart(
+        this.goodProps.defaultOption.id,
+        info.selectedNum,
+        this.$store.getters.token
+      );
+      if (res.status === 200 && res.data.success) {
+        Toast("加购成功！");
+      } else {
+        Toast("加购失败，稍后再试！");
+      }
+      this.showProps = false;
+    },
 
     // 初始化属性组合
     initProps() {
@@ -254,10 +276,12 @@ export default {
       };
 
       // 套装
+      let row = 0;
       if (combo.length > 0) {
+        row++;
         let row1 = {
           k: "套装",
-          k_s: "row1",
+          k_s: `row${row}`,
           v: [],
           largeImageMode: false, //  是否展示大图模式
         };
@@ -273,9 +297,10 @@ export default {
 
       // 颜色
       if (colorAndIcon.length > 0) {
+        row++;
         let row2 = {
           k: "颜色", // 属性类别
-          k_s: "row2", // key名
+          k_s: `row${row}`,
           v: [], // 子属下
         };
         colorAndIcon.forEach((p, i) => {
@@ -291,9 +316,10 @@ export default {
 
       // 规格
       if (size.length > 0) {
+        row++;
         let row3 = {
           k: "规格", // 属性类别
-          k_s: "row3", // key名
+          k_s: `row${row}`,
           v: [], // 子属性
         };
         size.forEach((p, i) => {
@@ -307,9 +333,10 @@ export default {
 
       // 版本
       if (edition.length > 0) {
+        row++;
         let row4 = {
           k: "版本", // 属性类别
-          k_s: "row4", // key名
+          k_s: `row${row}`,
           v: [], // 子属下
         };
         colorAndIcon.forEach((p, i) => {
@@ -322,32 +349,53 @@ export default {
         });
         props.tree.push(row4);
       }
-
-      for (let i = 0; i < props.tree.length; i++) {
-        for (let j = 0; j < props.tree[i].length; j++) {
-          props.list.push({
-            id: 2259,
-            row1: `${i}`,
-            row2: `${j}`,
-            row3: `${j}`,
-            row4: `${j}`,
-            price,
-            stock_num: 110,
-          });
+      // 内部属性
+      props.list = getList(props.tree);
+      // 主函数
+      function getList(tree) {
+        let res = [];
+        let group = 1; // 组数
+        for (let i = 0; i < tree.length; i++) {
+          group = tree[i].v ? group * tree[i].v.length : group;
         }
+        const item = {
+          // 路径
+          id: "",
+          price: price * 100,
+          stock_num: Math.floor(defaultOption.stock / group),
+        };
+        let indexCol = 0;
+        callBack(tree, item, indexCol);
+
+        // 递归
+        function callBack(tree, item, indexCol) {
+          for (let i = 0; i < tree[indexCol]?.v.length; i++) {
+            item[`row${indexCol + 1}`] = i;
+            item.id = item.id + i;
+            if (indexCol + 1 === tree.length) {
+              res.push(JSON.parse(JSON.stringify(item)));
+              continue;
+            }
+            indexCol++;
+            callBack(tree, item, indexCol); // 最后一排
+          }
+        }
+        return res;
       }
-      console.log(props);
-      this.defaultOption = {
-        row1: "1",
-        row2: "1",
-        row3: "1",
-        row4: "1",
-        // 初始选中数量
-        selectedNum: 1,
-      };
-      this.isSku = true;
+      // let nums = "";
+      // for (let i = 0; i < props.tree.length; i++) {
+      //   this.$set(this.skuDefault, `row${i + 1}`, 0);
+      //   nums = nums + "0";
+      // }
+
+      // this.skuDefault.selectedProp = { row1: ["0"] };
+
+      // this.$set(this.skuDefault, "selectedNum", 1);
+
       this.initSku = props;
+      this.isSku = true;
     },
+
     // 获取本商品是否收藏
     getTheCollect() {
       if (this.GOOD_ID === "") return (this.isError = true);
@@ -408,7 +456,6 @@ export default {
       getGoodCommentById(this.token, this.GOOD_ID, 0)
         .then((res) => {
           if (res.data.success) {
-            console.log(res.data.data);
             const data = res.data.data;
             data.forEach((p) => {
               this.comments.push(p);
@@ -417,9 +464,6 @@ export default {
         })
         .catch(() => {});
     },
-
-    // 添加购物车
-    addShopCar() {},
 
     // 页面跳转
     toView(i) {
@@ -461,6 +505,11 @@ export default {
           });
           break;
       }
+    },
+
+    // 获取价格
+    getPrice(price) {
+      return ((price * 1000 * this.item.discount) / 1000).toFixed(2);
     },
 
     // 获取图片地址
@@ -545,6 +594,12 @@ export default {
 .price .big {
   padding-left: 0.1rem;
   font-size: 0.7rem;
+}
+.price .small {
+  color: var(--text-color3);
+  font-size: 0.3rem;
+  padding-left: 0.1rem;
+  text-decoration: line-through;
 }
 .top .title {
   font-weight: 600;
