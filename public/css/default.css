@@ -7,6 +7,7 @@
   --text-color: #653913;
   --text-color2: #fff;
   --text-color3: rgba(80, 80, 80, 0.8);
+  --text-color4: #000;
   /* 点缀色 */
   --tip-color: #ea8833;
   --tip-color2: #f62109;
@@ -133,6 +134,11 @@ a:active {
   box-shadow: #bfaa5d66 -3px -3px 4px, #d6bb5729 3px 3px 4px;
   border: 0.05rem solid rgba(179, 179, 179, 0.3);
 }
+.v-cancel {
+  background-color: var(--theme-color);
+  color: var(--text-color3);
+  box-shadow: #eee 3px 3px 4px;
+}
 
 .v-click {
   transition: 0.5s;
@@ -157,11 +163,17 @@ a:active {
 
 .v-input .right-btn {
   border-radius: 2rem;
-  background-color: var(--bg-color2);
-  color: #eee;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-weight: 600;
   padding: 0 2.5em;
   font-size: 0.8em;
   border: none;
+  box-shadow: var(--shadow-color3);
+  transition: box-shadow 0.3s;
+}
+.v-input .right-btn:active {
+  box-shadow: none;
 }
 
 button {

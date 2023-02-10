@@ -38,6 +38,10 @@ import {
   Sku,
   Tag,
   Rate,
+  Uploader,
+  Popup,
+  Cell,
+  CellGroup,
 } from "vant";
 // van按需t注册组件
 Vue.use(Button)
@@ -72,7 +76,11 @@ Vue.use(Button)
   .use(GoodsActionIcon)
   .use(Sku)
   .use(Tag)
-  .use(Rate);
+  .use(Rate)
+  .use(Uploader)
+  .use(Popup)
+  .use(Cell)
+  .use(CellGroup);
 Vue.config.productionTip = false;
 
 new Vue({

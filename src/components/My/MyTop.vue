@@ -1,30 +1,37 @@
+
 <template>
-  <div class="animate__animated animate__fadeIn my-top">
-    <div class="left" v-if="isLoginState" @click="changeIcon">
-      <van-image
-        class="img"
-        round
-        v-show="userInfo.icon"
-        :src="getImage(userInfo.icon)"
-        lazy-load
-      />
-      <img
-        v-show="!userInfo.icon"
-        src="@/assets/image/icon/camera.png"
-        class="img"
-      />
+  <div>
+    <div class="animate__animated animate__fadeIn my-top">
+      <div class="left" v-if="isLoginState" @click="showIconPanel = true">
+        <van-image
+          class="img"
+          round
+          v-show="userInfo.icon"
+          :src="getImage(userInfo.icon)"
+          lazy-load
+        />
+        <img
+          v-show="!userInfo.icon"
+          src="@/assets/image/icon/camera.png"
+          class="img"
+        />
+      </div>
+      <!-- 昵称 -->
+      <div class="left" v-else>
+        <label class="title2">欢迎您！</label>
+        <span>期待你的每次到来~</span>
+        <button class="v-btn tolg-btn" @click="toLoginPage">立即登录</button>
+      </div>
+      <div class="right" v-if="isLoginState">
+        <label class="title" @click="toView">{{ userInfo?.nickname }}</label>
+        <span class="userid" @click="copyID(userInfo.username)"
+          >ID:{{ userInfo?.username }}</span
+        >
+      </div>
+      <img src="@/assets/image/bg/shopcard_bg.png" class="bg" />
     </div>
-    <!-- 昵称 -->
-    <div class="left" v-else>
-      <label class="title2">欢迎您！</label>
-      <span>期待你的每次到来~</span>
-      <button class="v-btn tolg-btn" @click="toLoginPage">立即登录</button>
-    </div>
-    <div class="right" v-if="isLoginState">
-      <label class="title">{{ userInfo?.nickname }}</label>
-      <span class="userid">ID：{{ userInfo?.username }}</span>
-    </div>
-    <img src="@/assets/image/bg/shopcard_bg.png" class="bg" />
+    <!-- 修改头像 -->
+    <change-icon v-model="showIconPanel" />
   </div>
 </template>
   
@@ -32,17 +39,28 @@
 import { getResourImageByName } from "@/api/res";
 import router from "@/router";
 import { mapState } from "vuex";
+import { Toast } from "vant";
+import ChangeIcon from "./ChangeIcon.vue";
+import { copyTextAsync } from "@/util/copy";
 export default {
   name: "MyTop",
   data() {
-    return {};
+    return { showIconPanel: false };
   },
   methods: {
-    // 修改头像
-    changeIcon() {},
     // 返回静态资源地址
     getImage(url) {
       return getResourImageByName(url);
+    },
+    // 去登录
+    toView() {
+      router.push({
+        name: "user",
+        params: {
+          animate: "forward",
+          toBack: true,
+        },
+      });
     },
     // 去登录
     toLoginPage() {
@@ -54,10 +72,28 @@ export default {
         },
       });
     },
+    // 复制
+    copyID(username) {
+      copyTextAsync(username)
+        .then(() => {
+          Toast({
+            message: "复制成功！",
+            position: "bottom",
+          });
+        })
+        .catch((err) => {
+          Toast({
+            message: "复制失败！" + err,
+            position: "bottom",
+          });
+        });
+      // 新
+    },
   },
   computed: {
     ...mapState(["isLoginState", "userInfo"]),
   },
+  components: { ChangeIcon },
 };
 </script>
   <style scoped>
@@ -70,6 +106,7 @@ export default {
 }
 .my-top .left {
   display: flex;
+  cursor: pointer;
   flex-direction: column;
   justify-content: space-around;
   padding: 0.1rem;
@@ -88,6 +125,7 @@ export default {
 }
 .my-top .right {
   height: 2rem;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -101,6 +139,7 @@ export default {
   padding: 0.2rem 0;
 }
 .my-top .right .title {
+  cursor: pointer;
   width: 7em;
   text-overflow: ellipsis;
   overflow: hidden;

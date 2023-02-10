@@ -2,11 +2,10 @@ import { request } from "@/util/request";
 
 /**
  * 查询用户全部收藏
- * @param {*} gid
  * @param {*} token
  * @returns
  */
-export function getAllCollectByGid(gid, token) {
+export function getAllCollectByGid(token) {
   return request({
     method: "get",
     url: `/collection/query`,

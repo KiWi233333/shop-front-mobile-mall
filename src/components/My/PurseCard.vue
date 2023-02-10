@@ -10,7 +10,7 @@
       </div>
       <div class="right" @click="toView('recharge')">
         <label>积分卡</label>
-        <span>剩余：{{ purseInfo?.points || 0 }}</span>
+        <span>剩余:{{ purseInfo?.points || 0 }}</span>
       </div>
     </div>
     <!-- 余额 -->
@@ -18,7 +18,9 @@
       <span>余额</span>
       <label @click="reqPurseInfo">
         <span>￥</span>
-        <label v-show="!isLodaing">{{ purseInfo?.balance || "0.00" }}</label>
+        <label v-show="!isLodaing">{{
+          Number(purseInfo?.balance).toFixed(2) || "0.00"
+        }}</label>
         <van-loading
           class="load"
           v-show="isLodaing"
@@ -73,7 +75,7 @@ export default {
           return;
         }
         this.isError = true;
-      }, 400);
+      }, 800);
     },
   },
 };
@@ -114,6 +116,10 @@ span {
   flex-direction: column;
   justify-content: center;
   color: var(--text-color);
+  transition: 0.3s;
+}
+label {
+  cursor: pointer;
 }
 .bottom {
   position: relative;

@@ -7,8 +7,8 @@
       <div class="v-card top-card animate__animated animate__fadeInUp">
         <div class="left">
           <label>余额</label>
-          <label @click="reqPurseInfo">
-            <span>￥</span>
+          <label @click="reqPurseInfo" class="btm">
+            <span class="tp">￥</span>
             <span class="big" v-show="!isLodaing">{{
               Number(this.purseInfo?.balance).toFixed(2) || "0.00"
             }}</span>
@@ -24,19 +24,27 @@
           <img src="@/assets/image/icon/balance_icon.png" class="bg" />
         </div>
       </div>
-      <!-- 底部套餐 -->
-      <div class="combo">
-        <div
-          @click="toReCharge(p.id, p.price, p.points)"
-          class="v-click v-card item"
-          v-for="p in chargeCombo"
-          :key="p.id"
-        >
-          <div class="price">{{ p?.price }}</div>
-          <div class="active">
-            送
-            <span style="color: var(--tip-color)">{{ p?.points }}</span>
-            积分
+      <!-- 底部 -->
+      <div class="bottoms">
+        <!-- 标题 -->
+        <div class="center-title">
+          <label>充值套餐</label>
+          <span>（单位:￥）</span>
+        </div>
+        <!-- 底部套餐 -->
+        <div class="combo">
+          <div
+            @click="toReCharge(p.id, p.price, p.points)"
+            class="v-click v-card item"
+            v-for="p in chargeCombo"
+            :key="p.id"
+          >
+            <div class="price">{{ p?.price }}</div>
+            <div class="active">
+              送
+              <span style="color: var(--tip-color)">{{ p?.points }}</span>
+              积分
+            </div>
           </div>
         </div>
       </div>
@@ -48,7 +56,7 @@
       :image="'network'"
       text="网络错误，请稍后再试！"
     />
-    <div class="btm-text">——————&emsp;感谢支持&emsp;——————</div>
+    <div class="btm-text">——————&emsp;理性消费，共建共享&emsp;——————</div>
   </div>
 </template>
 <script>
@@ -90,7 +98,7 @@ export default {
           return;
         }
         this.isError = true;
-      }, 400);
+      }, 800);
     },
     // 获取套餐
     async getCombo() {
@@ -162,7 +170,14 @@ export default {
   padding: 0.1rem 0;
   display: inline-block;
 }
-
+.top-card .left .btm {
+  height: 1rem;
+  display: flex;
+  align-items: flex-end;
+}
+.top-card .left .big {
+  margin-bottom: -0.2rem;
+}
 .top-card .load {
   display: inline-block;
 }
@@ -178,20 +193,22 @@ export default {
 }
 
 /* 底部套餐 */
-.combo {
+.bottoms {
   margin-top: -0.4rem;
+  position: relative;
+  box-shadow: rgba(128, 128, 128, 0.3) 0 -2px 4px;
   border-radius: 10px 10px 0 0;
   padding: 0.3rem 0.2rem;
   background-color: var(--theme-color);
-  position: relative;
-  box-shadow: rgba(128, 128, 128, 0.3) 0 -2px 4px;
+}
+.combo {
   display: grid;
   justify-content: space-around;
   grid-template-columns: repeat(3, 3.2rem);
 }
 .combo .item {
   padding: 0.2rem 0.2rem;
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   background-color: var(--theme-color);
   border-radius: 8px;
   margin: 0.2rem;
@@ -214,5 +231,12 @@ export default {
   color: var(--text-color3);
   opacity: 0.6;
   font-size: 0.2rem;
+}
+.center-title {
+  width: 100%;
+  padding: 0.2rem;
+}
+.center-title span {
+  font-size: 0.32rem;
 }
 </style>

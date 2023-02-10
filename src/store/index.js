@@ -1,3 +1,4 @@
+import router from "@/router";
 import Vue from "vue";
 import Vuex from "vuex";
 
@@ -19,22 +20,28 @@ export default new Vuex.Store({
     token(state) {
       if (state.token !== "") {
         const delay = (new Date().getTime() - state.loginTime) / 1000;
-        console.log(delay);
+        // 登录有效
         if (delay <= state.tokenLife) {
           return state.token; // 返回token
         } else {
           // 登录失效
           // 清空vuex
-          state.isLoginState = false;
           for (const key in state.userInfo) {
             Vue.set(state.userInfo, key, "");
           }
+          state.isLoginState = false;
           state.token = "";
           state.loginTime = 0;
           // 清空本地存储
           localStorage.removeItem(state.TOKEN_NAME);
           localStorage.removeItem("loginTime");
           sessionStorage.removeItem(state.TOKEN_NAME);
+          // 跳转登录
+          router.push({
+            name: "login",
+            params: { animate: "forward", toBack: true },
+          });
+          return "";
         }
       } else {
         return "";

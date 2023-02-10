@@ -19,7 +19,7 @@ export default {
     return {
       option: [
         { title: "地址管理", targetName: "address" },
-        { title: "个人信息", targetName: "info" },
+        { title: "个人信息", targetName: "user" },
         { title: "设置", targetName: "option" },
       ],
     };

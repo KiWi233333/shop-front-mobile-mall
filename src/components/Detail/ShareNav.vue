@@ -39,6 +39,7 @@
 <script>
 import { Dialog, Toast } from "vant";
 import QRCode from "qrcodejs2";
+import { copyTextAsync } from "@/util/copy";
 export default {
   name: "ShareNav",
   data() {
@@ -83,11 +84,8 @@ export default {
             }
           });
           break;
-
         default:
-          if (!navigator.clipboard) return;
-          navigator.clipboard
-            .writeText(location.href)
+          copyTextAsync(location.href)
             .then(() => {
               Dialog({
                 title: " 复制成功！",

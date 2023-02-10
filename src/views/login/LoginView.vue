@@ -171,6 +171,11 @@ export default {
 
     if (token) {
       const res = await checkUser(token);
+      if (!res.data.success || res.status !== 200) {
+        this.password = "";
+        this.$store.commit("loginOut"); // 登出
+        return;
+      }
       let second = 2;
       let timer;
       // 自动登录弹窗
@@ -212,11 +217,8 @@ export default {
     },
     // 1）密码登录
     async toLoginByPwd() {
-      let res = await loginByPwd({
-        username: this.username,
-        password: this.password,
-      });
-      if (res.data?.success) {
+      let res = await loginByPwd(this.username, this.password);
+      if (res.status === 200 && res.data.success) {
         // 记住密码
         if (this.savePwd) {
           localStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
@@ -243,7 +245,7 @@ export default {
         phone: this.username,
         code: this.code,
       });
-      if (res.data?.success) {
+      if (res.status === 200 && res.data?.success) {
         // 记住密码
         if (this.savePwd) {
           localStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
@@ -335,7 +337,7 @@ export default {
           phone: this.username,
           code: this.code,
         });
-        if (res.data?.success) {
+        if (res.status === 200 && res.data.success) {
           this.isUpdateCodeCheck = true;
           Notify({
             type: "success",

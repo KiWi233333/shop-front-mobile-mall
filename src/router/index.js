@@ -15,6 +15,7 @@ import SearchView from "@/views/second/SearchView.vue";
 import EventView from "@/views/second/EventView.vue";
 import RechargeView from "@/views/second/RechargeView";
 import PurseView from "@/views/second/PurseView";
+import UserView from "@/views/second/UserView";
 // 商品详情
 import GoodsDetail from "@/views/goods/GoodsDetail.vue";
 // 评论
@@ -39,8 +40,8 @@ const routes = [
         name: "home",
         meta: {
           title: "水院商城",
-          keepAlive: true,
           lv: 1,
+          keepAlive: true,
         },
       },
     ],
@@ -150,6 +151,18 @@ const routes = [
       permission: true,
     },
   },
+  // 4.5 个人信息页面
+  {
+    name: "user",
+    path: "/my/user",
+    component: UserView,
+    meta: {
+      title: "个人信息",
+      lv: 2,
+      keepAlive: true,
+      permission: true,
+    },
+  },
   // 4.5 登录页面
   {
     name: "login",
@@ -208,13 +221,13 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
-
+// 拦截器
 router.beforeEach((to, from, next) => {
   // 浏览器标题设置
   document.title = to.meta?.title ?? "水院商城";
   // 权限设置
   if (to.meta.permission) {
-    if (store.getters.token) {
+    if (store.getters.token != "") {
       next();
     } else {
       next({

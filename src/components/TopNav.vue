@@ -29,8 +29,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.3rem 0.2rem;
+  padding: 0.4rem 0.2rem;
   font-size: 0.4rem;
+  /* box-shadow: var(--shadow-color3); */
   /* border-bottom: 1px solid var(--bg-color3); */
   position: relative;
 }

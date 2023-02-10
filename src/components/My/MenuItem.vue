@@ -13,6 +13,9 @@ export default {
     toView() {
       router.push({
         name: this.targetName ?? "my",
+        params: {
+          animate: "forward",
+        },
       });
     },
   },
@@ -23,11 +26,12 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0.3rem 0.2rem;
+  margin: 0.5rem 0.2rem;
   cursor: pointer;
 }
 .item span {
   font-size: 0.4rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
+  font-weight: 600;
 }
 </style>

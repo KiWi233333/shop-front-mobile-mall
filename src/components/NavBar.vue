@@ -90,16 +90,18 @@ export default {
 }
 .nav-bar > .item {
   flex: 1;
-  padding: 0.3rem 0;
+  padding: 0.2rem 0;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 0.4rem;
   font-weight: 600;
   color: rgba(128, 128, 128, 0.8);
   cursor: pointer;
+}
+.item span {
+  font-size: 0.32rem;
 }
 .item.active {
   color: black;
@@ -107,10 +109,10 @@ export default {
   font-weight: 600;
 }
 .item .icon {
-  width: 0.7rem;
+  width: 0.6rem;
   transition: 0.5s;
   display: block;
-  margin: 0.1rem;
+  margin: 0.2rem 0;
 }
 .item.active .icon {
   animation: swing;
