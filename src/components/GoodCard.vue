@@ -48,6 +48,7 @@ export default {
 </script>
 <style scoped>
 .good-card {
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   padding: 0;

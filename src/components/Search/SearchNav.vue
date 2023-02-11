@@ -169,6 +169,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 0.4rem;
 }
 .toback-btn {
   cursor: pointer;

@@ -41,7 +41,7 @@
           <div class="lable-group" @click="showProps = true">
             <span class="lable">选择</span>
             <div class="lable black props">
-              已选：<span class="box">{{ getOption }}</span>
+              已选：<span class="box" ref="selectOption">{{ getOption }}</span>
             </div>
             <van-icon name="arrow" />
           </div>
@@ -97,6 +97,7 @@
 
       <!-- 规格详情选择 -->
       <van-sku
+        ref="skucart"
         v-model="showProps"
         :sku="initSku"
         :goods="{ picture: getImgSrc(goodProps?.defaultOption?.icon) }"
@@ -189,7 +190,7 @@ export default {
         tree: [],
         list: [],
       },
-      skuDefault: {},
+      skuDefault: {}, // 默认选项
     };
   },
   mounted() {
@@ -205,6 +206,25 @@ export default {
         this.getCommentList(); // 获取评论
         this.getTheCollect(); // 获取是否收藏
       },
+    },
+    // 属性选择变化
+    showProps(newVal) {
+      if (!newVal) {
+        const info = this.$refs.skucart.getSkuData();
+        let res = "";
+        let i = 0;
+        for (const key in info.selectedSkuComb) {
+          if (/^row\d{1}/.test(key)) {
+            res =
+              res +
+              ` ${this.initSku.tree[i].v[info.selectedSkuComb[key]].name}`;
+            i++;
+          }
+        }
+        if (res !== "") {
+          this.$refs.selectOption.innerHTML = res;
+        }
+      }
     },
   },
 
@@ -240,11 +260,20 @@ export default {
     },
 
     // 提交订单
-    toMakeOder() {},
+    toMakeOder(info) {
+      console.log(info);
+      this.$router.push({
+        name: "checkorder",
+        params: {
+          animate: "forward",
+        },
+      });
+    },
 
     // 添加购物车
     async addShopCar(info) {
-      console.log(info);
+      if (!this.$store.getters.token) return Toast("您还未登录！");
+      // console.log(info);
       const res = await addShopCart(
         this.goodProps.defaultOption.id,
         info.selectedNum,
@@ -349,6 +378,7 @@ export default {
         });
         props.tree.push(row4);
       }
+
       // 内部属性
       props.list = getList(props.tree);
       // 主函数
@@ -382,15 +412,6 @@ export default {
         }
         return res;
       }
-      // let nums = "";
-      // for (let i = 0; i < props.tree.length; i++) {
-      //   this.$set(this.skuDefault, `row${i + 1}`, 0);
-      //   nums = nums + "0";
-      // }
-
-      // this.skuDefault.selectedProp = { row1: ["0"] };
-
-      // this.$set(this.skuDefault, "selectedNum", 1);
 
       this.initSku = props;
       this.isSku = true;
@@ -399,7 +420,7 @@ export default {
     // 获取本商品是否收藏
     getTheCollect() {
       if (this.GOOD_ID === "") return (this.isError = true);
-      getTheCollectByGid(this.GOOD_ID, this.token)
+      getTheCollectByGid(this.GOOD_ID, this.$store.getters.token)
         .then((res) => {
           this.isCollect = res.data.success;
         })
@@ -411,10 +432,9 @@ export default {
     addCollect() {
       // 拦截
       if (!this.isLoginState) return this.toView(4);
-
-      addCollectByGid(this.GOOD_ID, this.token)
+      addCollectByGid(this.GOOD_ID, this.$store.getters.token)
         .then((res) => {
-          this.isCollect = res.data.success;
+          this.isCollect = true;
           res.data.success ? Toast(" 收藏成功！") : Toast(" 收藏失败！");
         })
         .catch(() => {});
@@ -426,7 +446,7 @@ export default {
 
       Dialog.confirm({ title: "是否取消收藏？" })
         .then(() => {
-          deleteCollectByGid(this.GOOD_ID, this.token)
+          deleteCollectByGid(this.GOOD_ID, this.$store.getters.token)
             .then((res) => {
               if (res.data.success) {
                 this.isCollect = false;
@@ -453,7 +473,7 @@ export default {
 
     // 获取评论
     getCommentList() {
-      getGoodCommentById(this.token, this.GOOD_ID, 0)
+      getGoodCommentById(this.$store.getters.token, this.GOOD_ID, 0)
         .then((res) => {
           if (res.data.success) {
             const data = res.data.data;
@@ -590,9 +610,9 @@ export default {
   font-size: 0.4rem;
   color: var(--tip-color2);
   padding: 0.2rem 0;
+  font-family: Helvetica;
 }
 .price .big {
-  padding-left: 0.1rem;
   font-size: 0.7rem;
 }
 .price .small {
