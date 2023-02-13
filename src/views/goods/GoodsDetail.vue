@@ -94,6 +94,16 @@
           />
         </div>
       </div>
+      <!-- 商品详情 -->
+      <div class="detail-info">
+        <div class="title">————<span>&emsp;宝贝详情&emsp;</span>————</div>
+        <div class="label label1">{{ getSafeInfo }}</div>
+        <van-image
+          lazy-load
+          :src="getImgSrc(item?.goods?.images)"
+          class="img"
+        />
+      </div>
 
       <!-- 规格详情选择 -->
       <van-sku
@@ -166,6 +176,7 @@ import { Dialog, Toast } from "vant";
 import { mapState } from "vuex";
 import CommentCard from "@/components/Detail/CommentCard.vue";
 import ErrorCard from "@/components/ErrorCard.vue";
+
 export default {
   components: { ShareNav, CommentCard, ErrorCard },
   name: "GoodsDetail",
@@ -261,12 +272,13 @@ export default {
 
     // 提交订单
     toMakeOder(info) {
-      console.log(info);
       this.$router.push({
         name: "checkorder",
         params: {
           animate: "forward",
+          toBack: "true",
         },
+        query: { info },
       });
     },
 
@@ -354,7 +366,9 @@ export default {
         size.forEach((p, i) => {
           row3.v.push({
             id: i,
-            name: p.size + ` ${p.isSellOut || ""}`,
+            isSellOut: p.isSellOut !== "",
+            // name: p.size + ` ${p.isSellOut || ""}`,
+            name: p.size,
           });
         });
         props.tree.push(row3);
@@ -400,10 +414,20 @@ export default {
         // 递归
         function callBack(tree, item, indexCol) {
           for (let i = 0; i < tree[indexCol]?.v.length; i++) {
+            // row-value
             item[`row${indexCol + 1}`] = i;
-            item.id = item.id + i;
+
             if (indexCol + 1 === tree.length) {
+              // id
+              for (const key in item) {
+                if (/^row\d{1}/.test(key)) {
+                  item.id = item.id + item[key];
+                }
+              }
+              // 是否已存在
+              if (res.find((v) => v.id === item.id)) return (item.id = "");
               res.push(JSON.parse(JSON.stringify(item)));
+              item.id = "";
               continue;
             }
             indexCol++;
@@ -516,7 +540,7 @@ export default {
             params: { animate: "forward" },
           });
           break;
-        // 登录页面
+        // 评论页面
         case 5:
           this.$router.push({
             name: "comment",
@@ -594,11 +618,11 @@ export default {
 }
 /* 主内容 */
 .content {
-  margin-top: -0.4rem;
+  margin-top: -0.42rem;
   border-radius: 10px;
-  padding: 0.3rem;
-  /* background-color: var(--theme-color); */
-  background-color: white;
+  padding: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
   z-index: 1;
 }
 .v-card {
@@ -665,5 +689,32 @@ export default {
 /* 评论框 */
 .comments {
   position: relative;
+}
+
+/* 商品详情 */
+.detail-info {
+  width: 100%;
+}
+.detail-info .title {
+  text-align: center;
+
+  padding: 0 0.4rem;
+  margin-bottom: 0.3rem;
+  color: var(--border-color);
+}
+.detail-info .title span {
+  color: var(--text-color4);
+}
+.detail-info .label {
+  padding: 0.2rem;
+}
+.detail-info .label1 {
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-color);
+  margin-bottom: 0.5rem;
+}
+.detail-info .img {
+  width: 100%;
 }
 </style>

@@ -14,6 +14,8 @@ export default new Vuex.Store({
     userInfo: {}, // 用户信息
 
     purseInfo: {}, // 钱包信息
+
+    addressList: {}, // 地址集合
   },
   getters: {
     // 获取token
@@ -69,6 +71,12 @@ export default new Vuex.Store({
     setPurseInfo(state, purseInfo) {
       for (const key in purseInfo) {
         Vue.set(state.purseInfo, key, purseInfo[key]);
+      }
+    },
+    // 添加地址信息
+    setAddressList(state, addressList) {
+      for (const key in addressList) {
+        Vue.set(state.addressList, key, addressList[key]);
       }
     },
 

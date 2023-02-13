@@ -23,12 +23,21 @@
         <button class="v-btn tolg-btn" @click="toLoginPage">立即登录</button>
       </div>
       <div class="right" v-if="isLoginState">
-        <label class="title" @click="toView">{{ userInfo?.nickname }}</label>
+        <label class="title" @click="toView('user')">{{
+          userInfo?.nickname
+        }}</label>
         <span class="userid" @click="copyID(userInfo.username)"
           >ID:{{ userInfo?.username }}</span
         >
       </div>
       <img src="@/assets/image/bg/shopcard_bg.png" class="bg" />
+      <button
+        class="v-btn v-cancel signin"
+        @click="toView('signin')"
+        v-if="isLoginState"
+      >
+        签到
+      </button>
     </div>
     <!-- 修改头像 -->
     <change-icon v-model="showIconPanel" />
@@ -53,9 +62,9 @@ export default {
       return getResourImageByName(url);
     },
     // 去登录
-    toView() {
+    toView(name) {
       router.push({
-        name: "user",
+        name,
         params: {
           animate: "forward",
           toBack: true,
@@ -147,10 +156,21 @@ export default {
 .my-top .bg {
   z-index: -1;
   display: block;
-  width: 3rem;
+  width: 3.5rem;
   object-fit: contain;
   position: absolute;
-  right: 0.5rem;
+  right: 0.3rem;
+  top: 0.7rem;
+}
+.my-top .signin {
+  position: absolute;
+  right: 0.9rem;
+  padding: 0.1rem 0.6rem;
+  background-color: var(--tip-color2);
+  color: var(--theme-color);
+  opacity: 0.9;
+  backdrop-filter: blur(10px);
+  font-size: 0.4rem;
 }
 .tolg-btn {
   animation: 0.7s rubberBand 0.4s ease;

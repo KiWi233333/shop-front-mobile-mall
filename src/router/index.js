@@ -16,10 +16,16 @@ import EventView from "@/views/second/EventView.vue";
 import RechargeView from "@/views/second/RechargeView";
 import PurseView from "@/views/second/PurseView";
 import UserView from "@/views/second/UserView";
+import SigninView from "@/views/second/SigninView";
+import AddressView from "@/views/second/AddressView";
 // 商品详情
 import GoodsDetail from "@/views/goods/GoodsDetail.vue";
 // 评论
 import CommentDetail from "@/views/comment/CommentDetail";
+
+// 订单
+import CheckOrder from "@/views/orders/CheckOrder";
+// 404
 import NotFund from "@/views/NotFund.vue";
 
 import store from "@/store";
@@ -139,6 +145,18 @@ const routes = [
       permission: true,
     },
   },
+
+  // 4.4 签到页面
+  {
+    path: "/signin",
+    name: "signin",
+    component: SigninView,
+    meta: {
+      title: "签到",
+      lv: 2,
+      permission: true,
+    },
+  },
   // 4.4.钱包页面
   {
     name: "purse",
@@ -163,7 +181,19 @@ const routes = [
       permission: true,
     },
   },
-  // 4.5 登录页面
+  // 4.6 地址集合页面
+  {
+    name: "address",
+    path: "/address",
+    component: AddressView,
+    meta: {
+      title: "收获地址",
+      lv: 2,
+      keepAlive: true,
+      permission: true,
+    },
+  },
+  // 1）登录页面
   {
     name: "login",
     path: "/login",
@@ -173,7 +203,7 @@ const routes = [
       lv: 2, // 二级页面
     },
   },
-  // 注册页面
+  // 2）注册页面
   {
     name: "regist",
     path: "/regist",
@@ -197,7 +227,7 @@ const routes = [
     },
   },
 
-  // 6 评论详情页面
+  // 5.1 评论详情页面
   {
     path: "/commentdetail",
     name: "commentdetail",
@@ -208,6 +238,19 @@ const routes = [
       permission: true,
     },
   },
+
+  // 5.2 提交订单页面
+  {
+    path: "/checkorder",
+    name: "checkorder",
+    component: CheckOrder,
+    meta: {
+      title: "提交订单",
+      lv: 2,
+      permission: true,
+    },
+  },
+
   // 404页面
   {
     name: "notFund",
@@ -230,13 +273,17 @@ router.beforeEach((to, from, next) => {
     if (store.getters.token != "") {
       next();
     } else {
-      next({
-        name: "login",
-        params: {
-          animate: "forward",
-          toBack: "true",
-        },
-      });
+      try {
+        next({
+          name: "login",
+          params: {
+            animate: "forward",
+            toBack: "true",
+          },
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
   } else {
     next();

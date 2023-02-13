@@ -142,6 +142,7 @@ a:active {
 
 .v-click {
   transition: 0.5s;
+  cursor: pointer;
 }
 .v-click:active,
 .v-btn:active {
@@ -214,4 +215,21 @@ label {
 }
 .van-goods-action >>> .van-goods-action-icon {
   font-size: 0.25rem;
+}
+
+/* 滚动条 */
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+  width: 0px;
+}
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+  width: 0px;
+}
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  width: 0px;
+}
+::-webkit-scrollbar-thumb:window-inactive {
+  width: 0px;
 }

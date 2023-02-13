@@ -54,6 +54,7 @@ export default {
   justify-content: space-around;
   align-items: center;
   padding: 0.4rem 0.2rem;
+  cursor: pointer;
 }
 .left {
   display: flex;

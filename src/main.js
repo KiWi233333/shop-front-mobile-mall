@@ -42,6 +42,8 @@ import {
   Popup,
   Cell,
   CellGroup,
+  Calendar,
+  Area,
 } from "vant";
 // van按需t注册组件
 Vue.use(Button)
@@ -80,7 +82,9 @@ Vue.use(Button)
   .use(Uploader)
   .use(Popup)
   .use(Cell)
-  .use(CellGroup);
+  .use(CellGroup)
+  .use(Calendar)
+  .use(Area);
 Vue.config.productionTip = false;
 
 new Vue({

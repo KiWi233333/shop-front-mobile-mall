@@ -84,11 +84,11 @@ export default {
 
 .forward-leave-to {
   opacity: 0;
-  transform: translateX(-100%);
+  transform: translateX(-100%) scale(0.95);
 }
 .forward-enter {
   opacity: 0;
-  transform: translateX(100%);
+  transform: translateX(100%) scale(0.95);
 }
 
 /* 返回动画 */
@@ -101,10 +101,10 @@ export default {
 }
 .toback-leave-to {
   opacity: 0;
-  transform: translateX(100%);
+  transform: translateX(100%) scale(0.95);
 }
 .toback-enter {
   opacity: 0;
-  transform: translateX(-100%);
+  transform: translateX(-100%) scale(0.95);
 }
 </style>

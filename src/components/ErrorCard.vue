@@ -6,13 +6,13 @@
     :image="image"
     :description="text || '请稍后再试！'"
   >
-    <button class="v-btn" @click="reqHttp">刷新</button>
+    <button class="v-btn" @click="reqHttp">{{ btnText || "刷新" }}</button>
   </van-empty>
 </template>
 <script>
 export default {
   name: "ErrorCard",
-  props: ["image", "text"],
+  props: ["image", "text", "btnText"],
   methods: {
     reqHttp() {
       this.timer = setTimeout(() => {

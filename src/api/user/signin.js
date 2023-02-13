@@ -5,7 +5,7 @@ import { request } from "@/util/request";
  * @param {string} token
  * @returns
  */
-export function toUserSignIn(token) {
+export function setUserSignIn(token) {
   return request({
     method: "post",
     url: "/users/signIn",
