@@ -1,6 +1,7 @@
 <template>
   <!-- 头像弹窗 -->
   <van-popup
+    transition="popup"
     class="icon-popup"
     closeable
     round
@@ -99,14 +100,6 @@ export default {
 </script>
 
 <style scpoed>
-.van-popup.icon-popup {
-  animation: 0.3s zoomIn ease;
-  transform-origin: -10% -10%;
-}
-.leave-active-class-popup {
-  animation: 0.3s zoomOut ease;
-  transform-origin: -10% -10%;
-}
 /* 修改头像 */
 .icon-ctn {
   align-items: center;

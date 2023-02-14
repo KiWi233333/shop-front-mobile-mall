@@ -49,6 +49,7 @@ export default {
   margin-top: 0.5rem;
 }
 .lg-off {
+  margin-top: 0.4rem;
   width: 100%;
   padding-top: 0.2rem;
   padding-bottom: 0.2rem;

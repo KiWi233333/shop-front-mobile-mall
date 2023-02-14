@@ -9,30 +9,62 @@
       finished-text="没有更多了"
       @load="getAllAddressList"
     >
-      <!-- 地址卡片 -->
-      <address-card
-        v-for="(p, i) in addressList"
-        :key="p.id"
-        :item="p"
-        @toEdit="toEdit"
-        @deleteAddressByIndex="deleteAddressByIndex"
-        :index="i"
-        v-bind="$attrs"
-      />
+      <van-checkbox-group v-model="selectList">
+        <transition-group name="item" tag="div">
+          <!-- 地址卡片 -->
+          <address-card
+            class="v-card"
+            v-for="(p, i) in addressList"
+            :key="i"
+            :item="p"
+            @toEdit="toEdit"
+            @deleteAddressByIndex="deleteAddressByIndex"
+            :index="i"
+            v-bind="$attrs"
+          >
+            <van-checkbox
+              icon-size="0.5rem"
+              :name="p.id"
+              checked-color="var(--tip-color2)"
+              >选中
+            </van-checkbox>
+          </address-card>
+        </transition-group>
+      </van-checkbox-group>
     </van-list>
+    <!-- 按钮 -->
     <div class="nav">
-      <button class="v-btn">添加新地址</button>
+      <!-- 添加新地址 -->
+      <button
+        class="v-btn"
+        v-show="!$attrs.isSelectAll"
+        @click="onAddress"
+        key="add"
+      >
+        添加新地址
+      </button>
+      <!-- 全选和删除 -->
+      <div class="select" v-show="$attrs.isSelectAll" key="select">
+        <van-checkbox
+          v-model="selectAll"
+          icon-size="0.5rem"
+          checked-color="var(--tip-color2)"
+          >全选
+        </van-checkbox>
+        <button class="v-btn" @click="deleteAddressByIdsArray">删除选中</button>
+      </div>
     </div>
 
     <!-- 表单弹窗 -->
     <van-popup
+      transition="popup"
       closeable
       class="flex-col address-popup"
       v-model="showAddress"
       position="center"
       round
     >
-      <van-form @submit="addAddress" class="form">
+      <van-form @submit="toSubmit" class="form">
         <label class="title">收货地址</label>
         <!-- 收货人 -->
         <van-field
@@ -49,12 +81,17 @@
         <van-field
           label="手机号"
           clear-trigger="always"
-          placeholder=" 收货人手机号"
+          placeholder="收货人手机号"
           type="tel"
           name="phone"
           v-model="address.phone"
           class="v-input"
-          :rules="[{ required: true }]"
+          :rules="[
+            {
+              required: true,
+              pattern: /^(?:(?:\+|00)86)?1[3-9]\d{9}$/,
+            },
+          ]"
         />
         <!-- 地区 -->
         <van-field
@@ -76,7 +113,9 @@
           clear-trigger="always"
           placeholder=" 如街道、门牌号、小区、乡镇、村等"
           type="textarea"
+          maxlength="40"
           v-model="address.address"
+          show-word-limit
           name="address"
           class="v-input textarea"
           :rules="[{ required: true }]"
@@ -138,8 +177,15 @@
 import ErrorCard from "@/components/ErrorCard.vue";
 import { areaList } from "@vant/area-data";
 
-import { getAllAddress } from "@/api/user/address";
+import {
+  deleteAddressById,
+  deleteAddressByIdsArray,
+  getAllAddress,
+  putAddres,
+  updateAddress,
+} from "@/api/user/address";
 import AddressCard from "./AddressCard.vue";
+import { Dialog, Toast } from "vant";
 export default {
   components: { ErrorCard, AddressCard },
   name: "AddressList",
@@ -167,19 +213,19 @@ export default {
       // 数据
       addressList: [],
       active: 0,
-      // 记载
+      selectList: [],
+      selectAll: false,
+      // 加载
       loading: false,
       finished: false,
     };
   },
-  watch: {
-    "address.isDefault": {
-      handler(newVal) {
-        this.address.isDefault = +newVal;
-      },
-    },
-  },
   methods: {
+    // 判断 添加 / 修改
+    toSubmit() {
+      this.isEdit ? this.reqUpdateAddress() : this.reqAddAddress();
+    },
+
     // 获取所有地址
     async getAllAddressList() {
       this.loading = true;
@@ -197,7 +243,6 @@ export default {
         if (data.length === this.addressList.length) {
           this.finished = true;
         }
-        this.$store.commit("setAddressList", data);
       } else if (res.status === 200 && !res.data.success) {
         this.isEmpty = true;
       } else {
@@ -205,39 +250,117 @@ export default {
       }
     },
 
-    // 添加地址
-    addAddress() {
-      console.log(this.address);
-    },
-    // 更新地址
-    setDefaultAddress() {},
-
-    // 删除单个地址
-    deleteAddressByIndex(i) {
-      this.addressList.splice(i, 1);
-    },
-
-    // 获取定位
-    getLocation() {
-      console.log("定位");
-    },
-    // 显示
-    onShow() {
+    // 显示添加地址弹窗
+    onAddress() {
       for (const key in this.address) {
         this.address[key] = "";
       }
       this.isEdit = false;
       this.showAddress = true;
     },
+    // 添加地址
+    async reqAddAddress() {
+      const res = await putAddres(this.address, this.$store.getters.token);
+      //   console.log(res.data);
+      if (res.status === 200 && res.data.success) {
+        Toast({ type: "success", position: "bottom", message: "添加成功！" });
+        this.addressList[0].isDefault = false;
+        this.address.isDefault
+          ? this.addressList.unshift(this.address)
+          : this.addressList.push(this.address);
+      } else {
+        Toast({ position: "bottom", message: "添加失败！" });
+      }
+      this.showAddress = false;
+    },
+
     // 加入单例编辑
     toEdit(item, i) {
-      console.log(1);
       for (const key in item) {
         this.$set(this.address, key, item[key]);
       }
+      this.area = `${item.province} ${item.city} ${item.district}`;
+      this.active = i;
       this.isEdit = true;
       this.showAddress = true;
-      this.active = i;
+    },
+    // 更新地址
+    async reqUpdateAddress() {
+      const index = this.active;
+      const res = await updateAddress(this.address, this.$store.getters.token);
+      //   console.log(res.data);
+      if (res.status === 200 && res.data.success) {
+        const newAddress = JSON.parse(JSON.stringify(this.address));
+        if (this.address.isDefault) {
+          // 默认地址
+          this.addressList[0].isDefault = false; // 取消其他默认
+          this.addressList.splice(index, 1); // 移除
+          this.addressList.unshift(newAddress); // 添加到头部
+        } else {
+          // 不是默认地址
+          this.addressList.splice(index, 1, newAddress);
+        }
+        Toast({ type: "success", position: "bottom", message: "修改成功！" });
+      } else {
+        Toast({ position: "bottom", message: "修改失败！" });
+      }
+      this.showAddress = false;
+    },
+
+    // 删除地址
+    deleteAddress() {
+      Dialog.confirm({ title: "是否删除该地址？" })
+        .then(() => {
+          deleteAddressById(
+            this.addressList[this.active].id,
+            this.$store.getters.token
+          )
+            .then((res) => {
+              if (res.data.success) {
+                this.addressList.splice(this.active, 1);
+                Toast(" 删除成功！");
+              } else {
+                Toast(" 删除失败！");
+              }
+            })
+            .catch(() => {
+              Toast(" 删除失败！");
+            });
+        })
+        .catch(() => {})
+        .finally(() => {
+          this.showAddress = false;
+        });
+    },
+    // 删除单个本地地址
+    deleteAddressByIndex(i) {
+      this.addressList.splice(i, 1);
+    },
+
+    // 删除多个地址
+    deleteAddressByIdsArray() {
+      //   console.log(JSON.stringify(this.selectList));
+      Dialog.confirm({
+        title: "确认删除选中？",
+        message: `共${this.selectList.length}条地址`,
+      })
+        .then(async () => {
+          const res = await deleteAddressByIdsArray(
+            JSON.stringify(this.selectList),
+            this.$store.getters.token
+          );
+          console.log(res.data);
+          if (res.data.success && res.status === 200) {
+            Toast({ position: "bottom", message: "删除成功！" });
+          } else {
+            Toast({ position: "bottom", message: "删除失败！" });
+          }
+        })
+        .catch(() => {});
+    },
+    // 获取定位
+    getLocation() {
+      console.log("定位");
     },
 
     // 设置区域
@@ -247,6 +370,18 @@ export default {
         (this.address.city = info[1].name), // 市
         (this.address.district = info[2].name), //区/县
         (this.showArea = false);
+    },
+  },
+  watch: {
+    selectAll(newVal) {
+      if (newVal) {
+        this.addressList.forEach((p) => {
+          this.selectList.push(p.id);
+        });
+      } else {
+        this.selectList.splice(0);
+      }
+      console.log(this.selectList);
     },
   },
 };
@@ -304,5 +439,34 @@ export default {
   width: 40%;
   border-radius: 8px;
   padding: 0.2rem;
+}
+/* 添加 */
+.nav {
+  background-color: var(--text-color2);
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+.nav .v-btn {
+  width: 80%;
+  padding: 0.2rem;
+  font-size: 0.45rem;
+  margin: 0.4rem;
+  animation: 0.3s fadeInUp;
+}
+.nav .select {
+  animation: 0.3s fadeInUp;
+  display: flex;
+  justify-content: space-around;
+}
+.nav .select .v-btn {
+  width: 70%;
+  padding: 0.2rem 0.5rem;
+  margin: 0.4rem;
+  font-size: 0.45rem;
+  background-color: var(--tip-color2);
+  color: var(--text-color2);
 }
 </style>

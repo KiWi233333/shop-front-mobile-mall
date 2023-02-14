@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import AddressList from "@/components/address/AddressList.vue";
+import AddressList from "@/components/Address/AddressList";
 import TopNav from "@/components/TopNav.vue";
 export default {
   components: { AddressList, TopNav },
@@ -28,5 +28,8 @@ export default {
 <style scpoed>
 .contain {
   padding: 0.2rem 0.3rem;
+}
+.signin-view {
+  min-height: 100vh;
 }
 </style>

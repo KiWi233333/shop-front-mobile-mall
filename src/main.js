@@ -44,6 +44,11 @@ import {
   CellGroup,
   Calendar,
   Area,
+  RadioGroup,
+  Radio,
+  CheckboxGroup,
+  Card,
+  SubmitBar,
 } from "vant";
 // van按需t注册组件
 Vue.use(Button)
@@ -84,7 +89,12 @@ Vue.use(Button)
   .use(Cell)
   .use(CellGroup)
   .use(Calendar)
-  .use(Area);
+  .use(Area)
+  .use(CheckboxGroup)
+  .use(Radio)
+  .use(RadioGroup)
+  .use(Card)
+  .use(SubmitBar);
 Vue.config.productionTip = false;
 
 new Vue({

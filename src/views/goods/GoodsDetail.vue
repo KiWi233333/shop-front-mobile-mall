@@ -271,14 +271,30 @@ export default {
     },
 
     // 提交订单
-    toMakeOder(info) {
+    toMakeOder(order) {
+      console.log(order);
+      order.selectedSkuComb.price = order.selectedSkuComb.price / 100;
       this.$router.push({
         name: "checkorder",
         params: {
           animate: "forward",
           toBack: "true",
         },
-        query: { info },
+
+        query: {
+          // 传参
+          info: [
+            {
+              goodsId: this.GOOD_ID,
+              num: order.selectedNum,
+              props: this.getOption,
+              price: order.selectedSkuComb.price,
+              propsId: order.selectedSkuComb.id,
+              postage: this.item.goods.postage,
+            },
+          ],
+          goodsList: [this.item.goods],
+        },
       });
     },
 

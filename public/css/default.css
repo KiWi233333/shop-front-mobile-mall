@@ -20,7 +20,7 @@
 
   --shadow-color: rgba(50, 50, 93, 0.2) 0px 2px 5px -1px, rgba(0, 0, 0, 0.2) 0px 1px 3px -1px;
   --shadow-color2: rgba(122, 122, 122, 0.2) 0px 2px 5px 4px, rgba(101, 101, 101, 0.4) 0px 1px 3px -1px;
-  --shadow-color3: rgba(0, 0, 0, 0.14) 0px 1px 2px 0px;
+  --shadow-color3: rgba(0, 0, 0, 0.14) 0px 1px 2px 0px, rgba(0, 0, 0, 0.14) 0px 0px 1px 0px;
   /* 边框 */
   --border-color: rgba(140, 140, 140, 0.2);
   /* 延迟 */
@@ -37,6 +37,9 @@ a {
 }
 a:active {
   color: var(--text-color);
+}
+small {
+  color: var(--text-color3);
 }
 * {
   box-sizing: border-box;
@@ -217,6 +220,27 @@ label {
   font-size: 0.25rem;
 }
 
+/* 提交订单 */
+.van-submit-bar__bar {
+  width: 100%;
+  height: auto;
+  padding: 0.3rem 0.2rem;
+  background-color: var(--theme-color3);
+  box-shadow: var(--shadow-color);
+}
+.van-submit-bar__bar >>> button {
+  width: 3rem;
+  font-size: 0.4rem;
+  font-weight: 600;
+}
+.van-submit-bar__bar >>> .van-submit-bar__text {
+  font-weight: 600;
+  font-size: 0.36rem;
+}
+/*  */
+.van-cell {
+  padding: 0.2rem 0;
+}
 /* 滚动条 */
 /* 设置滚动条的样式 */
 ::-webkit-scrollbar {
@@ -232,4 +256,41 @@ label {
 }
 ::-webkit-scrollbar-thumb:window-inactive {
   width: 0px;
+}
+
+/* transition组件 */
+.item-enter-active,
+.item-leave-active {
+  transition: all 0.5s;
+}
+.item-enter,
+.item-leave-to {
+  transition: all 0.5s;
+  opacity: 0;
+  transform: translateX(100%);
+}
+/* 折叠 */
+.popup-enter-active,
+.popup-leave-active {
+  opacity: 1;
+  animation: 0.5s zoomIn ease;
+  transform-origin: -20% -20%;
+}
+
+.popup-enter,
+.popup-leave-to {
+  opacity: 0;
+  animation: 0.5s zoomOut ease;
+  transform-origin: -20% -20%;
+}
+
+/* 上进下出 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: bottom 0.3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  transition: bottom 0.3s;
 }

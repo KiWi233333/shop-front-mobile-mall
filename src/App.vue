@@ -47,10 +47,7 @@ export default {
         }
       })
       .catch(() => {
-        this.$store.commit("setUserInfo", {});
-        this.$store.commit("setLoginState", false);
-        this.$store.commit("setToken", "");
-        this.$store.commit("setLoginTime", 0);
+        this.$store.commit("loginOut");
       }); // 验证token
   },
   watch: {

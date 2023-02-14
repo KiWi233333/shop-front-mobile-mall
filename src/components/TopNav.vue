@@ -26,6 +26,7 @@ export default {
 </script>
 <style scoped>
 .top-nav {
+  user-select: none;
   display: flex;
   align-items: center;
   justify-content: space-between;

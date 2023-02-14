@@ -281,8 +281,15 @@ router.beforeEach((to, from, next) => {
             toBack: "true",
           },
         });
+        // router.push({
+        //   name: "login",
+        //   params: {
+        //     animate: "forward",
+        //     toBack: "true",
+        //   },
+        // })
       } catch (e) {
-        console.log(e);
+        e;
       }
     }
   } else {

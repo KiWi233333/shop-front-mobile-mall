@@ -64,7 +64,7 @@ export function putAddres(addressInfo, token) {
     method: "post",
     url: `/address/save`,
     headers: { Authorization: token },
-    data: { name, phone, province, city, district, address, isDefault },
+    data: { name, phone, province, city, district, address, isDefault: +isDefault },
   });
 }
 
@@ -89,7 +89,7 @@ export function updateAddress(updateInfo, token) {
     method: "put",
     url: "/address/update",
     headers: { Authorization: token },
-    data: { id, uid, name, phone, province, city, district, address, isDefault },
+    data: { id, uid, name, phone, province, city, district, address, isDefault: +isDefault },
   });
 }
 
