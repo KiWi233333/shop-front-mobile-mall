@@ -1,4 +1,5 @@
 import { request } from "@/util/request";
+// import qs from "qs";
 
 /**
  * 查询单个订单
@@ -7,11 +8,7 @@ import { request } from "@/util/request";
  * @returns
  */
 export function getOrderById(id, token) {
-  return request({
-    method: "get",
-    url: `/orders/query/${id}`,
-    headers: { Authorization: token },
-  });
+  return request({ method: "get", url: `/orders/query/${id}`, headers: { Authorization: token } });
 }
 
 /**
@@ -20,11 +17,7 @@ export function getOrderById(id, token) {
  * @returns
  */
 export function getAllOrder(token) {
-  return request({
-    method: "get",
-    url: `/orders/query/all`,
-    headers: { Authorization: token },
-  });
+  return request({ method: "get", url: `/orders/query/all`, headers: { Authorization: token } });
 }
 
 /**
@@ -33,11 +26,7 @@ export function getAllOrder(token) {
  * @returns
  */
 export function getUnPaidOrder(token) {
-  return request({
-    method: "get",
-    url: `/orders/query/unpaid`,
-    headers: { Authorization: token },
-  });
+  return request({ method: "get", url: `/orders/query/unpaid`, headers: { Authorization: token } });
 }
 
 /**
@@ -46,11 +35,7 @@ export function getUnPaidOrder(token) {
  * @returns
  */
 export function getUnDeliverOrder(token) {
-  return request({
-    method: "get",
-    url: `/orders/query/beShipped`,
-    headers: { Authorization: token },
-  });
+  return request({ method: "get", url: `/orders/query/beShipped`, headers: { Authorization: token } });
 }
 
 /**
@@ -58,12 +43,8 @@ export function getUnDeliverOrder(token) {
  * @param {*} token
  * @returns
  */
-export function getDeliverOrder(token) {
-  return request({
-    method: "get",
-    url: `/orders/query/undelivered`,
-    headers: { Authorization: token },
-  });
+export function getDeliveredOrder(token) {
+  return request({ method: "get", url: `/orders/query/undelivered`, headers: { Authorization: token } });
 }
 /**
  * 获取已完成的订单
@@ -71,11 +52,7 @@ export function getDeliverOrder(token) {
  * @returns
  */
 export function getDoneOrder(token) {
-  return request({
-    method: "get",
-    url: `/orders/query/completed`,
-    headers: { Authorization: token },
-  });
+  return request({ method: "get", url: `/orders/query/completed`, headers: { Authorization: token } });
 }
 /**
  * 查询订单属性信息
@@ -84,21 +61,17 @@ export function getDoneOrder(token) {
  * @returns
  */
 export function getOrderProps(id, token) {
-  return request({
-    method: "get",
-    url: `/orderItem/query/${id}`,
-    headers: { Authorization: token },
-  });
+  return request({ method: "get", url: `/orderItem/query/${id}`, headers: { Authorization: token } });
 }
 
 /**
  * 提交订单
  * @param {number} aid 用户收货id
  * @param {Array} items  订单商品列表
- * {
+ * [{
       gid: 1579762804599140400,
       quantity: 1,
-    },
+    }],
  * @param {string} remarks 备注
  * @param {string} token 
  * @returns
@@ -107,10 +80,57 @@ export function submitOrder(aid, items, remarks, token) {
   return request({
     method: "post",
     url: `/orders/submit`,
-    headers: {
-      Authorization: token,
+    headers: { Authorization: token },
+    data: {
+      aid,
+      items,
+      remarks,
     },
-    data: { aid, items, remarks },
+  });
+}
+
+/**
+ * 支付订单
+ * @param {number} id 订单id
+ * @param {string} token
+ * @returns
+ */
+export function payOrder(id, token) {
+  return request({
+    method: "put",
+    url: `/orders/payment/${id}`,
+    headers: { Authorization: token },
+  });
+}
+
+/**
+ * 修改订单
+ * @param {number} id 订单id
+ * @param {string} aid 收获id
+ * @param {string} remarks 备注
+ * @param {string} token
+ * @returns
+ */
+export function updateOrder(id, aid, remarks, token) {
+  return request({
+    method: "put",
+    url: `/orders/update/${id}`,
+    headers: { Authorization: token },
+    data: { aid, remarks },
+  });
+}
+
+/**
+ * 完成订单
+ * @param {number} id 订单id
+ * @param {string} token
+ * @returns
+ */
+export function doneOrder(id, token) {
+  return request({
+    method: "put",
+    url: `/orders/complete/${id}`,
+    headers: { Authorization: token },
   });
 }
 
@@ -138,48 +158,6 @@ export function cancelOrderById(id, token) {
   return request({
     method: "delete",
     url: `/orders/cancel/${id}`,
-    headers: { Authorization: token },
-  });
-}
-
-/**
- * 支付订单
- * @param {number} id 订单id
- * @param {string} token
- * @returns
- */
-export function payOrder(id, token) {
-  return request({
-    method: "put",
-    url: `/orders/payment/${id}`,
-    headers: { Authorization: token },
-  });
-}
-
-/**
- * 更新订单
- * @param {number} id 订单id
- * @param {string} token
- * @returns
- */
-export function updateOrder(id, token) {
-  return request({
-    method: "put",
-    url: `/orders/update/${id}`,
-    headers: { Authorization: token },
-  });
-}
-
-/**
- * 完成订单
- * @param {number} id 订单id
- * @param {string} token
- * @returns
- */
-export function doneOrder(id, token) {
-  return request({
-    method: "put",
-    url: `/orders/complete/${id}`,
     headers: { Authorization: token },
   });
 }

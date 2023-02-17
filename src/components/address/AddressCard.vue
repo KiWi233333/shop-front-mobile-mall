@@ -2,22 +2,6 @@
   <div class="address-card">
     <div class="Top">
       <div class="flex-center-center left">
-        <!-- <svg
-          
-          v-if="item.isDefault"
-          t="1676279037086"
-          viewBox="0 0 1024 1024"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          p-id="2867"
-        >
-          <path
-            d="M947.2 422.4L572.8 115.2c-32-25.6-86.4-25.6-118.4 0L76.8 425.6c-12.8 6.4-16 22.4-9.6 35.2 3.2 12.8 16 19.2 28.8 19.2h32v364.8C128 892.8 163.2 928 211.2 928H416c19.2 0 32-12.8 32-32v-147.2c0-22.4 35.2-44.8 64-44.8 28.8 0 67.2 22.4 67.2 44.8V896c0 19.2 12.8 32 32 32h208c48 0 80-32 80-83.2V480h32c12.8 0 25.6-9.6 28.8-22.4 3.2-12.8 0-25.6-12.8-35.2z"
-            p-id="2868"
-            data-spm-anchor-id="a313x.7781069.0.i1"
-            class="selected"
-          ></path>
-        </svg> -->
         <van-icon
           v-if="item.isDefault"
           size="0.6rem"

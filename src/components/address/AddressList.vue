@@ -24,7 +24,7 @@
           >
             <van-checkbox
               icon-size="0.5rem"
-              :name="p.id"
+              :name="i"
               checked-color="var(--tip-color2)"
               >选中
             </van-checkbox>
@@ -173,8 +173,9 @@
   </div>
 </template>
   
-  <script>
+<script>
 import ErrorCard from "@/components/ErrorCard.vue";
+import AddressCard from "@/components/Address/AddressCard.vue";
 import { areaList } from "@vant/area-data";
 
 import {
@@ -184,7 +185,6 @@ import {
   putAddres,
   updateAddress,
 } from "@/api/user/address";
-import AddressCard from "./AddressCard.vue";
 import { Dialog, Toast } from "vant";
 export default {
   components: { ErrorCard, AddressCard },
@@ -200,6 +200,7 @@ export default {
         address: "", //详细收货地址
         isDefault: 0, //是否默认收货地址
       },
+      // defaultCount: 0, // 默认数量
       area: "",
       areaList, // 区县集合
       showAddress: false, // 显示地址表单
@@ -264,10 +265,14 @@ export default {
       //   console.log(res.data);
       if (res.status === 200 && res.data.success) {
         Toast({ type: "success", position: "bottom", message: "添加成功！" });
-        this.addressList[0].isDefault = false;
-        this.address.isDefault
-          ? this.addressList.unshift(this.address)
-          : this.addressList.push(this.address);
+
+        const newAddress = JSON.parse(JSON.stringify(this.address));
+        if (newAddress.isDefault) {
+          this.addressList[0].isDefault = false;
+          this.addressList.unshift(newAddress);
+        } else {
+          this.addressList.push(newAddress);
+        }
       } else {
         Toast({ position: "bottom", message: "添加失败！" });
       }
@@ -339,18 +344,29 @@ export default {
 
     // 删除多个地址
     deleteAddressByIdsArray() {
-      //   console.log(JSON.stringify(this.selectList));
+      let ids = []; // ids
+      const selects = JSON.parse(JSON.stringify(this.selectList));
+      // 根据下标获取ids
+      for (let i = 0; i < selects.length; i++) {
+        ids.push(this.addressList[selects[i]].id);
+      }
+      console.log(ids, selects);
       Dialog.confirm({
         title: "确认删除选中？",
-        message: `共${this.selectList.length}条地址`,
+        message: `共${selects.length}条地址`,
       })
         .then(async () => {
           const res = await deleteAddressByIdsArray(
-            JSON.stringify(this.selectList),
+            ids,
             this.$store.getters.token
           );
-          console.log(res.data);
+          // console.log(res.data);
           if (res.data.success && res.status === 200) {
+            // 删除多个
+            selects.forEach((p) => {
+              this.addressList.splice(p, 1);
+            });
+            this.selectList.splice(0);
             Toast({ position: "bottom", message: "删除成功！" });
           } else {
             Toast({ position: "bottom", message: "删除失败！" });
@@ -358,6 +374,9 @@ export default {
         })
         .catch(() => {});
     },
+
+    // 添加默认地址
+
     // 获取定位
     getLocation() {
       console.log("定位");
@@ -373,16 +392,18 @@ export default {
     },
   },
   watch: {
+    // 全选同步
     selectAll(newVal) {
       if (newVal) {
-        this.addressList.forEach((p) => {
-          this.selectList.push(p.id);
+        this.addressList.forEach((p, i) => {
+          this.selectList.push(i);
         });
       } else {
         this.selectList.splice(0);
       }
-      console.log(this.selectList);
     },
+
+    //
   },
 };
 </script>

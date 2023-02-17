@@ -1,5 +1,5 @@
 import { request } from "@/util/request";
-
+import qs from "qs";
 /**
  * 获取默认地址
  * @param {string} token
@@ -116,8 +116,14 @@ export function deleteAddressById(id, token) {
 export function deleteAddressByIdsArray(ids, token) {
   return request({
     method: "delete",
-    url: `/address/deletes`,
+    url: "/address/deletes",
     headers: { Authorization: token },
-    data: { ids },
+
+    params: { ids },
+    paramsSerializer: {
+      serialize(params) {
+        return qs.stringify(params, { indices: false });
+      },
+    },
   });
 }

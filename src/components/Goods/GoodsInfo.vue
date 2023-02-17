@@ -2,10 +2,11 @@
   <div class="goods-info">
     <img :src="getImgSrc" class="left img" />
     <div class="center">
-      <div class="title">{{ goods.name }}</div>
+      <div class="title">{{ goods.name || goods.goodsName }}</div>
       <div class="props">{{ props }}</div>
     </div>
     <div class="right">
+      <div class="r-top price" v-if="tips">{{ tips }}</div>
       <div class="title">
         ￥<span class="price">{{ price }}</span>
       </div>
@@ -17,11 +18,11 @@
 import { getResourImageByName } from "@/api/res";
 export default {
   name: "GoodsInfo",
-  props: ["goods", "price", "props", "num"],
+  props: ["goods", "price", "props", "num", "tips"],
   methods: {},
   computed: {
     getImgSrc() {
-      return getResourImageByName(this.goods?.images);
+      return getResourImageByName(this.goods?.image || this.goods?.images);
     },
   },
 };
@@ -45,16 +46,16 @@ export default {
   padding: 0 0.3rem;
 }
 .center .title {
-  font-weight: 600;
   padding: 0.05rem 0;
   width: 100%;
+  font-size: 0.42rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 .center .props {
   padding: 0.05rem 0;
-  font-size: 0.36rem;
+  font-size: 0.32rem;
   color: var(--text-color3);
   display: -webkit-box;
   -webkit-line-clamp: 3;

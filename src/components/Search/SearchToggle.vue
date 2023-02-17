@@ -15,9 +15,12 @@
     <van-tabs
       class="tabs"
       v-model="active"
-      line-width="1.6rem"
-      color="var(--theme-color2)"
+      swipeable
+      sticky
       animated
+      line-width="1.4rem"
+      title-active-color="var(--theme-color2)"
+      color="var(--theme-color2)"
     >
       <!-- 筛选条件 -->
       <van-tab v-for="(p, i) in option" :key="i">

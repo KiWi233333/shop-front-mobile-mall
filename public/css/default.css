@@ -66,7 +66,8 @@ small {
 .animate__animated {
   animation-delay: calc(var(--router-delay) / 2);
 }
-.flex-center-center {
+.flex-center-center,
+.flex-c-c {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -238,9 +239,6 @@ label {
   font-size: 0.36rem;
 }
 /*  */
-.van-cell {
-  padding: 0.2rem 0;
-}
 /* 滚动条 */
 /* 设置滚动条的样式 */
 ::-webkit-scrollbar {

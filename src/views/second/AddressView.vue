@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import AddressList from "@/components/Address/AddressList";
+import AddressList from "@/components/Address/AddressList.vue";
 import TopNav from "@/components/TopNav.vue";
 export default {
   components: { AddressList, TopNav },

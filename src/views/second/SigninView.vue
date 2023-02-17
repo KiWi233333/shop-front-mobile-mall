@@ -24,7 +24,9 @@
               :text="signInText"
               :disabled="isSignin"
             />
-            <span class="top">总计&nbsp;{{ siginDays }}&nbsp;天</span>
+            <span class="top" v-show="siginDays">
+              总计&nbsp;{{ siginDays }}&nbsp;天
+            </span>
           </div>
         </template>
       </van-calendar>
@@ -133,6 +135,7 @@ export default {
   border-top: 1px solid var(--border-color);
 }
 .calender .top {
-  font-size: 0.35rem;
+  padding: 0.1rem;
+  font-size: 0.3rem;
 }
 </style>

@@ -18,10 +18,11 @@ export default new Vuex.Store({
     addressList: {}, // 地址集合
   },
   getters: {
-    // 获取token
+    // 获取token 并校验
     token(state) {
       if (state.token !== "") {
         const delay = (new Date().getTime() - state.loginTime) / 1000;
+        console.log(delay);
         // 登录有效
         if (delay <= state.tokenLife) {
           return state.token; // 返回token

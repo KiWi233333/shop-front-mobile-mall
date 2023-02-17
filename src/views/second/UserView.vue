@@ -305,8 +305,9 @@ export default {
 }
 /* 列表组 */
 .group {
-  box-shadow: var(--shadow-color);
+  box-shadow: var(--shadow-color3);
   margin: 0.3rem 0.6rem;
+  padding: 0.2rem 0.3rem;
 }
 .group .van-cell__title {
   color: var(--text-color3);

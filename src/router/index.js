@@ -9,7 +9,6 @@ import CategoryView from "@/views/home/CategoryView.vue";
 import LoginView from "@/views/login/LoginView.vue";
 import RegisterView from "@/views/login/RegisterView.vue";
 // 二级页面
-import OrderView from "@/views/second/OrderView.vue";
 import CollectView from "@/views/second/CollectView.vue";
 import SearchView from "@/views/second/SearchView.vue";
 import EventView from "@/views/second/EventView.vue";
@@ -24,12 +23,12 @@ import GoodsDetail from "@/views/goods/GoodsDetail.vue";
 import CommentDetail from "@/views/comment/CommentDetail";
 
 // 订单
+import OrderView from "@/views/orders/OrderView.vue";
 import CheckOrder from "@/views/orders/CheckOrder";
 // 404
 import NotFund from "@/views/NotFund.vue";
 
-import store from "@/store";
-
+import store from "@/style/store";
 Vue.use(VueRouter);
 const routes = [
   // 1.主页
