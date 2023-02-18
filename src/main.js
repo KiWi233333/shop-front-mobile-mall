@@ -52,7 +52,6 @@ import {
   Popover,
 } from "vant";
 
-Toast.setDefaultOptions("loading", { forbidClick: true });
 // van按需t注册组件
 Vue.use(Button)
   .use(Tabbar)
@@ -100,7 +99,12 @@ Vue.use(Button)
   .use(SubmitBar)
   .use(Popover);
 Vue.config.productionTip = false;
-
+Toast.setDefaultOptions({
+  forbidClick: true,
+});
+Dialog.setDefaultOptions({
+  transition: "popup",
+});
 new Vue({
   router,
   store,

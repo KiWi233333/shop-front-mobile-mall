@@ -256,28 +256,37 @@ label {
   width: 0px;
 }
 
-/* transition组件 */
+/* 列表项目增删查改 */
+.item-move, /* 对移动中的元素应用的过渡 */
 .item-enter-active,
 .item-leave-active {
-  transition: all 0.5s;
+  transition: all 0.5s ease;
 }
-.item-enter,
+
+.item-enter-from,
 .item-leave-to {
-  transition: all 0.5s;
   opacity: 0;
   transform: translateX(100%);
 }
+
+/* 确保将离开的元素从布局流中删除
+  以便能够正确地计算移动的动画。 */
+.item-leave-active {
+  position: absolute;
+}
+
 /* 折叠 */
 .popup-enter-active,
 .popup-leave-active {
   opacity: 1;
-  animation: 0.5s zoomIn ease;
+  animation: 0.4s zoomIn;
   transform-origin: -20% -20%;
 }
 
 .popup-enter,
 .popup-leave-to {
   opacity: 0;
+  display: none;
   animation: 0.5s zoomOut ease;
   transform-origin: -20% -20%;
 }
@@ -285,10 +294,26 @@ label {
 /* 上进下出 */
 .fade-enter-active,
 .fade-leave-active {
-  transition: bottom 0.3s;
+  transition: all 0.3s;
 }
 
 .fade-enter,
 .fade-leave-to {
-  transition: bottom 0.3s;
+  transition: all 0.3s;
+}
+
+/* 下进右出 */
+.bottomRight-enter-active,
+.bottomRight-leave-active {
+  transition: all 0.4s ease;
+}
+.bottomRight-enter {
+  transition: all 0.5s;
+  opacity: 0;
+  transform: translateY(20%);
+}
+.bottomRight-leave-to {
+  transition: all 0.5s;
+  opacity: 0;
+  transform: translateX(100%);
 }

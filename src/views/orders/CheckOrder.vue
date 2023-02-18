@@ -427,6 +427,7 @@ export default {
                 if (res.status === 200 && res.data.success) {
                   done();
                   Toast({ message: "取消成功！", type: "success" });
+                  this.$router.back();
                 } else {
                   Toast("取消失败，请重新提交！");
                 }

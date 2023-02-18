@@ -9,36 +9,74 @@
       finished-text="没有更多商品了"
       @load="onLoad"
     >
-      <div
-        class="v-card order-card"
-        v-for="order in orderList"
-        :key="order.orderId"
-      >
-        <!-- 状态 -->
-        <div class="flex-c-c top">
-          <span class="left"
-            ><van-icon name="shop" color="var(--text-color3)" />
-            官方旗舰店</span
-          >
-          <span class="right" style="color: var(--tip-color2)">{{
-            getState(order)
-          }}</span>
+      <transition-group name="bottomRight" tag="div">
+        <div class="box" :key="23333"></div>
+        <div
+          :key="order?.orderId"
+          class="v-card order-card"
+          v-for="(order, i) in orderList"
+        >
+          <!-- 状态 -->
+          <div class="flex-c-c top" v-if="order?.orderItems?.length">
+            <span class="left"
+              ><van-icon name="shop" color="var(--text-color3)" />
+              官方旗舰店</span
+            >
+            <span class="right" style="color: var(--tip-color2)">{{
+              getState(order)
+            }}</span>
+          </div>
+          <!-- 商品 -->
+          <div class="good-list" v-if="order?.orderItems?.length">
+            <goods-info
+              class="goods"
+              v-for="p in order.orderItems"
+              :key="p?.gid"
+              :goods="p"
+              :price="p?.price"
+              :tips="p?.isPay"
+              :props="getPorps(p)"
+              :num="p.quantity"
+              @click="toGoodsView(order.gid)"
+            />
+          </div>
+          <!-- 总计 -->
+          <div class="all-price" v-if="order?.orderItems?.length">
+            <small>( 共{{ order?.orderItems.length }}件 )</small>
+            实付：￥<span class="price">{{ getPrice(order.price) }}</span>
+          </div>
+          <!-- 按钮 -->
+          <!-- 待支付 -->
+          <div class="btns" v-if="getState(order) == '待支付'">
+            <button
+              class="v-click btn cancel"
+              @click="cancelOrder(order?.orderId, i)"
+            >
+              取消订单
+            </button>
+            <button
+              class="v-click btn cancel"
+              @click="toView('update', order, i)"
+            >
+              修改
+            </button>
+            <button class="v-click btn" @click="toView('pay', order, i)">
+              去支付
+            </button>
+          </div>
+          <!-- 未发货 -->
+          <div class="btns" v-if="getState(order) === '已付款，待发货'">
+            <button class="v-click cancel" @click="toastDeliver">催发货</button>
+          </div>
+          <!-- 已发货 -->
+          <div class="btns" v-if="getState(order) === '已发货'">
+            <button class="v-click btn">确认收货</button>
+          </div>
+          <div class="btns" v-if="getState(order) === '已发货'">
+            <button class="v-click btn">确认收货</button>
+          </div>
         </div>
-        <!-- 商品 -->
-        <goods-info
-          class="goods"
-          v-for="p in order?.orderItems"
-          :key="p.gid"
-          :goods="p"
-          :price="p.price"
-          :tips="p.isPay"
-          :props="getPorps(p)"
-          :num="p.quantity"
-        />
-        <div class="all-price">
-          实付：￥<span class="price">{{ getPrice(order.price) }}</span>
-        </div>
-      </div>
+      </transition-group>
     </van-list>
   </van-pull-refresh>
 </template>
@@ -49,6 +87,8 @@ import {
   getDoneOrder,
   getUnDeliverOrder,
   getUnPaidOrder,
+  cancelOrderById,
+  doneOrder,
 } from "@/api/order/order";
 import currency from "currency.js";
 import GoodsInfo from "../Goods/GoodsInfo.vue";
@@ -97,13 +137,22 @@ export default {
           res = await getDoneOrder(this.$store.getters.token);
           break;
       }
-      console.log(res.data.data);
       if (res.status === 200 && res.data.success) {
-        res.data.data.forEach((p) => {
-          this.orderList.push(p);
-        });
-        this.loading = false;
-        this.finished = true;
+        let count = 0;
+        const data = res?.data?.data;
+        if (data.length === 0) {
+          this.finished = true;
+          this.loading = false;
+        }
+        let timer = setInterval(() => {
+          this.orderList.push(data[count]);
+          count++;
+          if (count >= data.length) {
+            this.finished = true;
+            this.loading = false;
+            clearInterval(timer);
+          }
+        }, 300);
       } else {
         this.isHttpError = true;
       }
@@ -118,13 +167,14 @@ export default {
 
     // 状态文字
     getState(p) {
+      if (!p?.isPay) return;
       let res = "";
       if (p.isPay === "未付款") {
         res = "待支付";
       } else if (p.logisticsStatus === "未发货") {
         res = "已付款，待发货";
       } else if (p.logisticsStatus === "已发货") {
-        res = p.logisticsStatus;
+        res = "已发货";
       } else if (p.status === "未完成") {
         res = p.status;
       } else {
@@ -133,6 +183,7 @@ export default {
       return res;
     },
 
+    // 获得总价
     getPrice(price) {
       return currency(price);
     },
@@ -145,8 +196,83 @@ export default {
         this.onLoad();
         resolve(true);
       }).then(() => {
-        this.isRefreshing = false;
+        setTimeout(() => {
+          this.isRefreshing = false;
+        }, 1500);
       });
+    },
+    // 待支付
+    // 1) 取消订单
+    async cancelOrder(id, i) {
+      if (id === "") return;
+      this.$dialog
+        .confirm({
+          title: "是否取消订单？",
+          beforeClose: async (action, done) => {
+            if (action === "confirm") {
+              const res = await cancelOrderById(id, this.$store.getters.token);
+              if (res.status === 200 && res.data.success) {
+                done();
+                this.$toast({
+                  message: "取消成功！",
+                  duration: 500,
+                  type: "success",
+                });
+                this.orderList.splice(i, 1);
+              } else {
+                this.$toast("取消失败，请重新提交！");
+              }
+            } else {
+              done();
+            }
+          },
+        })
+        .catch(() => {});
+    },
+    // 催发货
+    toastDeliver() {
+      this.$dialog({ title: "已经催促商家，请耐心等候！" });
+    },
+    // 去到详情页
+    toView(type, order, index) {
+      console.log(type, order, index);
+
+      this.$router.push({
+        name: "checkorder",
+        params: {
+          animate: "forward",
+          info: order,
+          goodsList: order?.orderItems,
+        },
+      });
+    },
+
+    // 确认收获
+    async sureOrder(id, i) {
+      if (id === "") return;
+      this.$dialog
+        .confirm({
+          title: "是否收到商品？",
+          beforeClose: async (action, done) => {
+            if (action === "confirm") {
+              const res = await doneOrder(id, this.$store.getters.token);
+              if (res.status === 200 && res.data.success) {
+                done();
+                this.$toast({
+                  message: "收货成功~",
+                  duration: 500,
+                  type: "success",
+                });
+                this.orderList.splice(i, 1);
+              } else {
+                this.$toast("收货失败，请重新提交！");
+              }
+            } else {
+              done();
+            }
+          },
+        })
+        .catch(() => {});
     },
   },
 };
@@ -155,11 +281,9 @@ export default {
 <style scoped>
 /* 商品 */
 .orders-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
   margin-top: 0.2rem;
   padding: 0.1rem;
+  transition: all 0.4s;
   animation-delay: var(--router-delay) / 2;
 }
 /* 标题 */
@@ -183,10 +307,39 @@ export default {
   margin: 0.2rem 0;
 }
 .all-price {
+  /* border-top: 1px solid #eeeeee8b;
+  border-bottom: 1px solid #eeeeee8b; */
+  padding: 0.2rem;
   text-align: right;
 }
 .all-price .price {
   font-size: 0.56rem;
+}
+/* 按钮 */
+.btns {
+  margin-top: 0.2rem;
+  display: flex;
+  justify-content: right;
+}
+.btns .btn {
+  background-color: var(--tip-color2);
+  box-shadow: none;
+  border-radius: 4px;
+  color: var(--text-color2);
+  padding: 0.1rem 0.2rem;
+  transition: 0.2s;
+  font-size: 0.3rem;
+  margin-left: 0.2rem;
+}
+.btns .cancel {
+  border-radius: 4px;
+  background-color: var(--theme-color3);
+  color: var(--text-colo4);
+  border: 1px solid var(--text-color3);
+}
+.btns .btn:hover,
+.btns .btn:active {
+  filter: brightness(0.9);
 }
 
 /* 列表设置 */
