@@ -10,11 +10,11 @@
       @load="onLoad"
     >
       <transition-group name="bottomRight" tag="div">
-        <div class="box" :key="23333"></div>
         <div
           :key="order?.orderId"
           class="v-card order-card"
           v-for="(order, i) in orderList"
+          @click="toView(getStateEn(order), order)"
         >
           <!-- 状态 -->
           <div class="flex-c-c top" v-if="order?.orderItems?.length">
@@ -27,7 +27,7 @@
             }}</span>
           </div>
           <!-- 商品 -->
-          <div class="good-list" v-if="order?.orderItems?.length">
+          <div class="good-list" v-if="order?.orderItems">
             <goods-info
               class="goods"
               v-for="p in order.orderItems"
@@ -37,7 +37,6 @@
               :tips="p?.isPay"
               :props="getPorps(p)"
               :num="p.quantity"
-              @click="toGoodsView(order.gid)"
             />
           </div>
           <!-- 总计 -->
@@ -60,19 +59,22 @@
             >
               修改
             </button>
-            <button class="v-click btn" @click="toView('pay', order, i)">
+            <button class="v-click btn" @click="toView('unpaid', order, i)">
               去支付
             </button>
           </div>
           <!-- 未发货 -->
           <div class="btns" v-if="getState(order) === '已付款，待发货'">
-            <button class="v-click cancel" @click="toastDeliver">催发货</button>
+            <button class="v-click btn cancel" @click="toastDeliver">
+              催发货
+            </button>
           </div>
           <!-- 已发货 -->
           <div class="btns" v-if="getState(order) === '已发货'">
-            <button class="v-click btn">确认收货</button>
+            <button class="v-click btn">运输中</button>
           </div>
-          <div class="btns" v-if="getState(order) === '已发货'">
+          <!-- 待确认收货 -->
+          <div class="btns" v-if="getState(order) === '待签收'">
             <button class="v-click btn">确认收货</button>
           </div>
         </div>
@@ -140,17 +142,21 @@ export default {
       if (res.status === 200 && res.data.success) {
         let count = 0;
         const data = res?.data?.data;
+        // 判断是否为空
         if (data.length === 0) {
           this.finished = true;
           this.loading = false;
+          return;
         }
         let timer = setInterval(() => {
+          data[count].reqType = this.reqType === "all" ? "" : this.reqType;
           this.orderList.push(data[count]);
           count++;
           if (count >= data.length) {
-            this.finished = true;
             this.loading = false;
+            this.finished = true;
             clearInterval(timer);
+            timer = "";
           }
         }, 300);
       } else {
@@ -176,9 +182,24 @@ export default {
       } else if (p.logisticsStatus === "已发货") {
         res = "已发货";
       } else if (p.status === "未完成") {
-        res = p.status;
+        res = "待签收";
       } else {
         res = "待评论";
+      }
+      return res;
+    },
+    // 状态En
+    getStateEn(p) {
+      if (!p?.isPay) return;
+      let res = "";
+      if (p.isPay === "未付款") {
+        res = "unpaid";
+      } else if (p.logisticsStatus === "未发货") {
+        res = "undeliver";
+      } else if (p.logisticsStatus === "已发货") {
+        res = "delivered";
+      } else if (p.status === "未完成") {
+        res = "commit";
       }
       return res;
     },
@@ -233,16 +254,19 @@ export default {
     toastDeliver() {
       this.$dialog({ title: "已经催促商家，请耐心等候！" });
     },
-    // 去到详情页
-    toView(type, order, index) {
-      console.log(type, order, index);
-
+    // 去到详情页type, order, index
+    toView(type, order) {
+      // console.log(type, order);
       this.$router.push({
         name: "checkorder",
         params: {
           animate: "forward",
+        },
+        query: {
           info: order,
           goodsList: order?.orderItems,
+          isOrder: true,
+          type,
         },
       });
     },

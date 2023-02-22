@@ -280,16 +280,20 @@ export default {
         },
         query: {
           // 传参
-          info: [
+          info: {
+            price: selectedNum * selectedSkuComb.price, // 最终价格
+          },
+          goodsList: [
             {
-              id: selectedSkuComb.id, // 规格id
+              ...this.item.goods,
+              id: selectedSkuComb.id, // 选中商品id
+              gid: this.item.goods.id,
               props: selectedSkuComb.props, // 选择属性
-              num: selectedNum, // 数量
-              price: selectedSkuComb.price,
+              quantity: selectedNum, // 数量
+              price: selectedSkuComb.price, // 最终价格
               postage: this.item.goods.postage,
             },
           ],
-          goodsList: [this.item.goods],
         },
       });
     },
@@ -454,6 +458,7 @@ export default {
                 item.props = (item?.props || "") + `${obj[key]} `;
               }
 
+              // 网络请求添加不同组合的id
               const { color, combo, size, edition } = obj;
               const http = await getGoodProps(
                 GOOD_ID,
@@ -575,7 +580,7 @@ export default {
         // 提交订单页面
         case 3:
           this.$router.push({
-            name: "payorder",
+            name: "order",
             params: { animate: "forward" },
           });
           break;

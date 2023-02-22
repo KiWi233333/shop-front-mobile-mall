@@ -16,7 +16,7 @@
         <span class="names">{{ item?.name }}</span>
         <span class="phone">{{ item?.phone }}</span>
         <span v-show="item?.isDefault" class="default">默认</span>
-        <div class="detail">{{ getArea }}</div>
+        <div class="detail" v-show="item?.province">{{ getArea }}</div>
         <div class="detail">{{ item?.address }}</div>
       </div>
       <van-icon
@@ -37,7 +37,6 @@
 </template>
 <script>
 import { deleteAddressById } from "@/api/user/address";
-import { Dialog, Toast } from "vant";
 export default {
   name: "AddressCard",
   props: {
@@ -59,19 +58,20 @@ export default {
 
     // 删除地址
     deleteAddress() {
-      Dialog.confirm({ title: "是否删除该地址？" })
+      this.$dialog
+        .confirm({ title: "是否删除该地址？" })
         .then(() => {
           deleteAddressById(this.item.id, this.$store.getters.token)
             .then((res) => {
               if (res.data.success) {
                 this.$emit("deleteAddressByIndex", this.index);
-                Toast(" 删除成功！");
+                this.$toast(" 删除成功！");
               } else {
-                Toast(" 删除失败！");
+                this.$toast(" 删除失败！");
               }
             })
             .catch(() => {
-              Toast(" 取消失败！");
+              this.$toast(" 取消失败！");
             });
         })
         .catch(() => {});

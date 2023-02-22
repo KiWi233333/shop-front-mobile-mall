@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <!-- 过渡动画 -->
     <transition :name="routerAnimate">
       <!-- 1)需缓存页面 -->
       <keep-alive v-if="keepAlive">
@@ -9,7 +10,7 @@
       <router-view v-if="!keepAlive" />
     </transition>
     <!-- 底部导航栏 -->
-    <NavBar v-if="isNavBar" />
+    <NavBar v-show="isNavBar" />
   </div>
 </template>
 <script>
@@ -39,11 +40,11 @@ export default {
           // 初始化store
           this.$store.commit("setUserInfo", res.data.data);
           this.$store.commit("setLoginState", res.data.success);
-          this.$store.commit("setToken", token); // 设置初始登录时间
+          this.$store.commit("setToken", token);
           this.$store.commit(
             "setLoginTime",
             +localStorage.getItem("loginTime")
-          );
+          ); // 设置初始登录时间
         }
       })
       .catch(() => {
@@ -55,10 +56,8 @@ export default {
     $route(to) {
       // 修改标题
       this.keepAlive = to.meta?.keepAlive ?? false;
-      if (to.params.animate === "forward") {
-        this.routerAnimate = "forward";
-      } else if (to.params.animate === "toback") {
-        this.routerAnimate = "toback";
+      if (to.params?.animate) {
+        this.routerAnimate = to.params.animate;
       } else {
         this.routerAnimate = "toback";
       }

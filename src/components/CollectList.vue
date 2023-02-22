@@ -8,15 +8,17 @@
     finished-text="没有收藏的商品了"
     @load="onLoad"
   >
-    <!-- 商品卡片 -->
-    <good-rowcard
-      :goods="goods"
-      v-for="(goods, i) in collectList"
-      :key="goods.id"
-      :index="i"
-      class="item"
-      @deleteCollect="deleteCollect"
-    />
+    <transition-group name="bottomRight" tag="div" class="item">
+      <!-- 商品卡片 -->
+      <good-rowcard
+        :goods="goods"
+        v-for="(goods, i) in collectList"
+        :key="goods.gid"
+        :index="i"
+        class="item"
+        @deleteCollect="deleteCollect"
+      />
+    </transition-group>
   </van-list>
 </template>
   <script>
@@ -40,6 +42,7 @@ export default {
       // 收藏
       getAllCollectByGid(this.$store.getters.token)
         .then((res) => {
+          // console.log(res.data);
           if (res.data.success) {
             const data = res.data.data;
             data.forEach((p) => {

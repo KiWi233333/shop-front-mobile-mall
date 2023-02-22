@@ -1,7 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue"; // App.js
 import router from "./router"; // vue-router
-import store from "./style/store"; // vuex
+import store from "./store"; // vuex
 import "amfe-flexible"; // 移动端适配
 import "../public/css/animate.min.css"; // 动画库
 import {
@@ -99,6 +99,7 @@ Vue.use(Button)
   .use(SubmitBar)
   .use(Popover);
 Vue.config.productionTip = false;
+// 组件默认提示
 Toast.setDefaultOptions({
   forbidClick: true,
 });

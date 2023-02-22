@@ -1,5 +1,5 @@
 <template >
-  <div>{{ $route.params?.title ?? "404" }}</div>
+  <h1>{{ $route.params?.title ?? "404" }}</h1>
 </template>
 <script>
 export default { name: "NotFund" };

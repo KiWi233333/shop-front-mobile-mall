@@ -25,10 +25,8 @@ import CommentDetail from "@/views/comment/CommentDetail";
 // 订单
 import OrderView from "@/views/orders/OrderView.vue";
 import CheckOrder from "@/views/orders/CheckOrder";
-// 404
-import NotFund from "@/views/NotFund.vue";
 
-import store from "@/style/store";
+import store from "@/store";
 Vue.use(VueRouter);
 const routes = [
   // 1.主页
@@ -36,10 +34,7 @@ const routes = [
     path: "/",
     component: HomeView,
     children: [
-      {
-        path: "",
-        redirect: "/home",
-      },
+      { path: "", redirect: "/home" },
       {
         path: "home",
         name: "home",
@@ -106,8 +101,7 @@ const routes = [
       keepAlive: true,
     },
   },
-
-  // 4.1.订单页面
+  // 4.1 订单页面
   {
     name: "order",
     path: "/my/order",
@@ -119,7 +113,6 @@ const routes = [
       permission: true,
     },
   },
-
   // 4.2 收藏页面
   {
     name: "collect",
@@ -144,7 +137,6 @@ const routes = [
       permission: true,
     },
   },
-
   // 4.4 签到页面
   {
     path: "/signin",
@@ -192,6 +184,7 @@ const routes = [
       permission: true,
     },
   },
+
   // 1）登录页面
   {
     name: "login",
@@ -254,7 +247,7 @@ const routes = [
   {
     name: "notFund",
     path: "/404",
-    component: NotFund,
+    component: res => require(["@/views/NotFund.vue"], res),
   },
 ];
 

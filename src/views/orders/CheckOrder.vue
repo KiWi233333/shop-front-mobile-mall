@@ -1,6 +1,13 @@
 <template>
-  <default-page title="订单" class="check-order">
+  <default-page :title="getTitle" class="check-order">
     <div class="contain" v-if="!isError">
+      <div class="v-card top-order" v-if="isReadOnly">
+        <van-icon name="todo-list-o" class="left" size="1rem" />
+        <div class="right">
+          <div class="top">{{ getTitle }}</div>
+          <small class="btm">{{ info.time }}</small>
+        </div>
+      </div>
       <!-- 1）地址卡片栏 -->
       <div v-if="!emptyAddress" @click="isEdit ? showAddressSelectPanel() : ''">
         <address-card
@@ -27,16 +34,16 @@
         />
         <div class="text">您还未添加地址，点击新建地址！</div>
       </div>
-      <!-- 2）备注 -->
+      <!-- 2）商品卡片+备注 -->
       <div class="v-card" v-if="goodsList.length > 0">
         <!-- 商品 -->
         <goods-info
-          v-for="(p, i) in goodsList"
+          v-for="p in goodsList"
           :key="p.id"
           :goods="p"
-          :price="info[i]?.price"
-          :props="info[i]?.props"
-          :num="info[i]?.num"
+          :price="p?.price"
+          :props="p?.props"
+          :num="p?.quantity"
         />
         <!-- 运费\备注 -->
         <div class="label">
@@ -63,13 +70,13 @@
         <div class="title">价格明细</div>
         <div class="lable-group">
           <span>
-            运费<small>（共件{{ info?.length }}宝贝）</small>
+            运费<small>（共件{{ goodsLengths }}宝贝）</small>
           </span>
           <div class="blank"><small>￥</small>{{ getPostage }}</div>
         </div>
         <div class="lable-group">
           <span>
-            商品总价<small>（共件{{ info?.length }}宝贝）</small>
+            商品总价<small>（共件{{ goodsLengths }}宝贝）</small>
           </span>
           <div class="blank"><small>￥</small>{{ prices }}</div>
         </div>
@@ -81,8 +88,30 @@
           <div class="lable">无可用</div>
         </div>
       </div>
+      <!-- 总价 -->
+      <div class="v-card allPrice" v-if="isReadOnly">
+        <span>总价：</span>
+        <span style="color: var(--tip-color2); font-size: 0.5rem"
+          ><small style="color: var(--tip-color2)">￥</small
+          >{{ `${finallyPrice}` }}</span
+        >
+      </div>
+      <!-- 修改列表 -->
+      <van-cell-group inset class="group v-card" v-if="isReadOnly">
+        <van-cell
+          @click="copyId(info?.orderId)"
+          title="订单编号："
+          :value="info?.orderId"
+        />
+        <van-cell title="支付方式：" :value="'钱包'" />
+        <van-cell title="下单时间：" :value="info?.time" />
+      </van-cell-group>
       <!-- 选择付款方式 -->
-      <van-radio-group v-model="selectPay" class="v-card pay-list">
+      <van-radio-group
+        v-if="!isReadOnly"
+        v-model="selectPay"
+        class="v-card pay-list"
+      >
         <van-cell-group :border="false">
           <van-cell
             v-for="p in payType"
@@ -108,12 +137,15 @@
           </van-cell>
         </van-cell-group>
       </van-radio-group>
+      <!-- 订单信息 -->
+      <van-cell-group> </van-cell-group>
       <!-- 提交订单 -->
       <van-submit-bar
+        v-if="!isReadOnly"
         :disabled="emptyAddress"
         :price="allPrice"
-        :button-text="isSubmit ? '待支付' : '提交订单'"
-        @submit="isSubmit ? updateOrders() : onPutOrder()"
+        :button-text="submitText"
+        @submit="submitBtnFun"
       >
         <template #default>
           <van-popover
@@ -204,6 +236,7 @@ import currency from "currency.js";
 import { Toast } from "vant";
 import { getPurseInfo } from "@/api/user/purse";
 import SelectAddress from "@/components/Address/SelectAddress.vue";
+import { copyTextAsync } from "@/util/copy";
 export default {
   components: {
     ErrorCard,
@@ -221,13 +254,16 @@ export default {
       goodsList: [],
       defaultAddress: {},
       addressList: [], // 全地址
+      orderType: "",
       // 商品状况
+      goodsLengths: 0, // 商品总数
       remark: "", // 备注
       allPrice: 0,
       allPostage: 0,
       finallyPrice: 0,
       balance: 0,
       // 功能
+      getTitle: "订单",
       isError: false, // 网络错误
       submitError: false, // 提交订单失败
       showPayPanel: false, // 打开交易的钱包
@@ -244,7 +280,7 @@ export default {
 
       // 支付
       submitId: "", // 订单id
-
+      submitText: "提交订单",
       // 支付方式
       selectPay: "purse",
       payType: [
@@ -256,20 +292,59 @@ export default {
     };
   },
   mounted() {
+    // 初始化
+    this.getBalance();
     const r = this.$route.query;
+    // 订单初始化
     if (r.info === "[object Object]" || r.goodsList === "[object Object]") {
       return (this.isError = true);
     }
     // 获取默认地址
-    this.getDefaultAddress();
-    this.getBalance();
-    // 加载订单和商品 总价
-    r.goodsList.forEach((goods, i) => {
-      this.goodsList.push(goods);
-      this.info.push(r.info[i]);
-      this.allPrice = this.allPrice + r.info[i].price * r.info[i].num;
-      this.allPostage = this.allPostage + r.info[i].postage * r.info[i].num;
-    });
+    this.getAddressList(false); // 获取地址
+    this.orderType = r.type || ""; // 订单类型
+    // 1）读取已经传入地址
+    if (r?.isOrder && r.info.orderId) {
+      // 获取默认地址
+      this.getAddressList(false); // 获取地址
+      this.checkOrderType(); // 确定订单状态
+      // 订单id
+      this.submitId = r.info.orderId;
+      // 地址
+      const { name, phone, address } = r.info;
+      this.$set(this.defaultAddress, "name", name);
+      this.$set(this.defaultAddress, "phone", phone);
+      this.$set(this.defaultAddress, "address", address);
+      // 订单页面的数据
+      r.goodsList.forEach((goods) => {
+        this.goodsLengths = this.goodsLengths + goods.quantity;
+        goods.props =
+          (goods.color || "") +
+          (goods.size || "") +
+          (goods.combo || "") +
+          (goods.edition || "");
+        this.goodsList.push(goods);
+        this.allPrice = currency(this.allPrice).add(goods.price);
+      });
+      for (const key in r.info) {
+        this.$set(this.info, key, r.info[key]);
+      }
+      // 商品页面进入
+    } else {
+      // 获取默认地址
+      this.getDefaultAddress();
+      // 加载订单和商品 总价
+      r.goodsList.forEach((goods) => {
+        this.goodsList.push(goods);
+        this.goodsLengths = this.goodsLengths + goods.quantity;
+        this.allPrice = this.allPrice + goods.price * goods.quantity;
+        this.allPostage = this.allPostage + goods.postage * goods.quantity;
+      });
+
+      for (const key in r?.info) {
+        this.$set(this.info, key, r.info[key]);
+      }
+    }
+
     // 最总价格= 总价+运费
     this.finallyPrice = currency(this.allPrice).add(this.allPostage);
     this.allPrice = this.finallyPrice * 100;
@@ -321,6 +396,66 @@ export default {
       }
     },
 
+    // 初始化从订单页的订单状态
+    checkOrderType() {
+      this.isSubmit = true;
+      this.submitId = this.info?.orderId;
+      this.isEdit = false;
+      switch (this.orderType) {
+        case "unpaid":
+          this.getTitle = "待支付";
+          this.submitText = "去支付";
+          break;
+        case "update":
+          this.isEdit = true;
+          this.submitText = "更新并付款";
+          break;
+        case "undeliver":
+          this.getTitle = "待发货";
+          break;
+        case "delivered":
+          this.getTitle = "已发货";
+          break;
+        case "comment":
+          this.getTitle = "待评论";
+          break;
+      }
+    },
+
+    // 复制ID
+    copyId(text) {
+      copyTextAsync(text)
+        .then(() => {
+          Toast({ message: "复制成功！", position: "bottom" });
+        })
+        .catch(() => {
+          Toast({ message: "用户取消了复制！", position: "bottom" });
+        });
+    },
+
+    // 提交按钮
+    submitBtnFun() {
+      if (this.orderType && this.isSubmit != "") {
+        switch (this.orderType) {
+          case "unpaid":
+            this.showPayPanel = true;
+            break;
+          case "update":
+            this.updateOrders(); // 更新
+            break;
+          case "undeliver":
+            break;
+          case "delivered":
+            break;
+          case "comment":
+            break;
+        }
+      } else {
+        // 修改或提交订单
+        this.isSubmit ? this.updateOrders() : this.onPutOrder();
+      }
+    },
+
     // 1）提交订单
     onPutOrder() {
       if (this.emptyAddress || !this.defaultAddress.id || this.isSubmit)
@@ -328,8 +463,8 @@ export default {
       const aid = this.defaultAddress.id; // 地址id
       const items = [];
       // 属性id * 数量
-      this.info.forEach((p) => {
-        items.push({ gid: p.id, quantity: p.num });
+      this.goodsList.forEach((p) => {
+        items.push({ gid: p.id, quantity: p.quantity });
       });
       Toast.loading({
         message: "提交中...",
@@ -402,7 +537,6 @@ export default {
         );
         if (res.status === 200 && res.data.success) {
           this.showPayPanel = true;
-          console.log(res.data.data);
           this.submitId = res.data.data?.orderId;
         } else {
           Toast("修改失败，请重新提交！");
@@ -467,7 +601,11 @@ export default {
   computed: {
     // 计算价格
     prices() {
-      return currency(this.allPrice / 100).subtract(this.allPostage); //) ;
+      return currency(this.allPrice / 100);
+    },
+    // 只读
+    isReadOnly() {
+      return !(this.orderType === "unpaid" || this.orderType === "update");
     },
 
     // 计算运费
@@ -508,6 +646,22 @@ export default {
   margin: 0 0.2rem;
   color: var(--tip-color2);
 }
+.top-order {
+  /* box-shadow: none;
+  background-color: transparent; */
+  display: flex;
+  align-items: center;
+}
+.top-order .left {
+  margin: 0.2rem;
+}
+.top-order .right div {
+  margin-bottom: 0.2rem;
+}
+.top-order .right .top {
+  color: var(--tip-color2);
+}
+
 /* 商品 */
 .v-card {
   margin-bottom: 0.36rem;
@@ -532,7 +686,7 @@ export default {
   margin-bottom: 0.2rem;
 }
 
-/*  */
+/* 支付 */
 .pay-list >>> .van-cell {
   padding: 0.2rem 0;
 }
@@ -590,5 +744,19 @@ export default {
 }
 .check-order >>> .edit-popup >>> .item {
   padding: 0.2rem;
+}
+
+/* 订单信息 */
+.group {
+  width: 100%;
+  margin: 0.4rem 0;
+}
+.allPrice {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.group >>> .van-cell {
+  padding: 0.2rem 0;
 }
 </style>

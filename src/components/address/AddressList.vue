@@ -10,7 +10,7 @@
       @load="getAllAddressList"
     >
       <van-checkbox-group v-model="selectList">
-        <transition-group name="item" tag="div">
+        <transition-group name="bottomRight" tag="div">
           <!-- 地址卡片 -->
           <address-card
             class="v-card"

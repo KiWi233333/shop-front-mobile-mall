@@ -15,7 +15,7 @@
     <div class="content" @click="toGoodsDetail(goods.gid)">
       <div class="title">{{ goods.name }}</div>
       <div class="price">
-        ￥<span class="tip">{{ goods.price }}</span>
+        ￥<span class="tip">{{ getPrice }}</span>
       </div>
       <div class="sales">热销中</div>
     </div>
@@ -27,6 +27,7 @@
         size="0.5rem"
         color="var(--tip-color2)"
       />
+
       <van-icon name="ellipsis" class="icon" size="0.5rem" />
     </div>
   </div>
@@ -35,6 +36,7 @@
 import { getResourImageByName } from "@/api/res";
 import { deleteCollectByGid } from "@/api/user/collect";
 import { Dialog, Toast } from "vant";
+import currency from "currency.js";
 export default {
   props: ["goods", "index"],
   name: "SortClass",
@@ -70,6 +72,9 @@ export default {
   computed: {
     getImgSrc() {
       return getResourImageByName(this.goods.images);
+    },
+    getPrice() {
+      return currency(this.goods.price);
     },
   },
 };
@@ -112,7 +117,7 @@ export default {
 .price {
   font-size: 0.4rem;
   padding-top: 0.1rem;
-  color: var(--tip-color);
+  color: var(--tip-color2);
 }
 .price .tip {
   font-size: 0.7rem;
@@ -131,5 +136,9 @@ export default {
 }
 .lf-tip .icon {
   padding: 0 0.1rem;
+}
+.lf-tip .text {
+  font-size: 0.3rem;
+  color: var(--tip-color);
 }
 </style>
