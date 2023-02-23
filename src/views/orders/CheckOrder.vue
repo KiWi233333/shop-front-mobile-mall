@@ -1,6 +1,7 @@
 <template>
   <default-page :title="getTitle" class="check-order">
     <div class="contain" v-if="!isError">
+      <!-- 订单状态 -->
       <div class="v-card top-order" v-if="isReadOnly">
         <van-icon name="todo-list-o" class="left" size="1rem" />
         <div class="right">
@@ -229,9 +230,9 @@ import {
 } from "@/api/order/order";
 import { getDefaultAddress, getAllAddress } from "@/api/user/address";
 import AddressCard from "@/components/Address/AddressCard.vue";
+import SelectAddress from "@/components/Address/SelectAddress";
 import GoodsInfo from "@/components/Goods/GoodsInfo.vue";
 import MenuItem from "@/components/My/MenuItem.vue";
-import SelectAddress from "@/components/Address/SelectAddress";
 import { checkText } from "@/util/xxsFilter";
 import currency from "currency.js";
 import { Toast } from "vant";
