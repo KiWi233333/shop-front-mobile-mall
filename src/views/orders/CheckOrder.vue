@@ -2,7 +2,7 @@
   <default-page :title="getTitle" class="check-order">
     <div class="contain" v-if="!isError">
       <!-- 订单状态 -->
-      <div class="v-card top-order" v-if="isReadOnly">
+      <div class="v-card top-order" v-if="isReadonly && $route.query?.isOrder">
         <van-icon name="todo-list-o" class="left" size="1rem" />
         <div class="right">
           <div class="top">{{ getTitle }}</div>
@@ -90,7 +90,7 @@
         </div>
       </div>
       <!-- 总价 -->
-      <div class="v-card allPrice" v-if="isReadOnly">
+      <div class="v-card allPrice" v-if="isReadonly">
         <span>总价：</span>
         <span style="color: var(--tip-color2); font-size: 0.5rem"
           ><small style="color: var(--tip-color2)">￥</small
@@ -98,7 +98,7 @@
         >
       </div>
       <!-- 修改列表 -->
-      <van-cell-group inset class="group v-card" v-if="isReadOnly">
+      <van-cell-group inset class="group v-card" v-if="isReadonly">
         <van-cell
           @click="copyId(info?.orderId)"
           title="订单编号："
@@ -109,7 +109,7 @@
       </van-cell-group>
       <!-- 选择付款方式 -->
       <van-radio-group
-        v-if="!isReadOnly"
+        v-if="!isReadonly"
         v-model="selectPay"
         class="v-card pay-list"
       >
@@ -142,7 +142,7 @@
       <van-cell-group> </van-cell-group>
       <!-- 提交订单 -->
       <van-submit-bar
-        v-if="!isReadOnly"
+        v-if="!isReadonly"
         :disabled="emptyAddress"
         :price="allPrice"
         :button-text="submitText"
@@ -235,7 +235,6 @@ import GoodsInfo from "@/components/Goods/GoodsInfo.vue";
 import MenuItem from "@/components/My/MenuItem.vue";
 import { checkText } from "@/util/xxsFilter";
 import currency from "currency.js";
-import { Toast } from "vant";
 import { getPurseInfo } from "@/api/user/purse";
 import { copyTextAsync } from "@/util/copy";
 export default {
@@ -427,10 +426,10 @@ export default {
     copyId(text) {
       copyTextAsync(text)
         .then(() => {
-          Toast({ message: "复制成功！", position: "bottom" });
+          this.$toast({ message: "复制成功！", position: "bottom" });
         })
         .catch(() => {
-          Toast({ message: "用户取消了复制！", position: "bottom" });
+          this.$toast({ message: "用户取消了复制！", position: "bottom" });
         });
     },
 
@@ -467,7 +466,7 @@ export default {
       this.goodsList.forEach((p) => {
         items.push({ gid: p.id, quantity: p.quantity });
       });
-      Toast.loading({
+      this.$toast.loading({
         message: "提交中...",
         forbidClick: true,
         onOpened: async () => {
@@ -540,7 +539,7 @@ export default {
           this.showPayPanel = true;
           this.submitId = res.data.data?.orderId;
         } else {
-          Toast("修改失败，请重新提交！");
+          this.$toast("修改失败，请重新提交！");
         }
       } else {
         this.showPayPanel = true;
@@ -561,10 +560,10 @@ export default {
                 );
                 if (res.status === 200 && res.data.success) {
                   done();
-                  Toast({ message: "取消成功！", type: "success" });
+                  this.$toast({ message: "取消成功！", type: "success" });
                   this.$router.back();
                 } else {
-                  Toast("取消失败，请重新提交！");
+                  this.$toast("取消失败，请重新提交！");
                 }
               }, 1000);
             } else {
@@ -605,8 +604,8 @@ export default {
       return currency(this.allPrice / 100);
     },
     // 只读
-    isReadOnly() {
-      return !(this.orderType === "unpaid" || this.orderType === "update");
+    isReadonly() {
+      return this.orderType === "undeliver" || this.orderType === "delivered";
     },
 
     // 计算运费

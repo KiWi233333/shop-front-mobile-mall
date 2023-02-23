@@ -50,6 +50,7 @@ import {
   Card,
   SubmitBar,
   Popover,
+  Stepper,
 } from "vant";
 
 // van按需t注册组件
@@ -97,7 +98,8 @@ Vue.use(Button)
   .use(RadioGroup)
   .use(Card)
   .use(SubmitBar)
-  .use(Popover);
+  .use(Popover)
+  .use(Stepper);
 Vue.config.productionTip = false;
 // 组件默认提示
 Toast.setDefaultOptions({

@@ -59,7 +59,7 @@ export function addShopCart(gid, quantity, token) {
  * @param {string} token
  * @returns
  */
-export function addShopCartProps(id, goodsItemId, quantity, token) {
+export function updateShopCartProps(id, goodsItemId, quantity, token) {
   return request({
     method: "put",
     url: "/shoppingCart/update",

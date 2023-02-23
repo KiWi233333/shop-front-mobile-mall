@@ -3,7 +3,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "@/views/home/HomeView";
 import MyView from "@/views/home/MyView.vue";
-import ShopcarView from "@/views/home/ShopcarView.vue";
+import ShopcartView from "@/views/home/ShopcartView.vue";
 import CategoryView from "@/views/home/CategoryView.vue";
 // 登录注册
 import LoginView from "@/views/login/LoginView.vue";
@@ -82,7 +82,7 @@ const routes = [
   {
     name: "shopcar",
     path: "/shopcar",
-    component: ShopcarView,
+    component: ShopcartView,
     meta: {
       title: "购物车",
       lv: 1,
@@ -266,20 +266,20 @@ router.beforeEach((to, from, next) => {
       next();
     } else {
       try {
-        next({
+        // next({
+        //   name: "login",
+        //   params: {
+        //     animate: "forward",
+        //     toBack: "true",
+        //   },
+        // });
+        router.push({
           name: "login",
           params: {
             animate: "forward",
             toBack: "true",
           },
         });
-        // router.push({
-        //   name: "login",
-        //   params: {
-        //     animate: "forward",
-        //     toBack: "true",
-        //   },
-        // })
       } catch (e) {
         e;
       }
