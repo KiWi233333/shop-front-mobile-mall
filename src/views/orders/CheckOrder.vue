@@ -231,11 +231,11 @@ import { getDefaultAddress, getAllAddress } from "@/api/user/address";
 import AddressCard from "@/components/Address/AddressCard.vue";
 import GoodsInfo from "@/components/Goods/GoodsInfo.vue";
 import MenuItem from "@/components/My/MenuItem.vue";
+import SelectAddress from "@/components/Address/SelectAddress";
 import { checkText } from "@/util/xxsFilter";
 import currency from "currency.js";
 import { Toast } from "vant";
 import { getPurseInfo } from "@/api/user/purse";
-import SelectAddress from "@/components/Address/SelectAddress.vue";
 import { copyTextAsync } from "@/util/copy";
 export default {
   components: {
