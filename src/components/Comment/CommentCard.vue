@@ -10,7 +10,7 @@
           class="icon"
         />
         <div class="name">{{ comment?.nickname }}</div>
-        <van-tag plain color="var(--tip-color2)" v-if="!comment?.isMe"
+        <van-tag plain color="var(--tip-color2)" v-if="comment?.isMe"
           >我的评价</van-tag
         >
       </div>
@@ -46,9 +46,9 @@
           <van-icon name="like-o" v-show="!comment?.isLiked" />
           <span class="text">{{ comment?.liked || "赞" }}</span>
         </div>
-        <div class="right" @click="toView">
+        <div class="right" @click="toView(comment.id)">
           <van-icon name="comment-o" />
-          <span class="text">{{ comment?.comment || "" }}</span>
+          <span class="text">{{ comment?.comment || "" }}评论</span>
         </div>
       </div>
     </div>
@@ -98,7 +98,7 @@ export default {
       ImagePreview({ images, closeable: true, startPosition: i });
     },
 
-    // 添加评论点赞
+    // 修改评论点赞
     async addCommentPick() {
       if (this.pickTimer) return;
       const res = await addCommentLiked(
@@ -106,12 +106,14 @@ export default {
         this.$store.state.token
       );
       if (res.data.success) {
-        if (res.data?.data) {
+        let success = res.data?.data;
+        if (success) {
+          this.$set(this.comment, "liked", this.comment.liked - 1);
           Toast("取消点赞");
-          this.$emit("setIsLike", false);
         } else {
-          this.$emit("setIsLike", true);
+          this.$set(this.comment, "liked", this.comment.liked + 1);
         }
+        this.$set(this.comment, "isLiked", !success);
       }
     },
 
@@ -119,6 +121,7 @@ export default {
     toView() {
       this.$router.push({
         name: "commentdetail",
+        query: { id: this.comment.id },
         params: { animate: "forward" },
       });
     },

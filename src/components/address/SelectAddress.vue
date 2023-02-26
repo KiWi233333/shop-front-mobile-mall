@@ -61,6 +61,7 @@ export default {
     };
   },
   methods: {
+    // 获取全部地址
     getAllAddressList() {
       this.loading = true;
       this.select = this.addressList[0].id;

@@ -9,22 +9,28 @@
       <div class="price">￥{{ item.unitPrice }}</div>
     </div>
     <!-- 件数 -->
-    <van-stepper
+    <div
+      class="animate__animated animate__fadeIn counts"
       v-if="!$attrs.isEdit"
-      :disabled="Number(item.stock) <= 0"
-      class="animate__animated animate__fadeInUp"
-      style="margin-top: auto"
-      :default-value="item.quantity"
-      :value="item.quantity"
-      async-change
-      @change="onSubChange"
-      name="nums"
-      integer
-      min="1"
-      max="99"
-      input-width="0.6rem"
-      button-size="0.6rem"
-    />
+      @mouseenter="showCount = true"
+      @mouseleave="showCount = false"
+    >
+      <van-stepper
+        v-show="showCount"
+        :disabled="Number(item.stock) <= 0"
+        :default-value="item.quantity"
+        :value="item.quantity"
+        async-change
+        @change="onSubChange"
+        name="nums"
+        integer
+        min="1"
+        max="99"
+        input-width="0.6rem"
+        button-size="0.6rem"
+      />
+      <div class="count-box" v-show="!showCount">x{{ item?.quantity }}</div>
+    </div>
     <van-icon
       class="icons v-click"
       v-else
@@ -44,9 +50,11 @@ export default {
   data() {
     return {
       num: 1,
+      showCount: false,
     };
   },
   methods: {
+    // 提交
     async onSubChange(newVal) {
       this.$toast.loading({ forbidClick: true, duration: 0 });
       // 修改数量
@@ -96,6 +104,7 @@ export default {
   border-radius: 8px;
   margin: 0 0.2rem;
 }
+/* 内容 */
 .content {
   flex: 1;
 }
@@ -119,7 +128,11 @@ export default {
 .content .price::first-letter {
   font-size: 0.3rem;
 }
-
+/* 右侧图标 */
+.counts {
+  height: 100%;
+  margin-top: auto;
+}
 .icons {
   background-color: var(--tip-color2);
   border-radius: 50%;
@@ -127,6 +140,15 @@ export default {
   height: 0.6rem;
   padding: 0.1rem;
   animation: 0.5s fadeInRight;
+  cursor: pointer;
+}
+.count-box {
+  border: 1px solid var(--border-color);
+  padding: 0.06rem 0.14rem;
+  font-size: 0.36rem;
+  letter-spacing: 0.02rem;
+  /* background-color: var(--bg-color5); */
+  border-radius: 4px;
   cursor: pointer;
 }
 </style>

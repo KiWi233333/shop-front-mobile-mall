@@ -37,7 +37,7 @@
 </template>
 <script>
 import CartCard from "./CartCard.vue";
-import { getAllShopCart } from "@/api/shopcart/shopcart";
+import { getAllShopCart, deleteOneShopCart } from "@/api/shopcart/shopcart";
 export default {
   components: { CartCard },
   name: "CartList",
@@ -57,7 +57,11 @@ export default {
       const res = await getAllShopCart(this.$store.getters.token);
       if (res.status === 200 && res.data.success) {
         const data = res.data.data;
-        console.log(data);
+        if (data.length === 0) {
+          this.loading = false;
+          this.finished = true;
+          return;
+        }
         let count = 0;
         let timer = setInterval(() => {
           const p = data[count];
@@ -66,7 +70,7 @@ export default {
           }`;
           this.cartList.push(p);
           count++;
-          if (count >= data.length) {
+          if (count >= data?.length) {
             this.loading = false;
             this.finished = true;
             clearInterval(timer);
@@ -93,17 +97,14 @@ export default {
         forbidClick: true,
         duration: 0,
       });
-      const res = await this.deleteCartByOne(
-        this.item?.id,
-        this.$store.getters.token
-      );
+
+      // console.log(i);
+      const res = await deleteOneShopCart(id, this.$store.getters.token);
       if (res.status === 200 && res.data.success) {
-        const res = JSON.parse(JSON.stringify(this.cartList));
-        res.splice(i, 1);
-        this.cartList = res;
+        this.cartList.splice(i, 1);
         this.$toast.clear();
       } else {
-        this.$toast.fail("删除失败！");
+        this.$toast.fail("删除购物车失败！");
       }
     },
   },
@@ -135,14 +136,16 @@ export default {
 .cart-list {
   margin-top: 1.4rem;
   padding-top: 0.2rem;
-  padding-bottom: 3rem;
+  padding-bottom: 3.4rem;
   border-radius: 12px 12px 0 0;
   background-color: var(--theme-color);
-  box-shadow: var(--shadow-color4);
+  border-top: 1px solid var(--border-color);
+  /* box-shadow: var(--shadow-color4); */
 }
 .item {
-  box-shadow: var(--shadow-color3);
+  /* box-shadow: var(--shadow-color3); */
+  box-shadow: none;
   background-color: var(--theme-color);
-  margin: 0.3rem;
+  margin: 0.3rem 0.1rem;
 }
 </style>

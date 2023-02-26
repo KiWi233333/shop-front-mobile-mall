@@ -39,6 +39,7 @@
       <div class="v-card" v-if="goodsList.length > 0">
         <!-- 商品 -->
         <goods-info
+          class="goods-item"
           v-for="p in goodsList"
           :key="p.id"
           :goods="p"
@@ -323,7 +324,7 @@ export default {
           (goods.combo || "") +
           (goods.edition || "");
         this.goodsList.push(goods);
-        this.allPrice = currency(this.allPrice).add(goods.price);
+        this.allPrice = currency(this.allPrice).add(goods.unitPrice);
       });
       for (const key in r.info) {
         this.$set(this.info, key, r.info[key]);
@@ -336,7 +337,7 @@ export default {
       r.goodsList.forEach((goods) => {
         this.goodsList.push(goods);
         this.goodsLengths = this.goodsLengths + goods.quantity;
-        this.allPrice = this.allPrice + goods.price * goods.quantity;
+        this.allPrice = this.allPrice + goods.unitPrice * goods.quantity;
         this.allPostage = this.allPostage + goods.postage * goods.quantity;
       });
 
@@ -679,6 +680,9 @@ export default {
   letter-spacing: 0.05rem;
   font-size: 0.36rem;
   color: var(--text-color3);
+}
+.goods-item {
+  margin: 0.2rem 0;
 }
 /* 价格明细 */
 .all-price .title {

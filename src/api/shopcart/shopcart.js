@@ -1,5 +1,5 @@
 import { request } from "@/util/request";
-
+import qs from "qs";
 /**
  * 根据购物车id获取购物车
  * @param {*} token
@@ -93,15 +93,18 @@ export function deleteOneShopCart(id, token) {
  * @param {string} token
  * @returns
  */
-export function deleteShopcartByBatch(ids, token) {
+export function deleteShopcartByIds(ids, token) {
   return request({
     method: "delete",
     url: `/shoppingCart/deletes`,
     headers: {
       Authorization: token,
     },
-    data: {
-      ids,
+    params: { ids },
+    paramsSerializer: {
+      serialize(params) {
+        return qs.stringify(params, { indices: false });
+      },
     },
   });
 }

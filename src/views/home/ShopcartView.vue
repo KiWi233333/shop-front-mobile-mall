@@ -1,11 +1,22 @@
 <template >
   <div class="contian">
-    <div class="shop-view" v-if="$store.getters.token !== ''">
+    <div class="shop-view" v-if="$store.state.isLoginState">
       <!-- 顶部 -->
       <div class="top">
         <span class="title">
           <span class="big">购物车</span>
           <small> ({{ counts }}件商品)</small>
+        </span>
+        <span
+          class="edit"
+          style="
+            margin-left: auto;
+            padding-right: 0.2rem;
+            color: var(--text-color3);
+          "
+          @click="deleteAllCart"
+        >
+          清空
         </span>
         <span
           class="edit"
@@ -50,9 +61,13 @@
         >
       </van-submit-bar>
     </div>
-    <div class="toLogin flex-center-center flex-col">
+    <!-- 未登录 -->
+    <div
+      class="toLogin flex-center-center flex-col"
+      v-if="!$store.state.isLoginState"
+    >
       <button
-        class="v-btn v-click animate__animated animate__tada"
+        class="v-btn v-click animate__tada animate__tada"
         style="width: auto"
         @click="toLogin"
       >
@@ -64,6 +79,7 @@
 </template>
 <script>
 import CartList from "@/components/ShopCart/CartList.vue";
+import { clearAllShopCart, deleteShopcartByIds } from "@/api/shopcart/shopcart";
 export default {
   components: { CartList },
   name: "ShopcarView",
@@ -88,14 +104,14 @@ export default {
   methods: {
     // 获取长度
     getCartLength(cartList) {
+      this.cartList = cartList;
       this.counts = cartList.length;
     },
 
     // 获取选中的组合
-    changeSelectArr(selectList, cartList) {
+    changeSelectArr(selectList) {
       this.finallPrice = 0; // 清空
       this.selectList = selectList;
-      this.cartList = cartList;
       this.selectList.forEach((i) => {
         this.finallPrice =
           this.finallPrice +
@@ -134,7 +150,71 @@ export default {
     },
 
     // 批量删除的商品
-    deleteShopCart() {},
+    async deleteShopCart() {
+      // console.log(this.$children);
+      // id集合
+      let ids = [];
+      this.selectList.forEach((p) => {
+        ids.push(this.cartList[p].id);
+      });
+      this.$dialog
+        .confirm({
+          title: "是否删除选中 ?",
+          beforeClose: async (action, done) => {
+            if (action === "confirm") {
+              const res = await deleteShopcartByIds(
+                ids,
+                this.$store.getters.token
+              );
+              // console.log(res.data);
+              if (res.status === 200 && res.data.success) {
+                this.selectList.forEach((p) => {
+                  this.$children[0].cartList.splice(p, 1);
+                });
+                this.$children[0].selectList.splice(0);
+                done();
+                this.cartList = this.$toast({
+                  type: "success",
+                  message: "删除成功!",
+                });
+              } else {
+                this.$toast({ type: "fail", message: "删除失败!" });
+              }
+            } else {
+              done();
+            }
+          },
+        })
+        .catch(() => {});
+    },
+    // 批量删除的商品
+    async deleteAllCart() {
+      // console.log(this.$children);
+      this.$dialog
+        .confirm({
+          title: "是否清空购物车 ?",
+          beforeClose: async (action, done) => {
+            if (action === "confirm") {
+              const res = await clearAllShopCart(this.$store.getters.token);
+              // console.log(res.data);
+              if (res.status === 200 && res.data.success) {
+                this.$children[0]?.cartList?.splice(0);
+                this.$children[0]?.selectList?.splice(0);
+                done();
+                this.cartList = this.$toast({
+                  type: "success",
+                  message: "清除成功!",
+                });
+              } else {
+                this.$toast({ type: "fail", message: "删除失败!" });
+              }
+            } else {
+              done();
+            }
+          },
+        })
+        .catch(() => {});
+    },
 
     toLogin() {
       this.$router.push({
@@ -161,7 +241,6 @@ export default {
 .shop-view {
   width: 100%;
   min-height: 100vh;
-  background-color: var(--bg-color6);
 }
 .bar {
   position: fixed;

@@ -87,11 +87,7 @@
             </div>
           </div>
           <!-- 单条评论 -->
-          <comment-card
-            :comment="comments[0]"
-            v-show="comments.length"
-            @setIsLike="changeCommentLike"
-          />
+          <comment-card :comment="comments[0]" v-show="comments.length" />
         </div>
       </div>
       <!-- 商品详情 -->
@@ -174,7 +170,7 @@ import { addShopCart } from "@/api/shopcart/shopcart";
 import ShareNav from "@/components/Detail/ShareNav.vue";
 import { Dialog, Toast } from "vant";
 import { mapState } from "vuex";
-import CommentCard from "@/components/Detail/CommentCard.vue";
+import CommentCard from "@/components/Comment/CommentCard.vue";
 import ErrorCard from "@/components/ErrorCard.vue";
 
 export default {
@@ -536,15 +532,6 @@ export default {
         })
         .catch(() => {});
     },
-    // 修改评论点赞和喜欢
-    changeCommentLike(i) {
-      let liked = this.comments[0].liked;
-      // 喜欢状态
-      this.$set(this.comments[0], "isLiked", i);
-      // 点赞数
-      i ? liked++ : liked--;
-      this.$set(this.comments[0], "liked", liked);
-    },
 
     // 获取评论
     getCommentList() {
@@ -561,7 +548,7 @@ export default {
     },
 
     // 页面跳转
-    toView(i) {
+    toView(i, id) {
       switch (i) {
         // 前往搜索页面
         case 1:
@@ -591,11 +578,19 @@ export default {
             params: { animate: "forward" },
           });
           break;
-        // 评论页面
+        // 评论列表页面
         case 5:
           this.$router.push({
             name: "comment",
-            query: { id: this.GOOD_ID },
+            params: { animate: "forward" },
+          });
+          break;
+        // 评论详情页面
+        case 6:
+          console.log(id);
+          this.$router.push({
+            name: "commentdetail",
+            query: { id },
             params: { animate: "forward" },
           });
           break;

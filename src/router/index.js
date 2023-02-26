@@ -21,6 +21,7 @@ import AddressView from "@/views/second/AddressView";
 import GoodsDetail from "@/views/goods/GoodsDetail.vue";
 // 评论
 import CommentDetail from "@/views/comment/CommentDetail";
+import CommentView from "@/views/comment/CommentView";
 
 // 订单
 import OrderView from "@/views/orders/OrderView.vue";
@@ -86,7 +87,7 @@ const routes = [
     meta: {
       title: "购物车",
       lv: 1,
-      keepAlive: true,
+      // keepAlive: true,
     },
   },
 
@@ -221,12 +222,24 @@ const routes = [
 
   // 5.1 评论详情页面
   {
-    path: "/commentdetail",
     name: "commentdetail",
+    path: "/comments/detail",
     component: CommentDetail,
     meta: {
       title: "评论",
       lv: 2,
+      permission: true,
+    },
+  },
+  // 5.1.b 评论列表页面
+  {
+    name: "comment",
+    path: "/comments",
+    component: CommentView,
+    meta: {
+      title: "评论列表",
+      lv: 2,
+      keepAlive: true,
       permission: true,
     },
   },
