@@ -197,29 +197,36 @@ label {
   font-size: 0.6rem;
   font-weight: 600;
 }
+.disable-popup {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
 /* 购物 */
 /* 底部 */
-.wind-init >>> .van-goods-action {
+.wind-init .van-goods-action {
   z-index: 99;
-  height: 1.6rem;
+  height: 1.2rem;
 }
-.van-goods-action >>> .van-goods-action-icon {
+.van-goods-action .van-goods-action-icon {
   width: 0.6rem;
   height: 0.6rem;
 }
-.van-goods-action >>> .van-goods-action-button {
-  height: 65%;
+.van-goods-action .van-goods-action-button {
+  height: 70%;
 }
-.van-goods-action >>> .van-button__text {
-  font-size: 0.36rem;
-  font-weight: 600;
+.van-goods-action .van-button__text {
+  font-size: 0.32rem;
 }
 
-.van-goods-action >>> .van-goods-action-icon__icon {
+.van-goods-action .van-goods-action-icon__icon {
   font-size: 0.5rem;
 }
-.van-goods-action >>> .van-goods-action-icon {
+.van-goods-action .van-goods-action-icon {
   font-size: 0.25rem;
 }
 
@@ -241,6 +248,10 @@ label {
   font-size: 0.36rem;
 }
 /*  */
+.v-input::placeholder,
+.v-input >>> .van-field__control::placeholder {
+  color: var(--text-color3);
+}
 /* 滚动条 */
 /* 设置滚动条的样式 */
 ::-webkit-scrollbar {
@@ -258,41 +269,30 @@ label {
   width: 0px;
 }
 
-/* 列表项目增删查改 */
-.item-move, /* 对移动中的元素应用的过渡 */
-.item-enter-active,
-.item-leave-active {
-  transition: all 0.5s ease;
+/* 弹出框 */
+.popup-enter-active {
+  transform-origin: -22% -22%;
+  animation: 0.3s zoomIn cubic-bezier(0.83, -0.27, 0.17, 1.23);
 }
-
-.item-enter-from,
-.item-leave-to {
-  opacity: 0;
-  transform: translateX(100%);
-}
-
-/* 确保将离开的元素从布局流中删除
-  以便能够正确地计算移动的动画。 */
-.item-leave-active {
-  position: absolute;
-}
-
-/* 折叠 */
-.popup-enter-active,
 .popup-leave-active {
-  opacity: 1;
-  animation: 0.4s zoomIn;
-  transform-origin: -20% -20%;
+  transform-origin: -22% -22%;
+  animation: 0.3s zoomIn cubic-bezier(0.83, -0.27, 0.17, 1.23) reverse;
 }
 
-.popup-enter,
-.popup-leave-to {
+/* Toast */
+.toast-enter-from,
+.toast-leave-to {
   opacity: 0;
-  display: none;
-  animation: 0.5s zoomOut ease;
-  transform-origin: -20% -20%;
+  transition: 0.2s;
 }
-
+.toast-leave-from,
+.toast-enter-to {
+  opacity: 1;
+}
+.toast-enter-active {
+  animation-delay: 0.3s;
+  animation: 0.3s zoomIn cubic-bezier(0.83, -0.27, 0.17, 1.23);
+}
 /* 上进下出 */
 .fade-enter-active,
 .fade-leave-active {
@@ -315,6 +315,22 @@ label {
   transform: translateY(20%);
 }
 .bottomRight-leave-to {
+  transition: all 0.5s;
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+/* 下进右出 */
+.item-enter-active,
+.item-leave-active {
+  transition: all 0.4s ease;
+}
+.item-enter {
+  transition: all 0.5s;
+  opacity: 0;
+  transform: translateY(20%);
+}
+.item-leave-to {
   transition: all 0.5s;
   opacity: 0;
   transform: translateX(100%);

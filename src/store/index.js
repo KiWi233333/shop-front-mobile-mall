@@ -16,6 +16,9 @@ export default new Vuex.Store({
     purseInfo: {}, // 钱包信息
 
     addressList: {}, // 地址集合
+
+    commentId: "",
+    showCommentPopup: false, // 地址评价栏
   },
   getters: {
     // 获取token 并校验
@@ -40,10 +43,14 @@ export default new Vuex.Store({
           localStorage.removeItem("loginTime");
           sessionStorage.removeItem(state.TOKEN_NAME);
           // 跳转登录
-          router.push({
-            name: "login",
-            params: { animate: "forward", toBack: true },
-          });
+          try {
+            router.push({
+              name: "login",
+              params: { animate: "forward", toBack: true },
+            });
+          } catch (e) {
+            e;
+          }
           return "";
         }
       } else {
@@ -81,6 +88,12 @@ export default new Vuex.Store({
       }
     },
 
+    // 设置地址弹窗
+    setShowCommentPopup(state, { show, commentId }) {
+      // console.log(show, commentId);
+      state.showCommentPopup = show;
+      state.commentId = commentId;
+    },
     // 登出
     loginOut(state) {
       // 清空vuex

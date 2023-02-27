@@ -275,18 +275,12 @@ router.beforeEach((to, from, next) => {
   document.title = to.meta?.title ?? "水院商城";
   // 权限设置
   if (to.meta.permission) {
+    // 权限成功
     if (store.getters.token != "") {
       next();
     } else {
       try {
-        // next({
-        //   name: "login",
-        //   params: {
-        //     animate: "forward",
-        //     toBack: "true",
-        //   },
-        // });
-        router.push({
+        next({
           name: "login",
           params: {
             animate: "forward",

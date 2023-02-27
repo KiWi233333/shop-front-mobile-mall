@@ -6,7 +6,7 @@ import { request } from "@/util/request";
  * @param {string} token
  * @returns
  */
-export function getGoodCommentById(token, goodsId, sort) {
+export function getGoodCommentById(goodsId, sort, token) {
   return request({
     method: "get",
     url: `/evaluation/query`,

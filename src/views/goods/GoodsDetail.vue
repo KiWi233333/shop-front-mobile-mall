@@ -54,7 +54,7 @@
                   item?.goods?.postage ? `${item.goods.postage} 元` : "免运费"
                 }}</span
               >
-              <span class="lable">配送至：{{ "请登陆，获取地址" }}</span>
+              <span class="lable">配送至：{{ "市" }}</span>
             </div>
             <van-icon name="arrow" />
           </div>
@@ -69,14 +69,13 @@
         </div>
         <!-- 评论 -->
         <div
+          @click="comments.length ? toView(5) : ''"
           class="v-card comments animate__animated animate__fadeIn"
-          v-show="comments.length"
         >
           <div class="lable-group">
             商品评价 ({{ comments.length }})
             <div
               class="lable"
-              @click="toView(5)"
               style="color: var(--tip-color2); font-size: 0.3rem"
             >
               更多<van-icon
@@ -87,9 +86,16 @@
             </div>
           </div>
           <!-- 单条评论 -->
-          <comment-card :comment="comments[0]" v-show="comments.length" />
+          <comment-card
+            :comment="comments[0]"
+            v-if="comments.length"
+            :disable-comment="true"
+          />
         </div>
       </div>
+      <!-- 评论弹窗 -->
+      <!-- <comment-popup /> -->
+
       <!-- 商品详情 -->
       <div class="detail-info">
         <div class="title">————<span>&emsp;宝贝详情&emsp;</span>————</div>
@@ -286,7 +292,8 @@ export default {
               gid: this.item.goods.id,
               props: selectedSkuComb.props, // 选择属性
               quantity: selectedNum, // 数量
-              price: selectedSkuComb.price, // 最终价格
+              price: selectedSkuComb.price, // 价格
+              unitPrice: selectedSkuComb.price, //
               postage: this.item.goods.postage,
             },
           ],
@@ -302,6 +309,7 @@ export default {
         info.selectedNum,
         this.$store.getters.token
       );
+      // console.log(res.data);
       if (res.status === 200 && res.data.success) {
         Toast("加购成功！");
       } else {
@@ -535,7 +543,7 @@ export default {
 
     // 获取评论
     getCommentList() {
-      getGoodCommentById(this.$store.getters.token, this.GOOD_ID, 0)
+      getGoodCommentById(this.GOOD_ID, 0, this.$store.getters.token)
         .then((res) => {
           if (res.data.success) {
             const data = res.data.data;
@@ -548,7 +556,7 @@ export default {
     },
 
     // 页面跳转
-    toView(i, id) {
+    toView(i) {
       switch (i) {
         // 前往搜索页面
         case 1:
@@ -582,15 +590,15 @@ export default {
         case 5:
           this.$router.push({
             name: "comment",
+            query: { id: this.GOOD_ID, size: this.comments.length },
             params: { animate: "forward" },
           });
           break;
         // 评论详情页面
         case 6:
-          console.log(id);
           this.$router.push({
             name: "commentdetail",
-            query: { id },
+            query: { id: this.GOOD_ID },
             params: { animate: "forward" },
           });
           break;
@@ -757,7 +765,7 @@ export default {
 .detail-info .label1 {
   width: 100%;
   text-align: center;
-  box-shadow: var(--shadow-color);
+  box-shadow: var(--shadow-color3);
   margin-bottom: 0.5rem;
 }
 .detail-info .img {

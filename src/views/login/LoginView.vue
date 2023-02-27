@@ -157,50 +157,8 @@ export default {
     };
   },
 
-  async mounted() {
-    // 获取注册的用户信息
-    if (this.$route.params?.username)
-      this.username = this.$route.params.username;
-    // 获取登录状态
-    const token =
-      localStorage.getItem(this.$store.state.TOKEN_NAME) ||
-      sessionStorage.getItem(this.$store.state.TOKEN_NAME) ||
-      "";
-
-    this.$store.commit("setToken", token); // vuex保存token
-
-    if (token) {
-      const res = await checkUser(token);
-      if (!res.data.success || res.status !== 200) {
-        this.password = "";
-        this.$store.commit("loginOut"); // 登出
-        return;
-      }
-      let second = 2;
-      let timer;
-      // 自动登录弹窗
-      if (res.data?.success) {
-        this.password = "..*****...";
-        this.savePwd = true;
-        this.username = res.data.data.username;
-        Dialog.alert({
-          message: "自动登录中...",
-          confirmButtonText: "取消",
-        }).then(() => {
-          clearInterval(timer);
-          this.password = "";
-          this.$store.commit("loginOut"); // 登出
-        });
-
-        timer = setInterval(() => {
-          second--;
-          if (!second) {
-            this.toView(); // 跳转主页
-            Dialog.close(); // 关闭弹窗
-          }
-        }, 1000);
-      }
-    }
+  mounted() {
+    this.autoLogin();
   },
   methods: {
     // 表单提交
@@ -399,6 +357,52 @@ export default {
           return false;
         }
         return this.phoneReg.test(this.username.trim());
+      }
+    },
+
+    // 自动登录
+    async autoLogin() {
+      // 获取注册的用户信息
+      if (this.$route.params?.username)
+        this.username = this.$route.params.username;
+      // 获取登录状态
+      const token =
+        localStorage.getItem(this.$store.state.TOKEN_NAME) ||
+        sessionStorage.getItem(this.$store.state.TOKEN_NAME) ||
+        "";
+
+      this.$store.commit("setToken", token); // vuex保存token
+      if (token === "") return;
+      const res = await checkUser(token);
+      if (!res.data.success || res.status !== 200) {
+        this.password = "";
+        this.$store.commit("loginOut"); // 登出
+        this.$toast({ type: "fail", message: "登录过期，请重新登陆" });
+        return;
+      }
+      let second = 2;
+      let timer;
+      // 自动登录弹窗
+      if (res.data?.success) {
+        this.password = "..*****...";
+        this.savePwd = true;
+        this.username = res.data.data.username;
+        Dialog.alert({
+          message: "自动登录中...",
+          confirmButtonText: "取消",
+        }).then(() => {
+          clearInterval(timer);
+          this.password = "";
+          this.$store.commit("loginOut"); // 登出
+        });
+
+        timer = setInterval(() => {
+          second--;
+          if (!second) {
+            this.toView(); // 跳转主页
+            Dialog.close(); // 关闭弹窗
+          }
+        }, 1000);
       }
     },
   },

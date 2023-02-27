@@ -1,7 +1,7 @@
 <template>
   <div class="comment-card comments" v-show="comment">
     <!-- 头像时间 -->
-    <div class="lable-group">
+    <div class="lable-group" @click="!disableComment ? toCommentView() : ''">
       <div class="lable top">
         <van-image
           lazy-load
@@ -16,9 +16,15 @@
       </div>
       <div class="lable">{{ comment?.time }}</div>
     </div>
-    <div class="lable contents">{{ comment?.content }}</div>
+    <div class="lable contents" @click="!disableComment ? toCommentView() : ''">
+      {{ comment?.content }}
+    </div>
     <!-- 评论照片 -->
-    <div class="good-imgs" v-if="comment?.images">
+    <div
+      class="good-imgs"
+      @click="!disableComment ? toCommentView() : ''"
+      v-if="comment?.images"
+    >
       <van-image
         lazy-load
         class="img"
@@ -38,17 +44,17 @@
         <div class="left" @click="addCommentPick">
           <!-- 喜欢 -->
           <van-icon
-            name="like"
-            color="var(--tip-color2)"
-            v-show="comment?.isLiked"
+            :name="comment?.isLiked ? 'like' : 'like-o'"
+            :color="
+              comment?.isLiked ? 'var(--tip-color2)' : 'var(--text-color3)'
+            "
           />
-          <!-- 未喜欢 -->
-          <van-icon name="like-o" v-show="!comment?.isLiked" />
           <span class="text">{{ comment?.liked || "赞" }}</span>
         </div>
-        <div class="right" @click="toView(comment.id)">
+        <!-- 评论 -->
+        <div class="right" @click="changeCommentPopup" v-if="!disableComment">
           <van-icon name="comment-o" />
-          <span class="text">{{ comment?.comment || "" }}评论</span>
+          <span class="text">{{ comment?.comment || "评论" }}</span>
         </div>
       </div>
     </div>
@@ -58,7 +64,8 @@
 <script>
 import { addCommentLiked } from "@/api/comment/comment";
 import { getResourImageByName } from "@/api/res";
-import { ImagePreview, Toast } from "vant";
+import { ImagePreview } from "vant";
+import { mapState } from "vuex";
 export default {
   props: {
     comment: {
@@ -68,6 +75,10 @@ export default {
           stars: 0,
         };
       },
+    },
+    disableComment: {
+      required: false,
+      default: false,
     },
   },
   name: "CommentCard",
@@ -87,6 +98,14 @@ export default {
     },
   },
   methods: {
+    // 展示评论
+    changeCommentPopup() {
+      this.$store.commit("setShowCommentPopup", {
+        show: true,
+        commentId: this.comment.id,
+      });
+    },
+
     // 展示图片预览
     async showPreImg(imgs, i) {
       const images = JSON.parse(JSON.stringify(imgs));
@@ -106,23 +125,23 @@ export default {
         this.$store.state.token
       );
       if (res.data.success) {
-        let success = res.data?.data;
-        if (success) {
+        if (this.comment.isLiked) {
+          this.$set(this.comment, "isLiked", false);
           this.$set(this.comment, "liked", this.comment.liked - 1);
-          Toast("取消点赞");
+          this.$toast("取消点赞");
         } else {
+          this.$set(this.comment, "isLiked", true);
           this.$set(this.comment, "liked", this.comment.liked + 1);
         }
-        this.$set(this.comment, "isLiked", !success);
       }
     },
 
-    // toView
-    toView() {
+    // toCommentView
+    toCommentView() {
       this.$router.push({
         name: "commentdetail",
         query: { id: this.comment.id },
-        params: { animate: "forward" },
+        params: { animate: "forward", comment: this.comment },
       });
     },
 
@@ -130,6 +149,9 @@ export default {
     getImgSrc(url) {
       return getResourImageByName(url);
     },
+  },
+  computed: {
+    ...mapState(["showCommentPopup"]),
   },
 };
 </script>
@@ -184,7 +206,8 @@ export default {
   padding: 0 0.1rem;
 }
 .tips .lable .text {
-  font-size: 0.36rem;
+  font-size: 0.3rem;
   padding: 0 0.1rem;
+  vertical-align: auto;
 }
 </style>
