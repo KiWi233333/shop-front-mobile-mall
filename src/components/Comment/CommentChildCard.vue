@@ -11,7 +11,7 @@
             <span class="text isAuther" v-if="comment.isAuthor">作者</span>
             <span class="text isAuther" v-if="comment.isMe">自己</span>
           </small>
-          <div class="text texts">{{ comment.content }}</div>
+          <div class="text texts" v-html="comment.content"></div>
           <div>
             <small class="text">{{ initTime(comment.time) }}</small>
             &nbsp;
@@ -41,6 +41,7 @@ export default {
   props: {
     comment: { required: true },
     fid: { required: false },
+    id: { required: false },
     first: {
       default: -1,
       required: true,
@@ -65,7 +66,7 @@ export default {
     // 触发删除
     onDelete() {
       if (this.comment.isMe) {
-        this.$emit("deleteComment", this.comment?.id);
+        this.$emit("deleteComment", this.comment.id);
       }
     },
 
@@ -86,11 +87,13 @@ export default {
     },
 
     // 切换评论对象
-    toComment(id) {
+    toComment() {
       this.$emit("toComment", {
-        fid: id, // 整体评论的主id
+        fid: this.id, // 整体评论的主id
         sid: this.fid, // 父id
         name: this.comment.nickname, // 对谁评论
+        firstIndex: this.first,
+        secondIndex: this.second,
       });
     },
   },

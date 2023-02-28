@@ -272,7 +272,7 @@ label {
 /* 弹出框 */
 .popup-enter-active {
   transform-origin: -22% -22%;
-  animation: 0.3s zoomIn cubic-bezier(0.83, -0.27, 0.17, 1.23);
+  animation: 0.3s zoomIn cubic-bezier(0.82, -0.27, 0.17, 1.23);
 }
 .popup-leave-active {
   transform-origin: -22% -22%;
@@ -280,19 +280,15 @@ label {
 }
 
 /* Toast */
-.toast-enter-from,
-.toast-leave-to {
-  opacity: 0;
-  transition: 0.2s;
-}
-.toast-leave-from,
-.toast-enter-to {
-  opacity: 1;
-}
 .toast-enter-active {
-  animation-delay: 0.3s;
-  animation: 0.3s zoomIn cubic-bezier(0.83, -0.27, 0.17, 1.23);
+  transform-origin: -22% -22%;
+  animation: 0.3s zoomIn cubic-bezier(0.82, -0.27, 0.17, 1.23);
 }
+.toast-leave-active {
+  transform-origin: -22% -22%;
+  animation: 0.4s fadeIn cubic-bezier(0.83, -0.27, 0.17, 1.23) reverse;
+}
+
 /* 上进下出 */
 .fade-enter-active,
 .fade-leave-active {
@@ -317,7 +313,7 @@ label {
 .bottomRight-leave-to {
   transition: all 0.5s;
   opacity: 0;
-  transform: translateX(100%);
+  transform: translateX(50%);
 }
 
 /* 下进右出 */
@@ -334,4 +330,19 @@ label {
   transition: all 0.5s;
   opacity: 0;
   transform: translateX(100%);
+}
+
+/* 下进内凹 */
+.sliceInZoomOut-enter-active,
+.sliceInZoomOut-leave-active {
+  transition: all 0.4s ease;
+}
+.sliceInZoomOut-enter {
+  transition: all 0.5s;
+  opacity: 0;
+  transform: translateY(30%) scale(1);
+}
+.sliceInZoomOut-leave-to {
+  opacity: 0;
+  transform: scale(0.6);
 }

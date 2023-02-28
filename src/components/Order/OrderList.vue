@@ -14,7 +14,6 @@
           :key="order?.orderId"
           class="v-card order-card"
           v-for="(order, i) in orderList"
-          @click="toView(getStateEn(order), order)"
         >
           <!-- 状态 -->
           <div class="flex-c-c top" v-if="order?.orderItems?.length">
@@ -27,7 +26,11 @@
             }}</span>
           </div>
           <!-- 商品 -->
-          <div class="good-list" v-if="order?.orderItems">
+          <div
+            class="good-list"
+            v-if="order?.orderItems"
+            @click="toView(getStateEn(order), order)"
+          >
             <goods-info
               class="goods"
               v-for="p in order.orderItems"

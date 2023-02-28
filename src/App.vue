@@ -80,11 +80,11 @@ export default {
 
 .forward-leave-to {
   opacity: 0;
-  transform: translateX(-100%) scale(0.95);
+  transform: translateX(-100%);
 }
 .forward-enter {
   opacity: 0;
-  transform: translateX(100%) scale(0.95);
+  transform: translateX(100%);
 }
 
 /* 返回动画 */
@@ -97,10 +97,30 @@ export default {
 }
 .toback-leave-to {
   opacity: 0;
-  transform: translateX(100%) scale(0.95);
+  transform: translateX(100%);
 }
 .toback-enter {
   opacity: 0;
-  transform: translateX(-100%) scale(0.95);
+  transform: translateX(-100%);
+}
+/* 上拉 */
+.toup-enter-active,
+.toup-leave-active {
+  opacity: 1;
+  transition: all calc(var(--router-delay) * 2);
+  position: absolute;
+  width: 100%;
+}
+.toup-leave-to {
+  opacity: 0;
+  transform: translateY(-100%) scale(0.6);
+  border-radius: 4rem;
+  overflow: hidden;
+  filter: blur(20px);
+  box-shadow: var(--shadow-color2);
+}
+.toup-enter {
+  opacity: 0;
+  transform: translateY(100%) scale(1);
 }
 </style>

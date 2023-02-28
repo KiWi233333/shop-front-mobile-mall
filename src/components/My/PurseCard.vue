@@ -57,7 +57,7 @@ export default {
       this.$router.push({
         name: routerName,
         params: {
-          animate: "forward",
+          animate: "toup",
         },
       });
     },

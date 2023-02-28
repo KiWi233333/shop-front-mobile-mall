@@ -9,25 +9,27 @@
       <div class="comment-box">
         <div style="text-align: center">{{ comment_child.length }} 条回复</div>
         <!-- 评论 -->
-        <transition-group tag="div" name="bottomRight">
+        <transition-group tag="div" name="sliceInZoomOut">
           <comment-child-card
             @deleteComment="deleteComment"
             @toComment="changeCommentObj"
             v-for="(p, i) in comment_child"
             :comment="p"
             :key="p.id"
+            :id="p.id"
             :first="i"
           >
             <template>
               <!-- 子评论 -->
               <div class="son-card">
-                <transition-group tag="div" name="bottomRight">
+                <transition-group tag="div" name="sliceInZoomOut">
                   <comment-child-card
                     v-for="(son, j) in p.childComments"
                     :comment="son"
                     @deleteComment="deleteComment"
                     @toComment="changeCommentObj"
                     :key="son.id"
+                    :id="p.id"
                     :fid="p?.id"
                     :first="i"
                     :second="j"
@@ -51,7 +53,7 @@
           type="text"
           v-model="commentText"
           :formatter="formatInput"
-          :placeholder="getHiddentText || '买家期待和你交流~'"
+          placeholder="买家期待和你交流~"
           ref="commentInput"
           :clearable="true"
           @keyup.enter="addComment"
@@ -81,6 +83,9 @@ export default {
       fid: "",
       sid: "",
 
+      firstIndex: -1,
+      secondIndex: -1,
+
       commentNickName: "",
       comment_child: [], // 子评论
 
@@ -94,6 +99,7 @@ export default {
   methods: {
     // 获取评论子评论
     async reqGetItem() {
+      this.clearCommentObj(); // 清空状态
       const res = await getCommentSons(
         this.commentId,
         this.$store.getters.token
@@ -102,22 +108,16 @@ export default {
         this.comment_child.splice(0); // 清空
         res.data.data.forEach((p) => {
           this.comment_child.push(p);
+          if (!p?.childComments) return;
+          p?.childComments.filter((item) => {
+            item.content.replace(
+              /^@:$/,
+              `<span style='color:var(--bg-color2);'>@${item.content}:233</span>`
+            );
+            return item;
+          });
         });
       }
-    },
-
-    // 改变评论对象
-    changeCommentObj(obj) {
-      this.fid = obj?.fid;
-      this.sid = obj?.sid;
-      this.commentNickName = obj.name;
-      this.$refs.commentInput.$refs.input.focus();
-    },
-
-    // 失去焦点清空对象
-    blurCommentObj() {
-      // this.fid = null;
-      this.commentNickName = "";
     },
 
     // 去评论
@@ -127,23 +127,22 @@ export default {
       const res = await addCommentChild(
         this.commentId,
         this.fid,
-        this.commentText,
+        this.commentText.trim(),
         this.$store.getters.token
       );
       this.commentText = "";
       if (res.data.success && res.status === 200) {
         // 重新获取评论
         this.reqGetItem();
-        // console.log(res.data);
         this.$toast("评论成功！");
       } else {
         this.$toast("评论失败！");
       }
+      this.clearCommentObj(); // 清空状态
     },
 
     // 删除评论
     async deleteComment(id) {
-      console.log(id);
       this.$dialog
         .confirm({
           title: "是否删除该评论？",
@@ -169,26 +168,64 @@ export default {
 
     // 格式化用户输入
     formatInput(val) {
-      return checkText(val.trim());
+      return checkText(val);
     },
 
     // 图片地址
     getImgSrc() {
       return getResourImageByName(this.$store.state.userInfo.icon);
     },
+
+    // 改变评论对象
+    changeCommentObj(obj) {
+      let { fid, sid, firstIndex, secondIndex } = obj;
+      // console.log(obj);
+      this.fid = fid;
+      this.sid = sid;
+      this.firstIndex = firstIndex;
+      this.secondIndex = secondIndex;
+      this.commentNickName = obj.name;
+      this.$refs.commentInput.$refs.input.focus();
+    },
+
+    // 清空评论的对象
+    clearCommentObj() {
+      this.fid = null;
+      this.commentNickName = "";
+    },
   },
   computed: {
-    // 计算输入框的默认对象
-    getHiddentText() {
-      if (this.commentNickName) {
-        return `对 ${this.commentNickName} 回复`;
-      } else {
-        return "";
-      }
-    },
     ...mapState(["showCommentPopup", "commentId"]),
   },
   watch: {
+    // 评论对象
+    firstIndex() {
+      // console.log(this.commentText, this.secondIndex);
+      if (this.commentNickName && this.secondIndex >= 0) {
+        if (this.commentNickName === this.$store.state.userInfo?.nickname) {
+          this.commentText = "@自己:";
+        } else {
+          this.commentText = `@${this.commentNickName}:`;
+        }
+      } else {
+        this.commentText = "";
+      }
+      this.hiddenText = `对${this.commentNickName}进行回复`;
+    },
+    // 评论对象
+    secondIndex() {
+      // console.log(this.commentText, this.secondIndex);
+      if (this.commentNickName && this.secondIndex >= 0) {
+        if (this.commentNickName === this.$store.state.userInfo?.nickname) {
+          this.commentText = "@自己:";
+        } else {
+          this.commentText = `@${this.commentNickName}:`;
+        }
+      } else {
+        this.commentText = "";
+      }
+    },
+    // 评论id
     commentId(newVal, oldVal) {
       if (newVal !== oldVal && newVal !== undefined) {
         this.reqGetItem();

@@ -16,6 +16,8 @@
       @mouseleave="showCount = false"
     >
       <van-stepper
+        @focus="showCount = true"
+        @blur="showCount = false"
         v-show="showCount"
         :disabled="Number(item.stock) <= 0"
         :default-value="item.quantity"
