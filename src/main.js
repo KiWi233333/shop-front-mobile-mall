@@ -4,6 +4,7 @@ import router from "./router"; // vue-router
 import store from "./store"; // vuex
 import "amfe-flexible"; // 移动端适配
 import "../public/css/animate.min.css"; // 动画库
+
 // 指令
 import "@/util/directive";
 // 按需ui库
@@ -103,6 +104,7 @@ Vue.use(Button)
   .use(SubmitBar)
   .use(Popover)
   .use(Stepper);
+
 Vue.config.productionTip = false;
 // 组件默认提示
 Toast.setDefaultOptions({

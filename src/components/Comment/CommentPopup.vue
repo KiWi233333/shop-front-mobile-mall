@@ -41,7 +41,7 @@
         </transition-group>
       </div>
       <!-- 评论输入 -->
-      <div class="to-comment">
+      <div class="to-comment" ref="toCommentBar">
         <van-image
           lazy-load
           round
