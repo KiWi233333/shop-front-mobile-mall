@@ -2,8 +2,11 @@
   <default-page :title="getTitle" class="check-order">
     <div class="contain" v-if="!isError">
       <!-- 订单状态 -->
-      <div class="v-card top-order" v-if="isReadonly && $route.query?.isOrder">
-        <van-icon name="todo-list-o" class="left" size="1rem" />
+      <div
+        class="v-card top-order"
+        v-if="getTitle !== '订单' && $route.query?.isOrder"
+      >
+        <van-icon name="todo-list-o" class="left" size="1.2rem" />
         <div class="right">
           <div class="top">{{ getTitle }}</div>
           <small class="btm">{{ info.time }}</small>
@@ -27,7 +30,11 @@
         </address-card>
       </div>
       <!-- 无地址 -->
-      <div class="v-card address" v-else @click="toAddressView">
+      <div
+        class="v-card address"
+        v-if="!$route.query?.isOrder && emptyAddress"
+        @click="toAddressView"
+      >
         <van-icon
           size="1.2rem"
           name="location"
@@ -56,10 +63,11 @@
           <menu-item title="订单备注">
             <van-field
               type="text"
-              class="remark"
+              class="remarks"
+              input-align="right"
               placeholder="无备注"
               :disabled="!isEdit"
-              v-model="remark"
+              v-model="remarks"
               maxlength="30"
               :border="false"
               :clearable="true"
@@ -67,7 +75,7 @@
           </menu-item>
         </div>
       </div>
-      <!-- 价格明细 -->
+      <!-- 3）价格明细 -->
       <div class="v-card all-price">
         <div class="title">价格明细</div>
         <div class="lable-group">
@@ -98,6 +106,7 @@
           >{{ `${finallyPrice}` }}</span
         >
       </div>
+
       <!-- 修改列表 -->
       <van-cell-group inset class="group v-card" v-if="isReadonly">
         <van-cell
@@ -248,6 +257,7 @@ export default {
     SelectAddress,
   },
   name: "CheckOrder",
+
   data() {
     return {
       // 订单列表
@@ -258,7 +268,7 @@ export default {
       orderType: "",
       // 商品状况
       goodsLengths: 0, // 商品总数
-      remark: "", // 备注
+      remarks: "", // 备注
       allPrice: 0,
       allPostage: 0,
       finallyPrice: 0,
@@ -294,29 +304,31 @@ export default {
   },
   mounted() {
     // 初始化
-    this.getBalance();
-    const r = this.$route.query;
+    this.getBalance(); // 钱包
+    const q = this.$route.query;
     // 订单初始化
-    if (r.info === "[object Object]" || r.goodsList === "[object Object]") {
+    if (q.info === "[object Object]" || q.goodsList === "[object Object]") {
       return (this.isError = true);
     }
     // 获取默认地址
     this.getAddressList(false); // 获取地址
-    this.orderType = r.type || ""; // 订单类型
+    this.orderType = q.orderType || ""; // 订单类型
     // 1）读取已经传入地址
-    if (r?.isOrder && r.info.orderId) {
+    if (q.isOrder && q.info.orderId) {
       // 获取默认地址
       this.getAddressList(false); // 获取地址
       this.checkOrderType(); // 确定订单状态
       // 订单id
-      this.submitId = r.info.orderId;
+      this.submitId = q.info.orderId;
       // 地址
-      const { name, phone, address } = r.info;
+      console.log(q);
+      const { name, phone, address } = q.info;
       this.$set(this.defaultAddress, "name", name);
       this.$set(this.defaultAddress, "phone", phone);
       this.$set(this.defaultAddress, "address", address);
+      this.remarks = q.info.remarks;
       // 订单页面的数据
-      r.goodsList.forEach((goods) => {
+      q.goodsList.forEach((goods) => {
         this.goodsLengths = this.goodsLengths + goods.quantity;
         goods.props =
           (goods.color || "") +
@@ -326,23 +338,23 @@ export default {
         this.goodsList.push(goods);
         this.allPrice = currency(this.allPrice).add(goods.unitPrice);
       });
-      for (const key in r.info) {
-        this.$set(this.info, key, r.info[key]);
+      for (const key in q.info) {
+        this.$set(this.info, key, q.info[key]);
       }
       // 商品页面进入
     } else {
       // 获取默认地址
       this.getDefaultAddress();
       // 加载订单和商品 总价
-      r.goodsList.forEach((goods) => {
+      q.goodsList.forEach((goods) => {
         this.goodsList.push(goods);
         this.goodsLengths = this.goodsLengths + goods.quantity;
         this.allPrice = this.allPrice + goods.unitPrice * goods.quantity;
         this.allPostage = this.allPostage + goods.postage * goods.quantity;
       });
 
-      for (const key in r?.info) {
-        this.$set(this.info, key, r.info[key]);
+      for (const key in q?.info) {
+        this.$set(this.info, key, q.info[key]);
       }
     }
 
@@ -360,11 +372,12 @@ export default {
         this.$set(this.defaultAddress, key, p[key]);
       }
     },
+
     // 获取默认地址
     async getDefaultAddress() {
       const res = await getDefaultAddress(this.$store.getters.token);
       if (res.status === 200) {
-        if (res.data.success) {
+        if (res.data.success && res.data.data.length > 0) {
           this.getAddressList(); //获取全部地址
           for (const key in res.data.data) {
             this.$set(this.defaultAddress, key, res.data.data[key]);
@@ -380,20 +393,19 @@ export default {
     // 获取第一个地址 或全部地址
     async getAddressList(getFirst) {
       const res = await getAllAddress(this.$store.getters.token);
+
       if (res.data.success && res.status === 200) {
-        if (getFirst) {
-          for (const key in res.data.data[0]) {
-            this.$set(this.defaultAddress, key, res.data.data[0][key]);
+        const data = res.data.data;
+        if (data.length > 0 && getFirst) {
+          for (const key in data[0]) {
+            this.$set(this.defaultAddress, key, data[0][key]);
           }
         }
         // 添加全部地址
         this.addressList.splice(0);
-        res.data.data.forEach((p) => {
+        data.forEach((p) => {
           this.addressList.push(p);
         });
-        this.emptyAddress = !res.data.success;
-      } else {
-        this.emptyAddress = true;
       }
     },
 
@@ -417,8 +429,14 @@ export default {
         case "delivered":
           this.getTitle = "已发货";
           break;
-        case "comment":
-          this.getTitle = "待评论";
+        case "uncomment":
+          this.getTitle = "已完成，待评论";
+          break;
+        case "commented":
+          this.getTitle = "已评论";
+          break;
+        default:
+          this.getTitle = "订单";
           break;
       }
     },
@@ -445,8 +463,10 @@ export default {
             this.updateOrders(); // 更新
             break;
           case "undeliver":
+            this.submitText = "undeliver";
             break;
           case "delivered":
+            this.submitText = "delivered";
             break;
           case "comment":
             break;
@@ -475,7 +495,7 @@ export default {
           const res = await submitOrder(
             aid,
             items,
-            checkText(this.remark),
+            checkText(this.remarks),
             this.$store.getters.token
           );
           if (res.status === 200 && res.data.success) {
@@ -483,6 +503,7 @@ export default {
             this.isEdit = false; // 关闭编辑
             this.isSubmit = true;
             this.submitError = false;
+            this.submitText = "待支付";
           } else {
             this.submitError = true;
           }
@@ -533,7 +554,7 @@ export default {
         const res = await updateOrder(
           this.submitId,
           this.defaultAddress.id,
-          checkText(this.remark),
+          checkText(this.remarks),
           this.$store.getters.token
         );
         if (res.status === 200 && res.data.success) {
@@ -606,7 +627,12 @@ export default {
     },
     // 只读
     isReadonly() {
-      return this.orderType === "undeliver" || this.orderType === "delivered";
+      if (this.orderType !== "") {
+        console.log(this.orderType);
+        return !(this.orderType === "update" || this.orderType === "unpaid");
+      } else {
+        return false;
+      }
     },
 
     // 计算运费
@@ -616,6 +642,15 @@ export default {
       } else {
         return "免运费";
       }
+    },
+  },
+  watch: {
+    defaultAddress: {
+      deep: true,
+      immediate: true,
+      handler() {
+        this.emptyAddress = this.defaultAddress?.id === "";
+      },
     },
   },
 };
@@ -668,13 +703,13 @@ export default {
   margin-bottom: 0.36rem;
 }
 /* 留言 */
-.remark {
+.remarks {
   float: left;
   width: 3rem;
   background-color: transparent;
   padding: 0;
 }
-.remark >>> input::placeholder {
+.remarks >>> input::placeholder {
   text-align: right;
   padding-right: 0.2rem;
   letter-spacing: 0.05rem;
@@ -762,5 +797,8 @@ export default {
 }
 .group >>> .van-cell {
   padding: 0.2rem 0;
+}
+.check-order >>> .van-submit-bar__button {
+  width: auto;
 }
 </style>

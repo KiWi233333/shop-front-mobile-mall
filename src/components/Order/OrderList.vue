@@ -9,7 +9,7 @@
       finished-text="没有更多商品了"
       @load="onLoad"
     >
-      <transition-group name="bottomRight" tag="div">
+      <transition-group name="sliceInZoomOut" tag="div">
         <div
           :key="order?.orderId"
           class="v-card order-card"
@@ -29,7 +29,7 @@
           <div
             class="good-list"
             v-if="order?.orderItems"
-            @click="toView(getStateEn(order), order)"
+            @click="toView('', order)"
           >
             <goods-info
               class="goods"
@@ -73,12 +73,25 @@
             </button>
           </div>
           <!-- 已发货 -->
-          <div class="btns" v-if="getState(order) === '已发货'">
-            <button class="v-click btn">运输中</button>
+          <div class="btns" v-if="getState(order) === '已发货，待收货'">
+            <button
+              class="v-click btn"
+              @click="checkDeliverd(order?.orderId, i)"
+            >
+              确认收货
+            </button>
           </div>
-          <!-- 待确认收货 -->
-          <div class="btns" v-if="getState(order) === '待签收'">
-            <button class="v-click btn">确认收货</button>
+          <!-- 去评论 -->
+          <div class="btns" v-if="getState(order) === '已签收，待评价'">
+            <button class="v-click btn" @click="toOrderComment(order?.orderId)">
+              去评论
+            </button>
+          </div>
+          <!-- 已经评论 -->
+          <div class="btns" v-if="getState(order) === '已评价'">
+            <button class="v-click btn cancel" @click="toCommentView()">
+              评论
+            </button>
           </div>
         </div>
       </transition-group>
@@ -142,6 +155,7 @@ export default {
           res = await getDoneOrder(this.$store.getters.token);
           break;
       }
+      // console.log(res.data);
       if (res.status === 200 && res.data.success) {
         let count = 0;
         const data = res?.data?.data;
@@ -164,9 +178,10 @@ export default {
         }, 300);
       } else {
         this.isHttpError = true;
+        this.finished = true;
+        this.loading = false;
       }
     },
-
     // 拼接属性
     getPorps(p) {
       return `${p?.color || ""} ${p?.size || ""} ${p?.edition || ""} ${
@@ -182,12 +197,12 @@ export default {
         res = "待支付";
       } else if (p.logisticsStatus === "未发货") {
         res = "已付款，待发货";
-      } else if (p.logisticsStatus === "已发货") {
-        res = "已发货";
-      } else if (p.status === "未完成") {
-        res = "待签收";
+      } else if (p.logisticsStatus === "待收货" && p.status === "未完成") {
+        res = "已发货，待收货";
+      } else if (p.logisticsStatus === "已收货" && p.status === "已完成") {
+        res = "已签收，待评价";
       } else {
-        res = "待评论";
+        res = "已评论";
       }
       return res;
     },
@@ -199,10 +214,12 @@ export default {
         res = "unpaid";
       } else if (p.logisticsStatus === "未发货") {
         res = "undeliver";
-      } else if (p.logisticsStatus === "已发货") {
+      } else if (p.logisticsStatus === "待收货" && p.status === "未完成") {
         res = "delivered";
-      } else if (p.status === "未完成") {
-        res = "commit";
+      } else if (p.logisticsStatus === "已收货" && p.status === "已完成") {
+        res = "uncomment";
+      } else {
+        res = "comment";
       }
       return res;
     },
@@ -217,16 +234,17 @@ export default {
       this.finished = false;
       this.orderList.splice(0); // 清空数组
       new Promise((resolve) => {
-        this.onLoad();
+        if (this.isRefreshing) this.onLoad();
         resolve(true);
       }).then(() => {
         setTimeout(() => {
           this.isRefreshing = false;
-        }, 1500);
+        }, 1600);
       });
     },
-    // 待支付
-    // 1) 取消订单
+
+    // 1）待支付
+    //  取消订单
     async cancelOrder(id, i) {
       if (id === "") return;
       this.$dialog
@@ -253,13 +271,47 @@ export default {
         })
         .catch(() => {});
     },
+
+    // 2）已付款
     // 催发货
     toastDeliver() {
       this.$dialog({ title: "已经催促商家，请耐心等候！" });
     },
+
+    // 3）已发货、待收货
+    checkDeliverd(id, i) {
+      if (id === "") return;
+      this.$dialog
+        .confirm({
+          title: "是否收到货品？",
+          beforeClose: async (action, done) => {
+            if (action === "confirm") {
+              const res = await doneOrder(id, this.$store.getters.token);
+              if (res.status === 200 && res.data.success) {
+                done();
+                this.$toast({
+                  message: "收货成功！",
+                  duration: 500,
+                  type: "success",
+                });
+                this.orderList.splice(i, 1);
+              } else {
+                this.$toast("确认失败，请重新提交！");
+              }
+            } else {
+              done();
+            }
+          },
+        })
+        .catch(() => {});
+    },
+
     // 去到详情页type, order, index
-    toView(type, order) {
-      // console.log(type, order);
+    toView(orderType, order) {
+      if (orderType === "") {
+        orderType = this.getStateEn(order);
+      }
+      console.log(orderType);
       this.$router.push({
         name: "checkorder",
         params: {
@@ -269,12 +321,12 @@ export default {
           info: order,
           goodsList: order?.orderItems,
           isOrder: true,
-          type,
+          orderType,
         },
       });
     },
 
-    // 确认收获
+    // 4）确认收货
     async sureOrder(id, i) {
       if (id === "") return;
       this.$dialog
@@ -300,6 +352,17 @@ export default {
           },
         })
         .catch(() => {});
+    },
+
+    // 5）评论
+    toOrderComment(id) {
+      this.$router.push({
+        name: "comment",
+        params: {
+          animate: "forward",
+          id,
+        },
+      });
     },
   },
 };

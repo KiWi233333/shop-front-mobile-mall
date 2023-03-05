@@ -7,7 +7,7 @@
       :style="{ width: '100%', height: '70%' }"
     >
       <div class="comment-box">
-        <div style="text-align: center">{{ comment_child.length }} 条回复</div>
+        <div style="text-align: center">{{ commentLength }} 条回复</div>
         <!-- 评论 -->
         <transition-group tag="div" name="sliceInZoomOut">
           <comment-child-card
@@ -83,6 +83,8 @@ export default {
       fid: "",
       sid: "",
 
+      commentLength: 0, // 评论总条数
+
       firstIndex: -1,
       secondIndex: -1,
 
@@ -106,10 +108,13 @@ export default {
       );
       if (res.status === 200 && res.data.success) {
         this.comment_child.splice(0); // 清空
+        this.commentLength = 0;
+        this.commentLength += res.data.data.length;
         res.data.data.forEach((p) => {
           this.comment_child.push(p);
           if (!p?.childComments) return;
           p?.childComments.filter((item) => {
+            this.commentLength++;
             item.content.replace(
               /^@:$/,
               `<span style='color:var(--bg-color2);'>@${item.content}:233</span>`

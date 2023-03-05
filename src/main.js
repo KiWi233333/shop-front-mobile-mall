@@ -104,12 +104,8 @@ Vue.use(Button)
   .use(Popover)
   .use(Stepper);
 
+// 配置
 Vue.config.productionTip = false;
-// 组件默认提示
-Toast.setDefaultOptions({
-  forbidClick: true,
-  transition: "toast",
-});
 Dialog.setDefaultOptions({
   transition: "popup",
 });

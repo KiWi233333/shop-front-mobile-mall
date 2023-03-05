@@ -198,9 +198,7 @@ export default {
 
       // 内属性
       showProps: false,
-      isSku: false, // 用于刷新
       allStock: "", // 总库存
-      selectProps: {}, // 选择的属性
 
       combos: [],
       sizes: [],
@@ -330,6 +328,7 @@ export default {
 
         price, // 默认价格（单位元）
         stock_num: 0,
+        listIndex: "", // 库存不为0的坐标
         hide_stock: false, // 是否隐藏剩余库存
       };
 
@@ -423,24 +422,27 @@ export default {
       // 内部属性
       const GOOD_ID = this.goodProps.defaultOption.gid;
       const rows = this.rows;
-      window.goodsPropsList = {
+      const goodsPropsList = {
         color: this.colors,
         size: this.sizes,
         combo: this.combos,
         edition: this.editions,
       };
-      props.list = getList(props.tree);
 
       // 主函数
-      function getList(tree) {
+      function getList(tree, _this) {
         let res = [];
         let group = 1; // 组数
         for (let i = 0; i < tree.length; i++) {
           group = tree[i].v ? group * tree[i].v.length : group;
         }
-        const item = {}; // 产品规格
+        const item = {
+          selectedNum: 0,
+        }; // 产品规格
         let indexCol = 0;
         let allStock = 0;
+
+        // 回调
         callBack(tree, item, indexCol, allStock, rows);
 
         // 递归
@@ -458,7 +460,7 @@ export default {
                 obj[rows[k]] = "";
               }
               for (const key in obj) {
-                obj[key] = window.goodsPropsList[key][item[key]];
+                obj[key] = goodsPropsList[key][item[key]];
                 item.props = (item?.props || "") + `${obj[key]} `;
               }
 
@@ -478,7 +480,12 @@ export default {
                 item.stock_num = +p.stock;
                 item.gid = String(p.gid);
                 item.icon = p.icon;
+                if (item.stock_num > 0 && props.listIndex === "") {
+                  props.listIndex = res.length; // 记录默认值的位置
+                  _this.skuDefault = JSON.parse(JSON.stringify(item));
+                }
                 props.stock_num = props.stock_num + item.stock_num;
+
                 res.push(JSON.parse(JSON.stringify(item)));
                 item.id = "";
                 item.props = "";
@@ -487,13 +494,19 @@ export default {
             }
             // 下一行
             indexCol++;
-            callBack(tree, item, indexCol, allStock, rows); // 最后一排
+            await callBack(tree, item, indexCol, allStock, rows); // 最后一排
           }
         }
         return res;
       }
+      // console.log(props);
+
+      // 赋值
+      props.list = getList(props.tree, this);
       this.initSku = props;
-      this.isSku = true;
+      // this.$nextTick(() => {
+      //   this.skuDefault = props[props.listIndex];
+      // });
     },
 
     // 获取本商品是否收藏

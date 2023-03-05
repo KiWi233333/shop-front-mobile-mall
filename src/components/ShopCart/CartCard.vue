@@ -2,10 +2,17 @@
   <div class="v-card item">
     <!-- 选中插槽 -->
     <slot name="checkbox"></slot>
-    <img :src="getImgSrc" class="img" />
+    <!-- 图片 -->
+    <img
+      :src="getImgSrc(item?.icon)"
+      class="img"
+      @click="toGoodsView(item.goodsId)"
+    />
     <div class="content">
       <div class="title">{{ item.name }}</div>
-      <p class="props">{{ item.props }}</p>
+      <p class="props" @click="$emit('onSelectProps', item?.goodsId, item?.id)">
+        {{ item.props }}
+      </p>
       <div class="price">￥{{ item.unitPrice }}</div>
     </div>
     <!-- 件数 -->
@@ -78,10 +85,19 @@ export default {
     deleteShopCartById() {
       this.$emit("deleteCartByOne", this.item.id, this.index);
     },
-  },
-  computed: {
-    getImgSrc() {
-      return getResourImageByName(this.item?.icon);
+
+    // 跳转详情页
+    toGoodsView(id) {
+      this.$router.push({
+        name: "detail",
+        params: { animate: "forward" },
+        query: { id },
+      });
+    },
+
+    // 获取图片地址
+    getImgSrc(url) {
+      return getResourImageByName(url);
     },
   },
   watch: {

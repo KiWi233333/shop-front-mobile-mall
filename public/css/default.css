@@ -335,6 +335,7 @@ label {
 /* 下进内凹 */
 .sliceInZoomOut-enter-active,
 .sliceInZoomOut-leave-active {
+  /* float: left; */
   transition: all 0.4s ease;
 }
 .sliceInZoomOut-enter {
@@ -345,4 +346,19 @@ label {
 .sliceInZoomOut-leave-to {
   opacity: 0;
   transform: scale(0.6);
+}
+
+/* 内凹下出 */
+.resliceInZoomOut-enter-active,
+.resliceInZoomOut-leave-active {
+  transition: all 0.4s ease;
+}
+.resliceInZoomOut-enter {
+  transition: all 0.4s;
+  opacity: 0;
+  transform: translateY(-50%) scale(0.7);
+}
+.resliceInZoomOut-leave-to {
+  opacity: 0;
+  transform: scale(1);
 }

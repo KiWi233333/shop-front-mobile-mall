@@ -182,6 +182,7 @@ import {
   deleteAddressById,
   deleteAddressByIdsArray,
   getAllAddress,
+  getDefaultAddress,
   putAddres,
   updateAddress,
 } from "@/api/user/address";
@@ -229,15 +230,18 @@ export default {
 
     // 获取所有地址
     async getAllAddressList() {
+      this.addressList.splice(0); // 清空
       this.loading = true;
+      const first = await getDefaultAddress(this.$store.getters.token);
+      if (first.status === 200 && first.data.success) {
+        this.addressList.push(first.data.data);
+      }
       const res = await getAllAddress(this.$store.getters.token);
       if (res.status === 200 && res.data.success) {
         const data = res.data.data;
         this.loading = false;
         data.forEach((p) => {
-          if (p.isDefault) {
-            this.addressList.unshift(p);
-          } else {
+          if (!p.isDefault) {
             this.addressList.push(p);
           }
         });
@@ -259,20 +263,13 @@ export default {
       this.isEdit = false;
       this.showAddress = true;
     },
+
     // 添加地址
     async reqAddAddress() {
       const res = await putAddres(this.address, this.$store.getters.token);
-      //   console.log(res.data);
       if (res.status === 200 && res.data.success) {
+        this.getAllAddressList(); // 刷新
         Toast({ type: "success", position: "bottom", message: "添加成功！" });
-
-        const newAddress = JSON.parse(JSON.stringify(this.address));
-        if (newAddress.isDefault) {
-          this.addressList[0].isDefault = false;
-          this.addressList.unshift(newAddress);
-        } else {
-          this.addressList.push(newAddress);
-        }
       } else {
         Toast({ position: "bottom", message: "添加失败！" });
       }
@@ -281,8 +278,13 @@ export default {
 
     // 加入单例编辑
     toEdit(item, i) {
+      console.log(item);
       for (const key in item) {
-        this.$set(this.address, key, item[key]);
+        if (key === "isDefault") {
+          this.$set(this.address, key, Boolean(item[key]));
+        } else {
+          this.$set(this.address, key, item[key]);
+        }
       }
       this.area = `${item.province} ${item.city} ${item.district}`;
       this.active = i;
@@ -291,20 +293,10 @@ export default {
     },
     // 更新地址
     async reqUpdateAddress() {
-      const index = this.active;
       const res = await updateAddress(this.address, this.$store.getters.token);
-      //   console.log(res.data);
+
       if (res.status === 200 && res.data.success) {
-        const newAddress = JSON.parse(JSON.stringify(this.address));
-        if (this.address.isDefault) {
-          // 默认地址
-          this.addressList[0].isDefault = false; // 取消其他默认
-          this.addressList.splice(index, 1); // 移除
-          this.addressList.unshift(newAddress); // 添加到头部
-        } else {
-          // 不是默认地址
-          this.addressList.splice(index, 1, newAddress);
-        }
+        this.getAllAddressList(); // 刷新
         Toast({ type: "success", position: "bottom", message: "修改成功！" });
       } else {
         Toast({ position: "bottom", message: "修改失败！" });
@@ -322,7 +314,7 @@ export default {
           )
             .then((res) => {
               if (res.data.success) {
-                this.addressList.splice(this.active, 1);
+                this.getAllAddressList(); // 刷新
                 Toast(" 删除成功！");
               } else {
                 Toast(" 删除失败！");
@@ -489,5 +481,8 @@ export default {
   font-size: 0.45rem;
   background-color: var(--tip-color2);
   color: var(--text-color2);
+}
+.address-popup >>> .van-switch--on {
+  background-color: var(--theme-color2);
 }
 </style>

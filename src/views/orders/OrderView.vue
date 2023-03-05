@@ -34,7 +34,7 @@ export default {
         { title: "待付款", type: "unpaid" },
         { title: "待发货", type: "undeliver" },
         { title: "待收货", type: "delivered" },
-        { title: "评价", type: "comment" },
+        { title: "已完成", type: "comment" },
       ],
     };
   },

@@ -15,14 +15,6 @@ module.exports = defineConfig({
           },
         },
       },
-      // postcss: {
-      //   plugins: [
-      //     require("postcss-pxtorem")({
-      //       rootValue: 24,
-      //       propList: ["*"],
-      //     }),
-      //   ],
-      // },
     },
   },
 });

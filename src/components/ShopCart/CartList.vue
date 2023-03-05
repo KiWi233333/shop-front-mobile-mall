@@ -19,6 +19,7 @@
             :key="item.goodsItemId"
             :item="item"
             :index="i"
+            @onSelectProps="onSelectProps(item?.goodsId, item?.id)"
             @deleteCartByOne="deleteCartByOne"
           >
             <template #checkbox>
@@ -33,13 +34,15 @@
         </transition-group>
       </van-checkbox-group>
     </van-list>
+    <goods-sku :GOOD_ID="GOOD_ID" v-model="showSku" />
   </div>
 </template>
 <script>
 import CartCard from "./CartCard.vue";
 import { getAllShopCart, deleteOneShopCart } from "@/api/shopcart/shopcart";
+import GoodsSku from "../GoodsSku.vue";
 export default {
-  components: { CartCard },
+  components: { CartCard, GoodsSku },
   name: "CartList",
   data() {
     return {
@@ -48,9 +51,18 @@ export default {
       isEmpty: false,
       selectList: [], // 坐标
       cartList: [], // 购物车列表
+
+      // 当前gid
+      GOOD_ID: "",
+      // 当前购物车id
+      shopcartId: "",
+
+      // 属性切换
+      showSku: false,
     };
   },
   methods: {
+    // 1) 购物车 功能
     // 获取全部购物车列表
     async getAllShopCartList() {
       this.loading = true;
@@ -84,12 +96,10 @@ export default {
         this.isEmpty = true;
       }
     },
-
     // 获取选中的项目
     changeSelectArr(arr) {
       this.$emit("changeSelectArr", arr, this.cartList);
     },
-
     // 删除单一购物车
     async deleteCartByOne(id, i) {
       this.$toast.loading({
@@ -97,8 +107,6 @@ export default {
         forbidClick: true,
         duration: 0,
       });
-
-      // console.log(i);
       const res = await deleteOneShopCart(id, this.$store.getters.token);
       if (res.status === 200 && res.data.success) {
         this.cartList.splice(i, 1);
@@ -107,7 +115,19 @@ export default {
         this.$toast.fail("删除购物车失败！");
       }
     },
+
+    // 2) 属性修改 功能
+    // 改变gid
+    onSelectProps(GOOD_ID, shopcartId) {
+      // if (this.shopcartId === shopcartId) return;
+      console.log(GOOD_ID, shopcartId);
+      this.showSku = true;
+
+      this.GOOD_ID = GOOD_ID;
+      this.shopcartId = shopcartId;
+    },
   },
+
   watch: {
     // 列表发生改变
     cartList: {

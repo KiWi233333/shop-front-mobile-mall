@@ -16,6 +16,7 @@
       </div>
       <div class="lable">{{ comment?.time }}</div>
     </div>
+    <!-- 内容 -->
     <div class="lable contents" @click="!disableComment ? toCommentView() : ''">
       {{ comment?.content }}
     </div>
@@ -41,6 +42,10 @@
         评分：<van-rate v-model="stars" readonly size="0.4rem" gutter="0" />
       </div>
       <div class="lable">
+        <!-- 删除自己的评论 -->
+        <span v-if="comment?.isMe" class="text" @click="deleteOrderComment"
+          >删除</span
+        >
         <div class="left" @click="addCommentPick">
           <!-- 喜欢 -->
           <van-icon
@@ -63,6 +68,8 @@
 
 <script>
 import { addCommentLiked } from "@/api/comment/comment";
+import { delteOrderComment } from "@/api/comment/ordercomment";
+
 import { getResourImageByName } from "@/api/res";
 import { ImagePreview } from "vant";
 import { mapState } from "vuex";
@@ -115,6 +122,27 @@ export default {
       });
       // 图片预览
       ImagePreview({ images, closeable: true, startPosition: i });
+    },
+
+    // 删除评论
+    deleteOrderComment() {
+      this.$dialog
+        .confirm({
+          title: "是否删除评论？",
+          beforeClose: async (action, done) => {
+            if (action === "confirm") {
+              const res = await delteOrderComment(this.comment.id);
+              if (res.data.success) {
+                done();
+                this.$toast({ type: "success", message: "删除成功" });
+              } else {
+                this.$toast({ type: "fail", message: "删除失败" });
+              }
+            }
+            done();
+          },
+        })
+        .catch(() => {});
     },
 
     // 修改评论点赞
@@ -205,9 +233,13 @@ export default {
 .tips .lable div {
   padding: 0 0.1rem;
 }
+.tips .lable > div {
+  display: flex;
+  align-items: center;
+}
 .tips .lable .text {
+  user-select: none;
   font-size: 0.3rem;
-  padding: 0 0.1rem;
-  vertical-align: auto;
+  padding: 0 0.12rem;
 }
 </style>
