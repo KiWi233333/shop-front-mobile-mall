@@ -367,8 +367,6 @@ export default {
         .catch(() => {});
     },
 
-    // 添加默认地址
-
     // 获取定位
     getLocation() {
       console.log("定位");

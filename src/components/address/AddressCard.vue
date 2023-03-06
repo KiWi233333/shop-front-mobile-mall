@@ -81,7 +81,7 @@ export default {
 </script>
 <style scoped>
 .address-card {
-  padding: 0.3rem;
+  padding: 0.3rem 0.2rem;
   font-size: 0.4rem;
   margin-bottom: 0.2rem;
   border-radius: 10px;

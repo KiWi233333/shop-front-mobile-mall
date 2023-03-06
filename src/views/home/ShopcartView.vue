@@ -5,7 +5,7 @@
       <div class="top">
         <span class="title">
           <span class="big">购物车</span>
-          <small> ({{ counts }}件商品)</small>
+          <small> ({{ getCartCount }}件商品)</small>
         </span>
         <span
           class="edit"
@@ -98,14 +98,14 @@ export default {
       return this.finallPrice * 100;
     },
     getCartCount() {
-      return this.$children;
+      // this.counts = this.cartList.length;
+      return this.cartList.length;
     },
   },
   methods: {
     // 获取长度
     getCartLength(cartList) {
       this.cartList = cartList;
-      this.counts = cartList.length;
     },
 
     // 获取选中的组合

@@ -7,8 +7,10 @@
     :goods="{ picture: getImgSrc(goodProps?.defaultOption?.icon) }"
     :goods-id="GOOD_ID"
     :initial-sku="skuDefault"
-    :quota="0"
+    :quota="99"
     :stock-threshold="10"
+    :show-add-cart-btn="false"
+    buy-text="确认修改"
     stepper-title="购买数量"
     @sku-selected="selectedSku"
     @buy-clicked="changeShorCartProps"
@@ -18,10 +20,12 @@
 import { getGoodProps, getGoodPropsById } from "@/api/good/props";
 import { getResourImageByName } from "@/api/res";
 import { mapState } from "vuex";
+import { updateShopCartProps } from "@/api/shopcart/shopcart";
 export default {
   props: {
     value: { required: true },
     GOOD_ID: { required: true },
+    cartId: { required: false },
   },
   model: {
     prop: "value",
@@ -73,9 +77,8 @@ export default {
 
     // 属性变化触发
     selectedSku(info) {
-      const { selectedSkuComb } = info;
-      if (!selectedSkuComb) return;
-      this.selectPropsName = selectedSkuComb.props;
+      if (!info.selectedSkuComb) return;
+      this.selectPropsName = info.selectedSkuComb.props;
     },
 
     // 初始化属性组合
@@ -252,14 +255,29 @@ export default {
         return res;
       }
       this.initSku = props;
-      this.skuDefault = props.list[0];
+      this.skuDefault = { ...props.list[0], selectedNum: 1 };
       // console.log(props.list);
     },
 
     // 修改规格
-    async changeShorCartProps() {
-      // const res = await updateShopCartProps()
-      this.$emit("updataShopcart");
+    async changeShorCartProps(info) {
+      this.$toast.loading({ forbidClick: true, duration: 0 });
+
+      // 修改属性
+      const res = await updateShopCartProps(
+        this.cartId,
+        info.selectedSkuComb?.id,
+        info?.selectedNum,
+        this.$store.getters.token
+      );
+      if (res.status === 200 && res.data.success) {
+        this.$emit("updataShopcart"); // 刷新
+        this.$toast.clear();
+        this.show = false;
+        this.$toast.success("修改成功！");
+      } else {
+        this.$toast.fail("修改失败！");
+      }
     },
 
     // 获取图片

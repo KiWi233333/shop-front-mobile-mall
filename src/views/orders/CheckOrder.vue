@@ -3,14 +3,18 @@
     <div class="contain" v-if="!isError">
       <!-- 订单状态 -->
       <div
-        class="v-card top-order"
+        class="v-card flex-col order-info"
         v-if="getTitle !== '订单' && $route.query?.isOrder"
       >
-        <van-icon name="todo-list-o" class="left" size="1.2rem" />
-        <div class="right">
-          <div class="top">{{ getTitle }}</div>
-          <small class="btm">{{ info.time }}</small>
-        </div>
+        <div style="font-weight: 600">订单状态</div>
+        <van-steps :active="orderStateIndex" active-color="var(--tip-color2)">
+          <van-step name="0">待支付</van-step>
+          <van-step name="1">待发货</van-step>
+          <van-step name="2">已发货</van-step>
+          <van-step name="3">已完成</van-step>
+          <van-step name="4">已评论</van-step>
+        </van-steps>
+        <span class="btm">订单时间：{{ info.time }}</span>
       </div>
       <!-- 1）地址卡片栏 -->
       <div v-if="!emptyAddress" @click="isEdit ? showAddressSelectPanel() : ''">
@@ -21,6 +25,7 @@
         >
           <template #right-icon>
             <van-icon
+              v-show="isEdit"
               name="arrow"
               class="icons"
               size="0.6rem"
@@ -30,11 +35,7 @@
         </address-card>
       </div>
       <!-- 无地址 -->
-      <div
-        class="v-card address"
-        v-if="!$route.query?.isOrder && emptyAddress"
-        @click="toAddressView"
-      >
+      <div class="v-card address" v-if="emptyAddress" @click="toAddressView">
         <van-icon
           size="1.2rem"
           name="location"
@@ -42,6 +43,7 @@
         />
         <div class="text">您还未添加地址，点击新建地址！</div>
       </div>
+
       <!-- 2）商品卡片+备注 -->
       <div class="v-card" v-if="goodsList.length > 0">
         <!-- 商品 -->
@@ -75,6 +77,7 @@
           </menu-item>
         </div>
       </div>
+
       <!-- 3）价格明细 -->
       <div class="v-card all-price">
         <div class="title">价格明细</div>
@@ -98,16 +101,16 @@
           <div class="lable">无可用</div>
         </div>
       </div>
+
       <!-- 总价 -->
-      <div class="v-card allPrice" v-if="isReadonly">
+      <div class="v-card allPrice">
         <span>总价：</span>
         <span style="color: var(--tip-color2); font-size: 0.5rem"
           ><small style="color: var(--tip-color2)">￥</small
-          >{{ `${finallyPrice}` }}</span
+          >{{ finallyPrice }}</span
         >
       </div>
-
-      <!-- 修改列表 -->
+      <!-- 4）订单信息 -->
       <van-cell-group inset class="group v-card" v-if="isReadonly">
         <van-cell
           @click="copyId(info?.orderId)"
@@ -117,7 +120,8 @@
         <van-cell title="支付方式：" :value="'钱包'" />
         <van-cell title="下单时间：" :value="info?.time" />
       </van-cell-group>
-      <!-- 选择付款方式 -->
+
+      <!-- 5）选择付款方式 -->
       <van-radio-group
         v-if="!isReadonly"
         v-model="selectPay"
@@ -148,13 +152,12 @@
           </van-cell>
         </van-cell-group>
       </van-radio-group>
-      <!-- 订单信息 -->
-      <van-cell-group> </van-cell-group>
+
       <!-- 提交订单 -->
       <van-submit-bar
         v-if="!isReadonly"
         :disabled="emptyAddress"
-        :price="allPrice"
+        :price="Number(finallyPrice.value * 100)"
         :button-text="submitText"
         @submit="submitBtnFun"
       >
@@ -224,7 +227,7 @@
       @refresh="$router.back()"
       btn-text="返回"
       image="error"
-      text="等待超时，订单关闭！"
+      text="页面刷新，请重新进入！"
     />
   </default-page>
 </template>
@@ -248,6 +251,7 @@ import currency from "currency.js";
 import { getPurseInfo } from "@/api/user/purse";
 import { copyTextAsync } from "@/util/copy";
 export default {
+  name: "CheckOrder",
   components: {
     ErrorCard,
     DefaultPage,
@@ -256,8 +260,6 @@ export default {
     MenuItem,
     SelectAddress,
   },
-  name: "CheckOrder",
-
   data() {
     return {
       // 订单列表
@@ -267,6 +269,7 @@ export default {
       addressList: [], // 全地址
       orderType: "",
       // 商品状况
+      orderStateIndex: 0, // 进度条
       goodsLengths: 0, // 商品总数
       remarks: "", // 备注
       allPrice: 0,
@@ -310,22 +313,18 @@ export default {
     if (q.info === "[object Object]" || q.goodsList === "[object Object]") {
       return (this.isError = true);
     }
-    // 获取默认地址
-    this.getAddressList(false); // 获取地址
     this.orderType = q.orderType || ""; // 订单类型
     // 1）读取已经传入地址
     if (q.isOrder && q.info.orderId) {
-      // 获取默认地址
-      this.getAddressList(false); // 获取地址
+      this.getAddressList(); // 获取列表
       this.checkOrderType(); // 确定订单状态
-      // 订单id
-      this.submitId = q.info.orderId;
-      // 地址
-      console.log(q);
+      this.submitId = q.info.orderId; // 订单id
+      // console.log(q);
       const { name, phone, address } = q.info;
-      this.$set(this.defaultAddress, "name", name);
-      this.$set(this.defaultAddress, "phone", phone);
-      this.$set(this.defaultAddress, "address", address);
+      this.defaultAddress.name = name;
+      this.defaultAddress.phone = phone;
+      this.defaultAddress.address = address;
+      this.defaultAddress.id = phone;
       this.remarks = q.info.remarks;
       // 订单页面的数据
       q.goodsList.forEach((goods) => {
@@ -352,15 +351,14 @@ export default {
         this.allPrice = this.allPrice + goods.unitPrice * goods.quantity;
         this.allPostage = this.allPostage + goods.postage * goods.quantity;
       });
-
+      // 添加订单信息
       for (const key in q?.info) {
         this.$set(this.info, key, q.info[key]);
       }
     }
-
     // 最总价格= 总价+运费
     this.finallyPrice = currency(this.allPrice).add(this.allPostage);
-    this.allPrice = this.finallyPrice * 100;
+    this.allPrice *= 100;
   },
   methods: {
     // 选择地址弹窗
@@ -377,11 +375,13 @@ export default {
     async getDefaultAddress() {
       const res = await getDefaultAddress(this.$store.getters.token);
       if (res.status === 200) {
-        if (res.data.success && res.data.data.length > 0) {
-          this.getAddressList(); //获取全部地址
+        // 有默认地址
+        if (res.data.success && res.data.data?.id !== "") {
+          this.getAddressList(false); //获取全部地址
           for (const key in res.data.data) {
             this.$set(this.defaultAddress, key, res.data.data[key]);
           }
+          // 无默认地址
         } else {
           this.getAddressList(true); // 获取第一个地址
           return;
@@ -390,8 +390,9 @@ export default {
         this.isError = true;
       }
     },
+
     // 获取第一个地址 或全部地址
-    async getAddressList(getFirst) {
+    async getAddressList(getFirst = false) {
       const res = await getAllAddress(this.$store.getters.token);
 
       if (res.data.success && res.status === 200) {
@@ -418,22 +419,28 @@ export default {
         case "unpaid":
           this.getTitle = "待支付";
           this.submitText = "去支付";
+          this.orderStateIndex = 0;
           break;
         case "update":
           this.isEdit = true;
           this.submitText = "更新并付款";
+          this.orderStateIndex = 0;
           break;
         case "undeliver":
           this.getTitle = "待发货";
+          this.orderStateIndex = 1;
           break;
         case "delivered":
           this.getTitle = "已发货";
+          this.orderStateIndex = 2;
           break;
         case "uncomment":
           this.getTitle = "已完成，待评论";
+          this.orderStateIndex = 3;
           break;
         case "commented":
           this.getTitle = "已评论";
+          this.orderStateIndex = 4;
           break;
         default:
           this.getTitle = "订单";
@@ -535,13 +542,21 @@ export default {
         },
         onClose: () => {
           if (this.isPayDone) {
-            this.$toast({ type: "success", message: "支付成功！" });
+            this.$toast({
+              type: "success",
+              message: "支付成功！",
+              forbidClick: true,
+            });
             this.$router.replace({
               name: "order",
               params: { animate: "forward" },
             });
           } else {
-            this.$toast({ type: "fail", message: "余额不足" });
+            this.$toast({
+              type: "fail",
+              message: "余额不足",
+              forbidClick: true,
+            });
           }
         },
       });
@@ -628,7 +643,6 @@ export default {
     // 只读
     isReadonly() {
       if (this.orderType !== "") {
-        console.log(this.orderType);
         return !(this.orderType === "update" || this.orderType === "unpaid");
       } else {
         return false;
@@ -682,9 +696,18 @@ export default {
   margin: 0 0.2rem;
   color: var(--tip-color2);
 }
+.order-info >>> .van-steps {
+  padding: 0;
+  margin-top: 0.3rem;
+}
+.order-info >>> .van-step__title {
+  font-size: 0.3rem;
+}
+.order-info .btm {
+  font-size: 0.35rem;
+  color: var(--text-color3);
+}
 .top-order {
-  /* box-shadow: none;
-  background-color: transparent; */
   display: flex;
   align-items: center;
 }

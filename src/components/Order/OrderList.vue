@@ -83,13 +83,16 @@
           </div>
           <!-- 去评论 -->
           <div class="btns" v-if="getState(order) === '已签收，待评价'">
-            <button class="v-click btn" @click="toOrderComment(order?.orderId)">
+            <button class="v-click btn" @click="toAddComment(order?.orderId)">
               去评论
             </button>
           </div>
           <!-- 已经评论 -->
           <div class="btns" v-if="getState(order) === '已评价'">
-            <button class="v-click btn cancel" @click="toCommentView()">
+            <button
+              class="v-click btn cancel"
+              @click="toOrderComment(order?.orderId)"
+            >
               评论
             </button>
           </div>
@@ -311,7 +314,7 @@ export default {
       if (orderType === "") {
         orderType = this.getStateEn(order);
       }
-      console.log(orderType);
+      // console.log(orderType);
       this.$router.push({
         name: "checkorder",
         params: {
@@ -354,12 +357,25 @@ export default {
         .catch(() => {});
     },
 
-    // 5）评论
-    toOrderComment(id) {
+    // 5）去添加评论页面
+    toAddComment(id) {
       this.$router.push({
-        name: "comment",
+        name: "addcomment",
         params: {
           animate: "forward",
+          id,
+        },
+      });
+    },
+
+    // 6）查看评论页面
+    toOrderComment(id) {
+      this.$router.push({
+        name: "commentdetail",
+        params: {
+          animate: "forward",
+        },
+        query: {
           id,
         },
       });

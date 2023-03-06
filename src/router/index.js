@@ -22,6 +22,7 @@ import GoodsDetail from "@/views/goods/GoodsDetail.vue";
 // 评论
 import CommentDetail from "@/views/comment/CommentDetail";
 import CommentView from "@/views/comment/CommentView";
+import AddCommentView from "@/views/comment/AddCommentView";
 
 // 订单
 import OrderView from "@/views/orders/OrderView.vue";
@@ -251,6 +252,18 @@ const routes = [
     component: CheckOrder,
     meta: {
       title: "提交订单",
+      lv: 2,
+      permission: true,
+    },
+  },
+
+  // 6 去评论页面
+  {
+    path: "/comment/add",
+    name: "addcomment",
+    component: AddCommentView,
+    meta: {
+      title: "评论",
       lv: 2,
       permission: true,
     },

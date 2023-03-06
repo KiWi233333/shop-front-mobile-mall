@@ -1,9 +1,9 @@
 <template>
   <div class="view">
-    <top-nav :title="title" @click-left="$router.back()" />
+    <top-nav :title="title" @click-left="$router.back()" :r-title="rtitle" />
     <div class="content">
       <!-- 内容 -->
-      <slot></slot>
+      <slot name="default"></slot>
     </div>
   </div>
 </template>
@@ -13,6 +13,18 @@ export default {
   props: {
     // 标题
     title: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    // left
+    ltitle: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    // right
+    rtitle: {
       type: String,
       default: "",
       required: false,

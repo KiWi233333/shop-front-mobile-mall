@@ -5,6 +5,7 @@
     </div>
     <div class="title">{{ title }}</div>
     <div class="right" @click="onClickRight">{{ rTitle }}</div>
+    <slot name="rblock"></slot>
   </div>
 </template>
 <script>

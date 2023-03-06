@@ -16,11 +16,12 @@
           <cart-card
             v-bind="$attrs"
             v-for="(item, i) in cartList"
-            :key="item.goodsItemId"
+            :key="item.id"
             :item="item"
             :index="i"
             @onSelectProps="onSelectProps(item?.goodsId, item?.id)"
             @deleteCartByOne="deleteCartByOne"
+            @updataShopcart="updataShopcart"
           >
             <template #checkbox>
               <!-- 2)插槽多选框 -->
@@ -34,13 +35,19 @@
         </transition-group>
       </van-checkbox-group>
     </van-list>
-    <goods-sku :GOOD_ID="GOOD_ID" v-model="showSku" />
+    <!-- 属性 -->
+    <goods-sku
+      @updataShopcart="updataShopcart"
+      :GOOD_ID="GOOD_ID"
+      v-model="showSku"
+      :cartId="shopcartId"
+    />
   </div>
 </template>
 <script>
-import CartCard from "./CartCard.vue";
+import CartCard from "@/components/ShopCart/CartCard";
 import { getAllShopCart, deleteOneShopCart } from "@/api/shopcart/shopcart";
-import GoodsSku from "../GoodsSku.vue";
+import GoodsSku from "@/components/GoodsSku.vue";
 export default {
   components: { CartCard, GoodsSku },
   name: "CartList",
@@ -100,6 +107,12 @@ export default {
     changeSelectArr(arr) {
       this.$emit("changeSelectArr", arr, this.cartList);
     },
+
+    updataShopcart() {
+      this.cartList.splice(0);
+      this.getAllShopCartList();
+    },
+
     // 删除单一购物车
     async deleteCartByOne(id, i) {
       this.$toast.loading({
@@ -119,8 +132,6 @@ export default {
     // 2) 属性修改 功能
     // 改变gid
     onSelectProps(GOOD_ID, shopcartId) {
-      // if (this.shopcartId === shopcartId) return;
-      console.log(GOOD_ID, shopcartId);
       this.showSku = true;
 
       this.GOOD_ID = GOOD_ID;
@@ -131,9 +142,11 @@ export default {
   watch: {
     // 列表发生改变
     cartList: {
+      immediate: true,
       deep: true,
       handler(val) {
         this.$emit("changeSelectArr", this.selectList, val);
+        this.$emit("getCartLength", this.cartList); // 传出
       },
     },
 
@@ -144,6 +157,7 @@ export default {
           this.cartList.forEach((p, i) => {
             this.selectList.push(i);
           });
+          console.log(this.selectList);
         } else {
           this.selectList.splice(0);
         }

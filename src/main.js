@@ -53,6 +53,8 @@ import {
   Card,
   SubmitBar,
   Popover,
+  Steps,
+  Step,
   Stepper,
 } from "vant";
 
@@ -102,7 +104,9 @@ Vue.use(Button)
   .use(Card)
   .use(SubmitBar)
   .use(Popover)
-  .use(Stepper);
+  .use(Steps)
+  .use(Stepper)
+  .use(Step);
 
 // 配置
 Vue.config.productionTip = false;

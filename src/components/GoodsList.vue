@@ -98,7 +98,8 @@ export default {
       // 请求活动商品
       getEventGoodsById(this.currentPage, 8, this.$route.query?.eid)
         .then((res) => {
-          if (res.data.success) {
+          console.log(res.data);
+          if (res.status === 200 && res.data.success) {
             const data = res.data.data;
             data.records.forEach((p) => {
               this.goodsList.push(p);
@@ -113,8 +114,10 @@ export default {
               this.finished = true;
             } else {
               this.currentPage = data.current;
-              this.currentPage++;
+              this.currentPage++; // 下一页
             }
+            // this.finished = true;
+            // this.loading = false;
           } else {
             this.isHttpError = true;
           }
