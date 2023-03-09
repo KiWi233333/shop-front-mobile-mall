@@ -32,7 +32,6 @@
         @changeSelectArr="changeSelectArr"
         @getCartLength="getCartLength"
       />
-
       <!-- 1）批量结算 -->
       <van-submit-bar
         v-show="!isEdit"
@@ -122,6 +121,7 @@ export default {
 
     // 提交选择的商品
     async onSubmitOrder() {
+      if (this.selectList.length <= 0) return this.$toast(" 请选择商品！");
       // 提交的商品列表
       const goodsList = [];
       this.selectList.forEach((i) => {
@@ -151,7 +151,7 @@ export default {
 
     // 批量删除的商品
     async deleteShopCart() {
-      // console.log(this.$children);
+      if (this.selectList.length <= 0) return this.$toast(" 请选择商品！");
       // id集合
       let ids = [];
       this.selectList.forEach((p) => {

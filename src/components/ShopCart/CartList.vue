@@ -16,6 +16,7 @@
           <cart-card
             v-bind="$attrs"
             v-for="(item, i) in cartList"
+            :showSku="showSku"
             :key="item.id"
             :item="item"
             :index="i"
@@ -29,13 +30,13 @@
                 icon-size="0.5rem"
                 :name="i"
                 checked-color="var(--tip-color2)"
-              ></van-checkbox>
+              />
             </template>
           </cart-card>
         </transition-group>
       </van-checkbox-group>
     </van-list>
-    <!-- 属性 -->
+    <!-- 属性弹窗 -->
     <goods-sku
       @updataShopcart="updataShopcart"
       :GOOD_ID="GOOD_ID"

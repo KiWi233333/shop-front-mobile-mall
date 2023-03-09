@@ -15,6 +15,7 @@ import EventView from "@/views/second/EventView.vue";
 import RechargeView from "@/views/second/RechargeView";
 import PurseView from "@/views/second/PurseView";
 import UserView from "@/views/second/UserView";
+import InfoView from "@/views/second/InfoView";
 import SigninView from "@/views/second/SigninView";
 import AddressView from "@/views/second/AddressView";
 // 商品详情
@@ -170,7 +171,16 @@ const routes = [
     meta: {
       title: "个人信息",
       lv: 2,
-      keepAlive: true,
+      permission: true,
+    },
+  },
+  {
+    name: "userinfo",
+    path: "/my/info",
+    component: InfoView,
+    meta: {
+      title: "基本信息",
+      lv: 2,
       permission: true,
     },
   },
@@ -289,20 +299,15 @@ router.beforeEach((to, from, next) => {
   // 权限设置
   if (to.meta.permission) {
     // 权限成功
-    if (store.getters.token != "") {
+    if (store.getters.token) {
       next();
     } else {
-      try {
-        next({
-          name: "login",
-          params: {
-            animate: "forward",
-            toBack: "true",
-          },
-        });
-      } catch (e) {
-        e;
-      }
+      next({
+        name: "login",
+        params: {
+          animate: "forward",
+        },
+      });
     }
   } else {
     next();

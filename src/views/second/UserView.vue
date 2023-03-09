@@ -102,7 +102,6 @@ import {
 import { mapState } from "vuex";
 import ChangeIcon from "@/components/My/ChangeIcon.vue";
 import ChangePhone from "@/components/ChangePhone.vue";
-import { Notify, Toast } from "vant";
 import { copyTextAsync } from "@/util/copy";
 export default {
   components: { TopNav, ChangeIcon, ChangePhone },
@@ -129,7 +128,7 @@ export default {
             if (this.user.nickname === this.userInfo.nickname) {
               return (this.showInfoPanel = false);
             } else if (this.user.nickname.trim() == "") {
-              return Notify({
+              return this.$notify({
                 message: `昵称不能为空！`,
                 type: "danger",
               });
@@ -139,11 +138,11 @@ export default {
               this.$store.getters.token
             );
             if (res.status === 200 && res.data.success) {
-              Notify({ type: "success", message: "修改成功！" });
+              this.$notify({ type: "success", message: "修改成功！" });
               this.showInfoPanel = false;
               this.$set(this.userInfo, "nickname", this.user.nickname);
             } else {
-              Notify({ type: "danger", message: "该昵称已经存在！" });
+              this.$notify({ type: "danger", message: "该昵称已经存在！" });
             }
           },
         },
@@ -154,7 +153,7 @@ export default {
             if (this.user.username === this.userInfo.username) {
               return (this.showInfoPanel = false);
             } else if (this.user.username.trim() == "") {
-              return Notify({
+              return this.$notify({
                 message: "用户名不能为空！",
                 type: "danger",
               });
@@ -165,11 +164,15 @@ export default {
               this.$store.getters.token
             );
             if (res.status === 200 && res.data.success) {
-              Notify({ type: "success", message: "修改成功！" });
-              this.$set(this.userInfo, "username", this.user.username);
               this.showInfoPanel = false;
+              this.$notify({ type: "success", message: "修改成功！" });
+              this.$set(this.userInfo, "username", this.user.username);
+              this.$router.push({
+                name: "login",
+                params: { animate: "forward", toBack: true },
+              });
             } else {
-              Notify({ type: "danger", message: "该用户名已存在！" });
+              this.$notify({ type: "danger", message: "该用户名已存在！" });
             }
           },
         },
@@ -183,7 +186,7 @@ export default {
           value: "",
           clickFn: async () => {
             if (!this.isUpdatePwd) {
-              return Notify({ type: "danger", message: "旧密码错误!" });
+              return this.$notify({ type: "danger", message: "旧密码错误!" });
             }
             const res = await changeUserPwd(
               this.user.newPwd.trim(),
@@ -191,7 +194,7 @@ export default {
               this.$store.getters.token
             );
             if (res.status === 200 && res.data.success) {
-              Notify({
+              this.$notify({
                 type: "success",
                 message: "修改密码成功！",
                 onClose: () => {
@@ -203,7 +206,7 @@ export default {
                 },
               });
             } else {
-              Notify({ type: "danger", message: "修改密码失败！" });
+              this.$notify({ type: "danger", message: "修改密码失败！" });
             }
           },
         },
@@ -234,7 +237,7 @@ export default {
         this.user.oldPwd.trim()
       );
       if (res.status !== 200 || !res.data.success) {
-        Notify({ type: "danger", message: "旧密码错误！" });
+        this.$notify({ type: "danger", message: "旧密码错误！" });
       }
       this.isUpdatePwd = res.data.success;
     },
@@ -262,10 +265,10 @@ export default {
     copyId(text) {
       copyTextAsync(text)
         .then(() => {
-          Toast({ message: "复制成功！", position: "bottom" });
+          this.$toast({ message: "复制成功！", position: "bottom" });
         })
         .catch(() => {
-          Toast({ message: "用户取消了复制！", position: "bottom" });
+          this.$toast({ message: "用户取消了复制！", position: "bottom" });
         });
     },
   },
@@ -279,7 +282,7 @@ export default {
 };
 </script>
 
-<style soped>
+<style scoped>
 .contain {
   align-items: center;
   padding: 0.2rem 0.3rem;
@@ -307,7 +310,7 @@ export default {
 .group {
   box-shadow: var(--shadow-color3);
   margin: 0.3rem 0.6rem;
-  padding: 0.2rem 0.3rem;
+  padding: 0.2rem 0rem;
 }
 .group .van-cell__title {
   color: var(--text-color3);

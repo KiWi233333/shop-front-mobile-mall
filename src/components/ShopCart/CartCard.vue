@@ -10,8 +10,10 @@
     />
     <div class="content">
       <div class="title">{{ item.name }}</div>
+      <!-- 规格展示 -->
       <p class="props" @click="$emit('onSelectProps', item?.goodsId, item?.id)">
         {{ item.props }}
+        <van-icon :name="$attrs.showSku ? 'arrow-down' : 'arrow'" />
       </p>
       <div class="price">￥{{ item.unitPrice }}</div>
     </div>
@@ -133,7 +135,7 @@ export default {
   color: var(--text-color3);
   background-color: var(--bg-color5);
   border-radius: 0.4em;
-  padding: 0.08rem 0.15rem;
+  padding: 0.08rem 0.1rem;
   font-size: 0.25rem;
   text-overflow: clip;
   white-space: nowrap;

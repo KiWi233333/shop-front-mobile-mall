@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <div class="animate__animated animate__fadeIn my-top">
@@ -23,7 +22,7 @@
         <button class="v-btn tolg-btn" @click="toLoginPage">立即登录</button>
       </div>
       <div class="right" v-if="isLoginState">
-        <label class="title" @click="toView('user')">{{
+        <label class="title" @click="toView('userinfo')">{{
           userInfo?.nickname
         }}</label>
         <span class="userid" @click="copyID(userInfo.username)"

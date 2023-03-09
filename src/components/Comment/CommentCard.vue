@@ -17,9 +17,11 @@
       <div class="lable">{{ comment?.time }}</div>
     </div>
     <!-- 内容 -->
-    <div class="lable contents" @click="!disableComment ? toCommentView() : ''">
-      {{ comment?.content }}
-    </div>
+    <div
+      class="lable contents"
+      @click="!disableComment ? toCommentView() : ''"
+      v-html="comment?.content"
+    ></div>
     <!-- 评论照片 -->
     <div
       class="good-imgs"

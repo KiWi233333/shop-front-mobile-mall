@@ -26,7 +26,7 @@
   /* 边框 */
   --border-color: rgba(140, 140, 140, 0.2);
   /* 延迟 */
-  --router-delay: 0.35s;
+  --router-delay: 0.3s;
 }
 body,
 html {
@@ -41,6 +41,7 @@ a:active {
   color: var(--text-color);
 }
 small {
+  font-size: 0.3rem;
   color: var(--text-color3);
 }
 * {

@@ -88,14 +88,7 @@
             </button>
           </div>
           <!-- 已经评论 -->
-          <div class="btns" v-if="getState(order) === '已评价'">
-            <button
-              class="v-click btn cancel"
-              @click="toOrderComment(order?.orderId)"
-            >
-              评论
-            </button>
-          </div>
+          <!-- <div class="btns" v-if="getState(order) === '已评价'">已完成</div> -->
         </div>
       </transition-group>
     </van-list>
@@ -205,7 +198,7 @@ export default {
       } else if (p.logisticsStatus === "已收货" && p.status === "已完成") {
         res = "已签收，待评价";
       } else {
-        res = "已评论";
+        res = "已评价";
       }
       return res;
     },
@@ -363,6 +356,8 @@ export default {
         name: "addcomment",
         params: {
           animate: "forward",
+        },
+        query: {
           id,
         },
       });
@@ -370,6 +365,7 @@ export default {
 
     // 6）查看评论页面
     toOrderComment(id) {
+      console.log(id);
       this.$router.push({
         name: "commentdetail",
         params: {

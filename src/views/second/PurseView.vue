@@ -222,7 +222,7 @@ export default {
   padding-bottom: 0.1rem;
 }
 .item .active {
-  font-size: 0.1rem;
+  font-size: 0.3rem;
   color: var(--text-color3);
 }
 .btm-text {

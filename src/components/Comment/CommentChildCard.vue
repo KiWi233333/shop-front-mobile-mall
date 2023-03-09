@@ -15,7 +15,12 @@
           <div>
             <small class="text">{{ initTime(comment.time) }}</small>
             &nbsp;
-            <span class="grey text" @click="toComment(comment.id)">回复</span>
+            <span
+              class="grey text"
+              @click="toComment(comment.id)"
+              @touchstart="toComment(comment.id)"
+              >回复</span
+            >
           </div>
         </div>
       </div>

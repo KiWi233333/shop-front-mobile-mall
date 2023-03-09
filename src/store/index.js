@@ -1,3 +1,4 @@
+import { exitLogin } from "@/api/user/users";
 import router from "@/router";
 import Vue from "vue";
 import Vuex from "vuex";
@@ -54,6 +55,15 @@ export default new Vuex.Store({
           return "";
         }
       } else {
+        // 跳转登录
+        try {
+          router.push({
+            name: "login",
+            params: { animate: "forward", toBack: true },
+          });
+        } catch (e) {
+          e;
+        }
         return "";
       }
     },
@@ -96,6 +106,18 @@ export default new Vuex.Store({
     },
     // 登出
     loginOut(state) {
+      // 退出登录请求
+      exitLogin(state.token)
+        .then(res => {
+          if (res.status === 200 && res.data.success) {
+            // console.log("退出成功！");
+          } else {
+            console.log("退出失败！");
+          }
+        })
+        .catch(() => {
+          console.log("退出失败！");
+        });
       // 清空vuex
       state.isLoginState = false;
       for (const key in state.userInfo) {

@@ -3,14 +3,12 @@ import { request } from "@/util/request";
 /**
  * 根据id查询订单评价
  * @param {String} id
- * @param {*} token
  * @returns
  */
-export function getOrderCommentById(id, token) {
+export function getOrderCommentById(id) {
   return request({
     method: "get",
     url: `/comments/query/${id}`,
-    headers: { Authorization: token },
   });
 }
 
@@ -23,14 +21,14 @@ export function getOrderCommentById(id, token) {
  */
 export function uploadOrderImgById(orderItemId, fromData, token) {
   return request({
-    method: "get",
+    method: "post",
     url: `/evaluation/uploadImages/${orderItemId}`,
     headers: {
       "Content-Type": "multipart/form-data",
       Authorization: token,
     },
-    params: fromData,
-    timeout: 20000,
+    data: fromData,
+    timeout: 30000,
   });
 }
 

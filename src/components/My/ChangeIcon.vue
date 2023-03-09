@@ -18,8 +18,7 @@
         accept="image/png, image/jpeg, image/jpg,"
         v-model="imgList"
         preview-size="3rem"
-        multiple
-        :max-count="1"
+        :max-count="5"
         :max-size="500 * 1024"
         @oversize="overSizeFile"
         :preview-options="{ closeable: true }"

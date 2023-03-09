@@ -5,24 +5,23 @@
         <div class="title">积分：</div>
         <div class="points">{{ purseInfo?.points }}</div>
       </div>
-      <div class="right"></div>
     </div>
   </default-page>
 </template>
 
 <script>
 import DefaultPage from "@/components/DefaultPage.vue";
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 export default {
   components: { DefaultPage },
   name: "RechargeView",
-  computed:{
-    ...mapState(['purseInfo'])
+  computed: {
+    ...mapState(["purseInfo"]),
   },
 };
 </script>
 
-<style scoped> 
+<style scoped>
 .v-card {
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -35,6 +34,5 @@ export default {
 .left .points {
   font-size: 0.8rem;
   color: var(--text-color);
-} 
-
+}
 </style>

@@ -27,8 +27,7 @@
         size="0.5rem"
         color="var(--tip-color2)"
       />
-
-      <van-icon name="ellipsis" class="icon" size="0.5rem" />
+      <van-icon name="cart-o" class="icon" size="0.45rem" color="var(--)" />
     </div>
   </div>
 </template>
@@ -135,7 +134,7 @@ export default {
   align-items: center;
 }
 .lf-tip .icon {
-  padding: 0 0.1rem;
+  padding: 0 0.12rem;
 }
 .lf-tip .text {
   font-size: 0.3rem;

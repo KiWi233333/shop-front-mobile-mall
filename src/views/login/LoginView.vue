@@ -158,6 +158,7 @@ export default {
   },
 
   mounted() {
+    // 判断自动登录
     this.autoLogin();
   },
   methods: {
@@ -399,6 +400,7 @@ export default {
         timer = setInterval(() => {
           second--;
           if (!second) {
+            this.$store.commit("setUserInfo", res.data.data);
             this.toView(); // 跳转主页
             Dialog.close(); // 关闭弹窗
           }

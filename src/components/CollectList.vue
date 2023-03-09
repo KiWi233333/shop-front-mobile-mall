@@ -23,7 +23,7 @@
 </template>
   <script>
 import { getAllCollectByGid } from "@/api/user/collect";
-import GoodRowcard from "./GoodRowcard.vue";
+import GoodRowcard from "@/components/GoodRowcard.vue";
 export default {
   components: { GoodRowcard },
   name: "CollectList",

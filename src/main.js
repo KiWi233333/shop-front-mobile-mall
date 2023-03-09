@@ -106,6 +106,7 @@ Vue.use(Button)
   .use(Popover)
   .use(Steps)
   .use(Stepper)
+  .use(Rate)
   .use(Step);
 
 // 配置
