@@ -155,6 +155,7 @@
 
       <!-- 提交订单 -->
       <van-submit-bar
+        style="animation: 1.2s fadeInUp"
         v-if="!isReadonly"
         :disabled="emptyAddress"
         :price="Number(finallyPrice.value * 100)"

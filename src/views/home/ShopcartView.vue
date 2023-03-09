@@ -7,6 +7,7 @@
           <span class="big">购物车</span>
           <small> ({{ getCartCount }}件商品)</small>
         </span>
+        <!-- 清空 -->
         <span
           class="edit"
           style="
@@ -27,10 +28,12 @@
       </div>
       <!-- 列表 -->
       <cart-list
+        ref="cardList"
         :selectAll="selectAll"
         :isEdit="isEdit"
         @changeSelectArr="changeSelectArr"
         @getCartLength="getCartLength"
+        @changeSelectAll="changeSelectAll"
       />
       <!-- 1）批量结算 -->
       <van-submit-bar
@@ -40,7 +43,10 @@
         button-text="结算"
         @submit="onSubmitOrder"
       >
-        <van-checkbox v-model="selectAll" checked-color="var(--tip-color2)"
+        <van-checkbox
+          v-model="selectAll"
+          @click="onChangeSelectAll"
+          checked-color="var(--tip-color2)"
           >全选</van-checkbox
         >
       </van-submit-bar>
@@ -56,6 +62,7 @@
           v-model="selectAll"
           checked-color="var(--tip-color2)"
           style="margin-right: auto"
+          @click="onChangeSelectAll"
           >全选</van-checkbox
         >
       </van-submit-bar>
@@ -97,7 +104,6 @@ export default {
       return this.finallPrice * 100;
     },
     getCartCount() {
-      // this.counts = this.cartList.length;
       return this.cartList.length;
     },
   },
@@ -106,11 +112,25 @@ export default {
     getCartLength(cartList) {
       this.cartList = cartList;
     },
-
+    // 更改全选
+    changeSelectAll(val) {
+      this.selectAll = val;
+    },
+    // 外改内 全选
+    onChangeSelectAll() {
+      if (this.selectAll) {
+        this.cartList.forEach((p, i) => {
+          this.$refs.cardList.selectList.push(i);
+        });
+      } else {
+        this.$refs.cardList.selectList.splice(0);
+      }
+    },
     // 获取选中的组合
     changeSelectArr(selectList) {
       this.finallPrice = 0; // 清空
       this.selectList = selectList;
+      // 计算价格
       this.selectList.forEach((i) => {
         this.finallPrice =
           this.finallPrice +
@@ -245,7 +265,7 @@ export default {
 .bar {
   position: fixed;
   bottom: 1.8rem;
-  box-shadow: var(--shadow-color2);
+  box-shadow: var(--shadow-color3);
 }
 /* 顶部 */
 .top {

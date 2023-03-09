@@ -150,18 +150,15 @@ export default {
         this.$emit("getCartLength", this.cartList); // 传出
       },
     },
-
-    // 全选和 取消全选
-    "$attrs.selectAll": {
-      handler(val) {
-        if (val) {
-          this.cartList.forEach((p, i) => {
-            this.selectList.push(i);
-          });
-          console.log(this.selectList);
-        } else {
-          this.selectList.splice(0);
-        }
+    // 全选
+    selectList: {
+      deep: true,
+      handler() {
+        this.$emit(
+          "changeSelectAll",
+          this.selectList.length > 0 &&
+            this.selectList.length === this.cartList.length
+        );
       },
     },
   },
