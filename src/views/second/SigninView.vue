@@ -57,15 +57,8 @@ export default {
         this.isSignin = res.data.success;
       })
       .catch();
-
-    // 签到总天数
-    getSignDays(this.$store.getters.token)
-      .then((res) => {
-        if (res.data.success) {
-          this.siginDays = res.data.data;
-        }
-      })
-      .catch();
+    // 签到天数
+    this.getAllSigninDays();
   },
   watch: {
     isSignin(v) {
@@ -73,11 +66,25 @@ export default {
     },
   },
   methods: {
+    // 获取签到天数
+    getAllSigninDays() {
+      // 签到总天数
+      getSignDays(this.$store.getters.token)
+        .then((res) => {
+          if (res.data.success) {
+            this.siginDays = res.data.data;
+          }
+        })
+        .catch();
+    },
+
     // 签到
     async addSignin() {
       const res = await setUserSignIn(this.$store.getters.token);
       if (res.status === 200 && res.data.success) {
         this.isSignin = true;
+        // 签到天数
+        this.getAllSigninDays();
         Toast({ type: "success", message: "签到成功！" });
       } else {
         this.isSignin = false;

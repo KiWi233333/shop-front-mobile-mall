@@ -1,7 +1,7 @@
 <template>
   <van-swipe
     class="v-click v-card home-swiper"
-    :autoplay="5000"
+    :autoplay="6000"
     :touchable="true"
     indicator-color="#fff"
   >

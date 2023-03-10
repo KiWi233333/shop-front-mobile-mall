@@ -85,7 +85,6 @@ export default {
           checkText(p?.content), // 内容xxs
           this.$store.getters.token
         );
-        // console.log(res);
         if (res.status === 200 && res.data.success) {
           this.$toast.success(" 提交成功！");
           // 跳转

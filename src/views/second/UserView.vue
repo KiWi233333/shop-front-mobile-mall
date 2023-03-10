@@ -338,7 +338,7 @@ export default {
   padding: 0.2rem 0.4rem;
   margin: 0.2rem 0;
 }
-.btn-group {
+.contain .btn-group {
   width: 100%;
   margin: 0.3rem 0;
 }

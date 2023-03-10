@@ -252,7 +252,7 @@ export default {
 /* 登录 */
 .toLogin {
   width: 100%;
-  height: 100vh;
+  height: 90vh;
 }
 .toLogin .title {
   padding: 0.2rem;
@@ -264,7 +264,7 @@ export default {
 }
 .bar {
   position: fixed;
-  bottom: 1.8rem;
+  bottom: 1.6rem;
   box-shadow: var(--shadow-color3);
 }
 /* 顶部 */

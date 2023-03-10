@@ -18,10 +18,11 @@
         accept="image/png, image/jpeg, image/jpg,"
         v-model="imgList"
         preview-size="3rem"
-        :max-count="5"
+        :max-count="1"
         :max-size="500 * 1024"
         @oversize="overSizeFile"
         :preview-options="{ closeable: true }"
+        :after-read="uploadIcon"
       />
       <div class="btn-group">
         <input
@@ -30,7 +31,12 @@
           value="取消"
           class="v-btn v-cancel"
         />
-        <input type="submit" @click="updateIcon" value="确定" class="v-btn" />
+        <input
+          type="submit"
+          @click="updateIconPathInfo"
+          value="确定"
+          class="v-btn"
+        />
       </div>
     </div>
   </van-popup>
@@ -39,7 +45,6 @@
 <script>
 import { mapState } from "vuex";
 import { postUserIcon, updateUserIcon } from "@/api/user/users";
-import { Notify, Toast } from "vant";
 import { getResourImageByName } from "@/api/res";
 export default {
   name: "ChangeIcon",
@@ -48,37 +53,63 @@ export default {
     return {
       show: false,
       imgList: [], // 头像
+      uploadPath: "", // 上传后的地址
+      isUpload: false,
     };
   },
   methods: {
-    // 修改头像
-    async updateIcon() {
-      if (!this.imgList[0]?.content) {
+    // 上传头像
+    async uploadIcon(file) {
+      if (!file?.content) {
         return (this.show = false);
       }
+
+      this.isUpload = true;
+      file.status = "uploading";
+      file.message = "上传中...";
+      // 上传图片
       const fileRes = await postUserIcon(
         this.imgList[0],
         this.$store.getters.token
       );
       // 上传头像文件
-      if (fileRes.status !== 200 || !fileRes.data.success)
-        return Toast({ type: "fail", message: "上传失败！" });
-      const imgUrl = fileRes.data.data;
-      // 修改头像
-      const res = await updateUserIcon(imgUrl, this.$store.getters.token);
-      if (res.status !== 200 || !res.data.success)
-        return Toast({ type: "fail", message: "修改失败！" });
-      // 修改成功
-      this.$set(this.userInfo, "icon", fileRes.data.data);
-      this.show = false;
-      Notify({ type: "success", message: "修改成功！" });
+      if (fileRes.status !== 200 || !fileRes.data.success) {
+        file.status = "failed";
+        file.message = "上传失败";
+        return this.$toast({ type: "fail", message: "上传失败！" });
+      } else {
+        this.uploadPath = fileRes.data.data;
+        file.status = "done";
+        file.message = "";
+        this.isUpload = false;
+      }
     },
+
+    // 修改头像
+    async updateIconPathInfo() {
+      if (this.isUpload) {
+        return this.$toast("正在上传...");
+      }
+      // 修改头像
+      const res = await updateUserIcon(
+        this.uploadPath,
+        this.$store.getters.token
+      );
+      if (res.status !== 200 || !res.data.success)
+        return this.$toast({ type: "fail", message: "修改失败！" });
+      // 修改成功
+      this.$set(this.userInfo, "icon", this.uploadPath);
+      this.show = false;
+      this.$notify({ type: "success", message: "修改成功！" });
+    },
+
+    // 图片
     open() {
       this.$set(this.imgList, [0], { url: this.userIcon });
     },
     // 文件大小
     overSizeFile() {
-      Toast(`大小不能超过 500kb`);
+      this.$toast(`大小不能超过 500kb`);
     },
   },
   computed: {

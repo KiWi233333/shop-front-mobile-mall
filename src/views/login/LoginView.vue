@@ -63,7 +63,7 @@
           <van-checkbox
             v-model="savePwd"
             icon-size="0.4rem"
-            checked-color="var(--tip-color2)"
+            checked-color="var(--theme-color2)"
             v-show="!isUpdatePwd"
           >
             自动登录

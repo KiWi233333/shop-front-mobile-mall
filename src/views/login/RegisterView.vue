@@ -5,8 +5,9 @@
 
     <!-- 表单 -->
     <div class="froms">
-      <van-form @submit="toRegister">
+      <van-form @submit="disabled ? '' : toRegister()">
         <van-field
+          :disabled="disabled"
           v-model="username"
           name="username"
           type="text"
@@ -18,6 +19,7 @@
         />
         <van-field
           v-model="phone"
+          :disabled="disabled"
           type="tel"
           name="phone"
           class="v-input"
@@ -27,6 +29,7 @@
           @blur="phoneCheck"
         />
         <van-field
+          :disabled="disabled"
           v-model="code"
           type="number"
           name="code"
@@ -41,7 +44,7 @@
               type="button"
               class="right-btn"
               @click="getRegisterCode"
-              :disabled="codeFontDis"
+              :disabled="codeFontDis || disabled"
               v-model="codeFont"
               :style="codeFontDis ? 'opacity:0.7;' : 'opacity:1;'"
             />
@@ -49,6 +52,7 @@
         </van-field>
         <van-field
           v-model="password"
+          :disabled="disabled"
           type="password"
           name="password"
           class="v-input"
@@ -58,6 +62,7 @@
         />
         <input
           class="v-btn"
+          :disabled="disabled"
           style="width: 100%; padding: 0.3rem; font-size: 0.45rem"
           type="submit"
           value="立即注册"
@@ -76,6 +81,7 @@ export default {
   components: { TopNav },
   data() {
     return {
+      disabled: false, // 全局禁用
       title: "注 册",
       username: "",
       phone: "",
@@ -101,12 +107,14 @@ export default {
       });
 
       if (res.data?.success) {
+        this.disabled = true;
         Notify({ type: "success", message: "注册成功！即将返回登录" });
         setTimeout(() => {
           this.$router.replace({
             name: "login",
             params: { username: this.username },
           }); // 两秒后跳转登录页面
+          this.disabled = false;
         }, 2000);
       } else {
         Notify({ type: "danger", message: "该用户已被注册！" });

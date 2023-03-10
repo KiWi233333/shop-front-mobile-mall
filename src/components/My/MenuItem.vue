@@ -2,9 +2,7 @@
   <div class="v-click item" @click="toView">
     <span class="title">{{ title }}</span>
     <div class="flex-center-center right">
-      <slot>
-        <span>{{ value }}</span>
-      </slot>
+      <span>{{ value }}</span>
       <van-icon name="arrow" size="0.42rem" />
     </div>
   </div>
@@ -35,6 +33,7 @@ export default {
   align-items: center;
   margin-top: 0.4rem;
   cursor: pointer;
+  padding: 0 0.2rem;
 }
 .item .title,
 .item .right span {

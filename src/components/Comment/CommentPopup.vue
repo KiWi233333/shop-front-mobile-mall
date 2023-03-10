@@ -9,7 +9,7 @@
       <div class="comment-box">
         <div style="text-align: center">{{ commentLength }} 条回复</div>
         <!-- 评论 -->
-        <transition-group tag="div" name="sliceInZoomOut">
+        <transition-group tag="div" :name="isAnimate ? 'sliceInZoomOut' : ''">
           <comment-child-card
             @deleteComment="deleteComment"
             @toComment="changeCommentObj"
@@ -41,7 +41,12 @@
         </transition-group>
       </div>
       <!-- 评论输入 -->
-      <div class="to-comment" ref="toCommentBar">
+      <div
+        class="to-comment"
+        ref="toCommentBar"
+        @touchend="clearCommentObj"
+        @mouseleave="clearCommentObj"
+      >
         <van-image
           lazy-load
           round
@@ -53,7 +58,7 @@
           type="text"
           v-model="commentText"
           :formatter="formatInput"
-          placeholder="买家期待和你交流~"
+          :placeholder="placeText || '买家期待和你交流'"
           ref="commentInput"
           :clearable="true"
           @keyup.enter="addComment"
@@ -80,11 +85,12 @@ export default {
   data() {
     return {
       commentText: "",
+      placeText: "", // 虚字
       fid: "",
       sid: "",
 
       commentLength: 0, // 评论总条数
-
+      // 级别坐标
       firstIndex: -1,
       secondIndex: -1,
 
@@ -93,6 +99,7 @@ export default {
 
       // 功能
       showPopup: false,
+      isAnimate: false, // 控制动画
     };
   },
   mounted() {
@@ -158,7 +165,6 @@ export default {
                 this.$store.getters.token
               );
               if (res.data.success && res.status === 200) {
-                // console.log(res.data)
                 this.$toast("删除成功！");
                 this.reqGetItem(); // 重新获取评论
               } else {
@@ -169,8 +175,8 @@ export default {
           },
         })
         .catch(() => {});
+      // beforeClose:
     },
-
     // 格式化用户输入
     formatInput(val) {
       return checkText(val);
@@ -195,6 +201,8 @@ export default {
 
     // 清空评论的对象
     clearCommentObj() {
+      this.firstIndex = -1;
+      this.secondIndex = -1;
       this.fid = null;
       this.commentNickName = "";
     },
@@ -205,21 +213,18 @@ export default {
   watch: {
     // 评论对象
     firstIndex() {
-      // console.log(this.commentText, this.secondIndex);
-      if (this.commentNickName && this.secondIndex >= 0) {
+      if (this.commentNickName && this.firstIndex >= 0) {
         if (this.commentNickName === this.$store.state.userInfo?.nickname) {
-          this.commentText = "@自己:";
+          this.placeText = "@自己";
         } else {
-          this.commentText = `@${this.commentNickName}:`;
+          this.placeText = `@${this.commentNickName}`;
         }
       } else {
-        this.commentText = "";
+        this.placeText = "";
       }
-      this.hiddenText = `对${this.commentNickName}进行回复`;
     },
     // 评论对象
     secondIndex() {
-      // console.log(this.commentText, this.secondIndex);
       if (this.commentNickName && this.secondIndex >= 0) {
         if (this.commentNickName === this.$store.state.userInfo?.nickname) {
           this.commentText = "@自己:";
@@ -246,6 +251,9 @@ export default {
         show: val,
         commentId: this.commentId,
       });
+      if (val) {
+        this.reqGetItem();
+      }
     },
   },
 };

@@ -90,7 +90,7 @@ export default {
 }
 .nav-bar > .item {
   flex: 1;
-  padding: 0.2rem 0;
+  padding: 0.1rem 0;
   text-align: center;
   display: flex;
   flex-direction: column;
