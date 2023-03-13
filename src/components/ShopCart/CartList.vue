@@ -131,12 +131,10 @@ export default {
     },
 
     // 2) 属性修改 功能
-    // 改变gid
     onSelectProps(GOOD_ID, shopcartId) {
-      this.showSku = true;
-
-      this.GOOD_ID = GOOD_ID;
-      this.shopcartId = shopcartId;
+      this.showSku = true; // 展示属性卡片
+      this.GOOD_ID = GOOD_ID; // 商品id
+      this.shopcartId = shopcartId; // 购物车id
     },
   },
 

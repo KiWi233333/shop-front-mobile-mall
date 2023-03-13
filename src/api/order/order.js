@@ -80,7 +80,9 @@ export function submitOrder(aid, items, remarks, token) {
   return request({
     method: "post",
     url: `/orders/submit`,
-    headers: { Authorization: token },
+    headers: {
+      Authorization: token,
+    },
     data: {
       aid,
       items,
@@ -95,11 +97,17 @@ export function submitOrder(aid, items, remarks, token) {
  * @param {string} token
  * @returns
  */
-export function payOrder(id, token) {
+export function payOrder(id, points, token) {
   return request({
-    method: "put",
+    method: "post",
     url: `/orders/payment/${id}`,
-    headers: { Authorization: token },
+    headers: {
+      Authorization: token,
+      "Content-Type": "x-www-form-urlencoded",
+    },
+    data: {
+      points,
+    },
   });
 }
 

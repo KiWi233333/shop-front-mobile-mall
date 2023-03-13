@@ -93,12 +93,29 @@
           </span>
           <div class="blank"><small>￥</small>{{ prices }}</div>
         </div>
+        <!-- 积分抵扣 -->
         <div class="lable-group">
           <span>
-            <van-icon name="bookmark" size="0.4rem" color="var(--tip-color2)" />
-            资产<small>&nbsp;积分</small>
-          </span>
-          <div class="lable">无可用</div>
+            资产<small
+              >（剩余：{{ purseInfo?.points }} ）100积分抵1元</small
+            ></span
+          >
+          <div
+            class="lable"
+            :style="isPoints ? 'color: var(--tip-color2)' : ''"
+          >
+            {{
+              $store.state.purseInfo?.points > 0
+                ? `抵扣${getPointsVal}元`
+                : "无可用"
+            }}&nbsp;
+            <van-checkbox
+              v-if="!$route.query?.isOrder || !isReadonly"
+              v-model="isPoints"
+              :disabled="$store.state.purseInfo?.points <= 0"
+              checked-color="var(--tip-color2)"
+            />
+          </div>
         </div>
       </div>
 
@@ -220,7 +237,14 @@
         />钱包
         <small>（ 余额：￥{{ balance }} ）</small>
       </div>
-      <button class="v-btn" @click="payOrder">确认付款</button>
+      <van-button
+        class="v-btn"
+        @click="payOrder"
+        :disabled="purseInfo.balance < allPrice / 100"
+        >{{
+          purseInfo.balance < allPrice / 100 ? "余额不足" : "确认付款"
+        }}</van-button
+      >
     </van-popup>
     <!-- 网络错误 -->
     <error-card
@@ -251,6 +275,8 @@ import { checkText } from "@/util/xxsFilter";
 import currency from "currency.js";
 import { getPurseInfo } from "@/api/user/purse";
 import { copyTextAsync } from "@/util/copy";
+import { mapState } from "vuex";
+import { isReadonly } from "vue";
 export default {
   name: "CheckOrder",
   components: {
@@ -283,6 +309,7 @@ export default {
       submitError: false, // 提交订单失败
       showPayPanel: false, // 打开交易的钱包
       showPopover: false, // 修改栏目
+      isPoints: false, // 是否选用积分
       // 地址
       emptyAddress: false, // 是否为空地址
       showselect: false, // 展示地址选择列表
@@ -377,7 +404,7 @@ export default {
       const res = await getDefaultAddress(this.$store.getters.token);
       if (res.status === 200) {
         // 有默认地址
-        if (res.data.code === 20011 && res.data.data?.id !== "") {
+        if (res.data.code === 20011 && res.data.data.length > 0) {
           this.getAddressList(false); //获取全部地址
           for (const key in res.data.data) {
             this.$set(this.defaultAddress, key, res.data.data[key]);
@@ -396,19 +423,25 @@ export default {
     async getAddressList(getFirst = false) {
       const res = await getAllAddress(this.$store.getters.token);
 
-      if (res.data.code === 20011 && res.status === 200) {
-        const data = res.data.data;
-        if (data.length > 0 && getFirst) {
-          for (const key in data[0]) {
-            this.$set(this.defaultAddress, key, data[0][key]);
-          }
+      // 地址为空
+      if (
+        res.data.code !== 20011 ||
+        res.status !== 200 ||
+        res.data.data.length === 0
+      )
+        return (this.emptyAddress = true);
+      //渲染地址
+      const data = res.data.data;
+      if (data.length > 0 && getFirst) {
+        for (const key in data[0]) {
+          this.$set(this.defaultAddress, key, data[0][key]);
         }
-        // 添加全部地址
-        this.addressList.splice(0);
-        data.forEach((p) => {
-          this.addressList.push(p);
-        });
       }
+      // 添加全部地址
+      this.addressList.splice(0);
+      data.forEach((p) => {
+        this.addressList.push(p);
+      });
     },
 
     // 初始化从订单页的订单状态
@@ -537,7 +570,15 @@ export default {
         message: "支付中...",
         forbidClick: true,
         onOpened: async () => {
-          const res = await payOrder(this.submitId, this.$store.getters.token);
+          let ponits =
+            this.isPoints && this.purseInfo.points > 1000
+              ? 1000
+              : this.purseInfo.points;
+          const res = await payOrder(
+            this.submitId,
+            ponits,
+            this.$store.getters.token
+          );
           this.isPayDone = res.data.code === 20011;
           this.showPayPanel = false;
         },
@@ -637,6 +678,7 @@ export default {
     },
   },
   computed: {
+    ...mapState(["purseInfo"]),
     // 计算价格
     prices() {
       return currency(this.allPrice / 100);
@@ -658,6 +700,19 @@ export default {
         return "免运费";
       }
     },
+
+    // 计算积分抵扣
+    getPointsVal() {
+      if (!this.$route.query?.isOrder && !isReadonly()) {
+        if (this.allPrice * 100 >= this.purseInfo.points) {
+          return this.purseInfo.points / 100;
+        } else {
+          return this.allPrice / 100;
+        }
+      } else {
+        return "";
+      }
+    },
   },
   watch: {
     defaultAddress: {
@@ -666,6 +721,17 @@ export default {
       handler() {
         this.emptyAddress = this.defaultAddress?.id === "";
       },
+    },
+
+    // 积分抵扣
+    isPoints(val) {
+      if (val) {
+        this.finallyPrice = currency(this.finallyPrice).subtract(
+          this.getPointsVal
+        );
+      } else {
+        this.finallyPrice = currency(this.allPrice / 100);
+      }
     },
   },
 };

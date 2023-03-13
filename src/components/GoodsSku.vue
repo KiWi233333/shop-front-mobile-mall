@@ -26,6 +26,7 @@ export default {
     value: { required: true },
     GOOD_ID: { required: true },
     cartId: { required: false },
+    nums: { required: false },
   },
   model: {
     prop: "value",
@@ -273,11 +274,11 @@ export default {
       if (res.status === 200 && res.data.code === 20011) {
         this.$emit("updataShopcart"); // 刷新
         this.$toast.clear();
-        this.show = false;
         this.$toast.success("修改成功！");
       } else {
         this.$toast.fail("修改失败！");
       }
+      this.show = false;
     },
 
     // 获取图片
@@ -307,10 +308,6 @@ export default {
       this.$emit("input", val);
     },
 
-    // sku属性选择变化
-    selectPropsName() {
-      this.selectPropsName;
-    },
     // 更新规格
     GOOD_ID: {
       immediate: true,

@@ -56,6 +56,7 @@ import {
   Steps,
   Step,
   Stepper,
+  NoticeBar,
 } from "vant";
 
 // van按需t注册组件
@@ -107,6 +108,7 @@ Vue.use(Button)
   .use(Steps)
   .use(Stepper)
   .use(Rate)
+  .use(NoticeBar)
   .use(Step);
 
 // 配置

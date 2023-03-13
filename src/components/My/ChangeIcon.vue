@@ -44,7 +44,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { postUserIcon, updateUserIcon } from "@/api/user/users";
+import { updateUserIcon } from "@/api/user/users";
 import { getResourImageByName } from "@/api/res";
 export default {
   name: "ChangeIcon",
@@ -68,20 +68,23 @@ export default {
       file.status = "uploading";
       file.message = "上传中...";
       // 上传图片
-      const fileRes = await postUserIcon(
+      const fileRes = await updateUserIcon(
         this.imgList[0],
         this.$store.getters.token
       );
       // 上传头像文件
-      if (fileRes.status !== 200 || !fileRes.data.code === 20011) {
+      if (fileRes.status !== 200 || fileRes.data.code != 20011) {
         file.status = "failed";
         file.message = "上传失败";
         return this.$toast({ type: "fail", message: "上传失败！" });
       } else {
+        // 修改成功
         this.uploadPath = fileRes.data.data;
         file.status = "done";
         file.message = "";
+        this.$notify({ type: "success", message: "修改成功！" });
         this.isUpload = false;
+        this.$set(this.userInfo, "icon", this.uploadPath);
       }
     },
 
@@ -90,17 +93,7 @@ export default {
       if (this.isUpload) {
         return this.$toast("正在上传...");
       }
-      // 修改头像
-      const res = await updateUserIcon(
-        this.uploadPath,
-        this.$store.getters.token
-      );
-      if (res.status !== 200 || !res.data.code === 20011)
-        return this.$toast({ type: "fail", message: "修改失败！" });
-      // 修改成功
-      this.$set(this.userInfo, "icon", this.uploadPath);
       this.show = false;
-      this.$notify({ type: "success", message: "修改成功！" });
     },
 
     // 图片

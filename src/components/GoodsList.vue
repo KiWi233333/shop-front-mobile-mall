@@ -110,14 +110,11 @@ export default {
 
             // 数据全部加载完成
             if (this.goodsList.length === data.total) {
-              // console.log(this.currentPage, data.pages);// 数据页数
               this.finished = true;
             } else {
               this.currentPage = data.current;
               this.currentPage++; // 下一页
             }
-            // this.finished = true;
-            // this.loading = false;
           } else {
             this.isHttpError = true;
           }

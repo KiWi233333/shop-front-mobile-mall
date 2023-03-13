@@ -16,6 +16,7 @@
 <script>
 import NavBar from "./components/NavBar.vue";
 import { checkUser } from "@/api/user/users";
+import { getPurseInfo } from "@/api/user/purse";
 export default {
   components: { NavBar },
   data() {
@@ -33,7 +34,8 @@ export default {
       localStorage.getItem(this.$store.state.TOKEN_NAME) ||
       sessionStorage.getItem(this.$store.state.TOKEN_NAME);
     if (!token) return;
-    // 请求
+
+    // 验证token
     checkUser(token)
       .then((res) => {
         if (res.data.code === 20011) {
@@ -45,12 +47,15 @@ export default {
             "setLoginTime",
             +localStorage.getItem("loginTime")
           ); // 设置初始登录时间
+          // 钱包信息
+          this.reqPurseInfo();
         }
       })
       .catch(() => {
         this.$store.commit("loginOut");
-      }); // 验证token
+      });
   },
+
   watch: {
     // 监控路由并添加动画
     $route(to, from) {
@@ -90,6 +95,17 @@ export default {
               to.meta?.lv < from.meta?.lv ? "toback2" : "toback";
             break;
         }
+      }
+    },
+  },
+
+  methods: {
+    // 请求钱包信息
+    async reqPurseInfo() {
+      const res = await getPurseInfo(this.$store.getters.token);
+      // console.log(res);
+      if (res.status == 200 && res.data.code === 20011) {
+        this.$store.commit("setPurseInfo", res.data.data);
       }
     },
   },

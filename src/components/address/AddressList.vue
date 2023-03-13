@@ -16,7 +16,7 @@
           <address-card
             class="v-card"
             v-for="(p, i) in addressList"
-            :key="i"
+            :key="i + p.id"
             :item="p"
             @toEdit="toEdit"
             @deleteAddressByIndex="deleteAddressByIndex"
@@ -248,11 +248,12 @@ export default {
             }
           }
         });
-      } else if (res.status === 200 && res.data.code !== 20011) {
+      } else if (res.status === 200 && res.data.data?.length < 0) {
         this.isEmpty = true;
       } else {
         this.isError = true;
       }
+      this.finished = true;
     },
 
     // 显示添加地址弹窗
@@ -336,13 +337,14 @@ export default {
 
     // 删除多个地址
     deleteAddressByIdsArray() {
+      if (this.selectList.length === 0) return;
       let ids = []; // ids
       const selects = JSON.parse(JSON.stringify(this.selectList));
       // 根据下标获取ids
       for (let i = 0; i < selects.length; i++) {
         ids.push(this.addressList[selects[i]].id);
       }
-      console.log(ids, selects);
+      // 弹窗
       Dialog.confirm({
         title: "确认删除选中？",
         message: `共${selects.length}条地址`,
@@ -352,7 +354,6 @@ export default {
             ids,
             this.$store.getters.token
           );
-          // console.log(res.data);
           if (res.data.code === 20011 && res.status === 200) {
             // 删除多个
             selects.forEach((p) => {
@@ -450,6 +451,9 @@ export default {
   padding: 0.2rem;
 }
 /* 添加 */
+.btn-group {
+  width: 100%;
+}
 .nav {
   background-color: var(--text-color2);
   position: fixed;

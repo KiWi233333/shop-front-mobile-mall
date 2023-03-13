@@ -105,7 +105,7 @@ export default {
         code: this.code.trim(),
         password: this.password.trim(),
       });
-
+      // console.log(res.data);
       if (res.data.code === 20011) {
         this.disabled = true;
         Notify({ type: "success", message: "注册成功！即将返回登录" });

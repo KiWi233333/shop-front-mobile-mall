@@ -27,6 +27,7 @@ export default {
     };
   },
   async mounted() {
+    // 获取icons
     const res = await getFirstSortList();
     this.firstSortList = res.data.data;
   },

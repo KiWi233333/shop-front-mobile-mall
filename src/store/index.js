@@ -106,10 +106,10 @@ export default new Vuex.Store({
     },
     // 登出
     loginOut(state) {
-      // 退出登录请求
+      // 退出登录请求loginOut
       exitLogin(state.token)
         .then(res => {
-          if (res.status === 200 && res.data.code === 10011) {
+          if (res.status === 200 && res.data.code === 20011) {
             // console.log("退出成功！");
           } else {
             console.log("退出失败！");

@@ -7,3 +7,11 @@ export function getNoticeByPage(page, size) {
     url: `/notices/query/${page}/${size}`,
   });
 }
+
+// 默认首要公告
+export function getIndexNotice() {
+  return request({
+    method: "get",
+    url: "/notices/index",
+  });
+}

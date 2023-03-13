@@ -135,32 +135,16 @@ export function updatePwd(userInfo) {
  * @param {登录token:string} token
  * @returns res
  */
-export function postUserIcon(fromData, token) {
+export function updateUserIcon(fromData, token) {
   return request({
-    method: "post",
-    url: "/users/uploadIcon",
+    method: "put",
+    url: "/users/update/icon",
     headers: {
       "Content-Type": "multipart/form-data",
       Authorization: token,
     },
     data: fromData,
     timeout: 10000,
-  });
-}
-/**
- * 修改用户头像地址
- * @param {地址:string} icon
- * @param {登录token:string} token
- * @returns
- */
-export function updateUserIcon(icon, token) {
-  return request({
-    method: "put",
-    url: "/users/updateIcon",
-    headers: {
-      Authorization: token,
-    },
-    data: { icon },
   });
 }
 

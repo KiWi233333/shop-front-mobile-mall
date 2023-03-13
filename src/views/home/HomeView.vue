@@ -10,6 +10,8 @@
     <swipe-card />
     <!-- 分类栏目 -->
     <sort-class />
+    <!-- 公告 -->
+    <notice-bar />
     <!-- 商品栏目 -->
     <toggle-goods />
   </div>
@@ -19,15 +21,15 @@
 import SwipeCard from "@/components/Home/SwipeCard.vue";
 import SortClass from "@/components/Home/SortClass.vue";
 import ToggleGoods from "@/components/Home/ToggleGoods.vue";
-import router from "@/router";
+import NoticeBar from "@/components/Home/NoticeBar.vue";
 import { getNoticeByPage } from "@/api/system/notice";
 export default {
   name: "HomeView",
-  components: { SwipeCard, SortClass, ToggleGoods },
+  components: { SwipeCard, SortClass, ToggleGoods, NoticeBar },
   methods: {
     // 导航到搜索页面
     toSearchView() {
-      router.push({
+      this.$router.push({
         name: "search",
         params: {
           animate: "forward",
