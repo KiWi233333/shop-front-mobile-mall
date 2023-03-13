@@ -76,8 +76,9 @@ export default {
         formData,
         this.$store.getters.token
       );
+      // console.log(fileRes);
       // 失败
-      if (fileRes.status !== 200 || !fileRes.data?.success) {
+      if (fileRes.status !== 200 || fileRes.data.code !== 20011) {
         return this.$toast({ type: "fail", message: "上传失败！" });
         // 成功
       } else {

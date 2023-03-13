@@ -2,6 +2,7 @@
   <div class="address-list">
     <!-- 列表 -->
     <van-list
+      v-show="!isError"
       class="list"
       v-if="!isEmpty"
       v-model="loading"
@@ -164,7 +165,7 @@
     <!-- 网络错误 -->
     <error-card
       v-if="isEmpty || isError"
-      @refresh="showAddress = true"
+      @refresh="getAllAddressList"
       :btn-text="isError ? '刷新' : '新建地址'"
       :image="isError ? 'network' : 'default'"
       :text="isError ? '网络错误，请稍后重试！' : '还没有收获地址哦~'"
@@ -201,7 +202,6 @@ export default {
         address: "", //详细收货地址
         isDefault: 0, //是否默认收货地址
       },
-      // defaultCount: 0, // 默认数量
       area: "",
       areaList, // 区县集合
       showAddress: false, // 显示地址表单
@@ -233,22 +233,22 @@ export default {
       this.addressList.splice(0); // 清空
       this.loading = true;
       const first = await getDefaultAddress(this.$store.getters.token);
-      if (first.status === 200 && first.data.success) {
+      if (first.status === 200 && first.data.code === 20011) {
         this.addressList.push(first.data.data);
       }
       const res = await getAllAddress(this.$store.getters.token);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         const data = res.data.data;
         this.loading = false;
         data.forEach((p) => {
           if (!p.isDefault) {
             this.addressList.push(p);
+            if (data.length >= this.addressList.length) {
+              this.finished = true;
+            }
           }
         });
-        if (data.length === this.addressList.length) {
-          this.finished = true;
-        }
-      } else if (res.status === 200 && !res.data.success) {
+      } else if (res.status === 200 && res.data.code !== 20011) {
         this.isEmpty = true;
       } else {
         this.isError = true;
@@ -267,7 +267,7 @@ export default {
     // 添加地址
     async reqAddAddress() {
       const res = await putAddres(this.address, this.$store.getters.token);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         this.getAllAddressList(); // 刷新
         Toast({ type: "success", position: "bottom", message: "添加成功！" });
       } else {
@@ -295,7 +295,7 @@ export default {
     async reqUpdateAddress() {
       const res = await updateAddress(this.address, this.$store.getters.token);
 
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         this.getAllAddressList(); // 刷新
         Toast({ type: "success", position: "bottom", message: "修改成功！" });
       } else {
@@ -313,7 +313,7 @@ export default {
             this.$store.getters.token
           )
             .then((res) => {
-              if (res.data.success) {
+              if (res.data.code === 20011) {
                 this.getAllAddressList(); // 刷新
                 Toast(" 删除成功！");
               } else {
@@ -353,7 +353,7 @@ export default {
             this.$store.getters.token
           );
           // console.log(res.data);
-          if (res.data.success && res.status === 200) {
+          if (res.data.code === 20011 && res.status === 200) {
             // 删除多个
             selects.forEach((p) => {
               this.addressList.splice(p, 1);
@@ -392,8 +392,6 @@ export default {
         this.selectList.splice(0);
       }
     },
-
-    //
   },
 };
 </script>

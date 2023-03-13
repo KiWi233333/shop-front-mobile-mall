@@ -27,7 +27,7 @@ export default {
     // 请求活动
     (async () => {
       const res = await getEventActives();
-      if (res.data.success) {
+      if (res.data.code === 20011) {
         res.data.data.forEach((p) => {
           p.icon = getResourImageByName(p.icon);
           this.eventData.push(p);

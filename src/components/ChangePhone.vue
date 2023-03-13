@@ -127,7 +127,7 @@ export default {
       const res = this.isUser
         ? await getUpdateCode(this.newPhone, this.$store.getters.token)
         : await getLoginCode(this.userInfo.phone);
-      if (res.status === 200 && res.data?.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         Notify({
           type: "success",
           message: `获取成功！验证码为：\n${res.data.data}`,
@@ -160,7 +160,7 @@ export default {
         phone: this.userInfo.phone,
         code: this.oldCode,
       });
-      if (res.status === 200 && res.data?.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         localStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
         this.isUser = true; // 登录成功
         Notify({ type: "success", message: `验证成功！`, duration: 1000 });
@@ -175,7 +175,7 @@ export default {
         this.newCode,
         this.$store.getters.token
       );
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.dat.code === 20011) {
         Notify({ type: "success", message: "修改成功！" });
         this.$emit("input", false);
         this.$set(this.userInfo, "phone", this.newPhone);
@@ -232,5 +232,8 @@ export default {
 <style scoped>
 .first .title {
   padding: 0.5rem 0.3rem;
+}
+.btn-group {
+  width: 100%;
 }
 </style>

@@ -187,7 +187,7 @@ export default {
                 this.$store.getters.token
               );
               // console.log(res.data);
-              if (res.status === 200 && res.data.success) {
+              if (res.status === 200 && res.data.code === 20011) {
                 this.selectList.forEach((p) => {
                   this.$children[0].cartList.splice(p, 1);
                 });
@@ -217,7 +217,7 @@ export default {
             if (action === "confirm") {
               const res = await clearAllShopCart(this.$store.getters.token);
               // console.log(res.data);
-              if (res.status === 200 && res.data.success) {
+              if (res.status === 200 && res.data.code === 20011) {
                 this.$children[0]?.cartList?.splice(0);
                 this.$children[0]?.selectList?.splice(0);
                 done();

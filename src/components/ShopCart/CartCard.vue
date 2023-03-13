@@ -75,7 +75,7 @@ export default {
         newVal,
         this.$store.getters.token
       );
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         this.$set(this.item, "quantity", newVal);
         this.$toast.clear();
       } else {

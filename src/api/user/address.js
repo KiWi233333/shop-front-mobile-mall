@@ -23,7 +23,7 @@ export function getDefaultAddress(token) {
 export function getAllAddress(token) {
   return request({
     method: "get",
-    url: "/address/list",
+    url: "/address/all",
     headers: {
       Authorization: token,
     },

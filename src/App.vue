@@ -36,10 +36,10 @@ export default {
     // 请求
     checkUser(token)
       .then((res) => {
-        if (res.data.success) {
+        if (res.data.code === 20011) {
           // 初始化store
           this.$store.commit("setUserInfo", res.data.data);
-          this.$store.commit("setLoginState", res.data.success);
+          this.$store.commit("setLoginState", res.data.code === 20011);
           this.$store.commit("setToken", token);
           this.$store.commit(
             "setLoginTime",

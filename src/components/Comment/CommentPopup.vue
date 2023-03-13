@@ -113,7 +113,7 @@ export default {
         this.commentId,
         this.$store.getters.token
       );
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         this.comment_child.splice(0); // 清空
         this.commentLength = 0;
         this.commentLength += res.data.data.length;
@@ -143,7 +143,7 @@ export default {
         this.$store.getters.token
       );
       this.commentText = "";
-      if (res.data.success && res.status === 200) {
+      if (res.data.code === 20011 && res.status === 200) {
         // 重新获取评论
         this.reqGetItem();
         this.$toast("评论成功！");
@@ -164,7 +164,7 @@ export default {
                 id,
                 this.$store.getters.token
               );
-              if (res.data.success && res.status === 200) {
+              if (res.data.code === 20011 && res.status === 200) {
                 this.$toast("删除成功！");
                 this.reqGetItem(); // 重新获取评论
               } else {

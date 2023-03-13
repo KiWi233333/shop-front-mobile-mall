@@ -238,8 +238,8 @@ export default {
       if (this.GOOD_ID === "") return (this.isError = true);
       getGoodDetailById(this.GOOD_ID)
         .then((res) => {
-          this.isError = !res.data.success;
-          if (res.data.success) {
+          this.isError = !res.data.code === 20011;
+          if (res.data.code === 20011) {
             this.item = res.data.data;
           }
         })
@@ -253,7 +253,7 @@ export default {
       // 获取路由的信息
       if (this.GOOD_ID === "") return (this.isError = true);
       const res = await getGoodPropsById(this.GOOD_ID);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         this.goodProps = res.data.data;
         // 初始化属性组合
         this.initProps();
@@ -308,7 +308,7 @@ export default {
         this.$store.getters.token
       );
       // console.log(res.data);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         Toast("加购成功！");
       } else {
         Toast("加购失败，稍后再试！");
@@ -514,7 +514,7 @@ export default {
       if (this.GOOD_ID === "") return (this.isError = true);
       getTheCollectByGid(this.GOOD_ID, this.$store.getters.token)
         .then((res) => {
-          this.isCollect = res.data.success;
+          this.isCollect = res.data.code === 20011;
         })
         .catch(() => {
           this.isError = true;
@@ -527,7 +527,7 @@ export default {
       addCollectByGid(this.GOOD_ID, this.$store.getters.token)
         .then((res) => {
           this.isCollect = true;
-          res.data.success ? Toast(" 收藏成功！") : Toast(" 收藏失败！");
+          res.data.code === 20011 ? Toast(" 收藏成功！") : Toast(" 收藏失败！");
         })
         .catch(() => {});
     },
@@ -540,7 +540,7 @@ export default {
         .then(() => {
           deleteCollectByGid(this.GOOD_ID, this.$store.getters.token)
             .then((res) => {
-              if (res.data.success) {
+              if (res.data.code === 20011) {
                 this.isCollect = false;
                 Toast(" 取消成功！");
               } else {
@@ -558,7 +558,7 @@ export default {
     getCommentList() {
       getGoodCommentById(this.GOOD_ID, 0, this.$store.getters.token)
         .then((res) => {
-          if (res.data.success) {
+          if (res.data.code === 20011) {
             const data = res.data.data;
             data.forEach((p) => {
               this.comments.push(p);

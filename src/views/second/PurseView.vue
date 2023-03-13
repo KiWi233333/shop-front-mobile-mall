@@ -1,5 +1,5 @@
 <template>
-  <div class="purse-view" v-show="!isError">
+  <div class="purse-view">
     <top-nav :title="'我的钱包'" @click-left="$router.back()" />
     <!-- 主内容 -->
     <main v-if="!isError">
@@ -34,7 +34,7 @@
         <!-- 底部套餐 -->
         <div class="combo">
           <div
-            @click="toReCharge(p.id, p.price, p.points)"
+            @click="toReCharge(1, p.price, p.points, p.id)"
             class="v-click v-card item"
             v-for="p in chargeCombo"
             :key="p.id"
@@ -46,22 +46,62 @@
               积分
             </div>
           </div>
+          <!-- 自定义充值 -->
+          <div
+            @click="showCustomCharge = true"
+            class="v-click v-card item"
+            :key="2333"
+            style="opacity: 0.8"
+          >
+            <div class="price" style="font-size: 0.4rem">自定义</div>
+            <div class="active">
+              输入<span style="color: var(--tip-color)">充值</span>金额
+            </div>
+          </div>
         </div>
       </div>
     </main>
+    <div class="btm-text" v-show="!isError">
+      ——————&emsp;理性消费，共建共享&emsp;——————
+    </div>
+
+    <!-- 自定义充值弹窗 -->
+    <van-popup
+      transition="popup"
+      v-model="showCustomCharge"
+      class="v-card user-popup"
+    >
+      <span class="title">充值金额</span>
+      <small>（单位:元）</small>
+      <van-field
+        class="v-input"
+        placeholder="请输入金额"
+        v-model="customValues"
+        type="number"
+      />
+      <div class="btn-group">
+        <button class="v-btn v-cancel" @click="showCustomCharge = false">
+          取消
+        </button>
+        <button class="v-btn" @click="toReCharge(0, customValues)">确定</button>
+      </div>
+    </van-popup>
     <!-- 网络错误 -->
     <error-card
       v-if="isError"
-      @refresh="window.reload()"
+      @refresh="window.reload"
       :image="'network'"
       text="网络错误，请稍后再试！"
     />
-    <div class="btm-text">——————&emsp;理性消费，共建共享&emsp;——————</div>
   </div>
 </template>
-<script>
-import { getPurseInfo } from "@/api/user/purse";
-import { getRechargeCombo, reCharge } from "@/api/user/purse";
+<script scoped>
+import {
+  getPurseInfo,
+  reChargeByBombo,
+  reChargeByValue,
+} from "@/api/user/purse";
+import { getRechargeCombo } from "@/api/user/purse";
 import TopNav from "@/components/TopNav.vue";
 import ErrorCard from "@/components/ErrorCard.vue";
 import { Dialog, Notify } from "vant";
@@ -73,8 +113,10 @@ export default {
     return {
       chargeCombo: [], // 充值套餐
       isLodaing: true, // 加载
+      showCustomCharge: false, // 自定义
       isError: false, // 404
       timer: "",
+      customValues: "",
     };
   },
   computed: { ...mapState(["purseInfo"]) },
@@ -91,7 +133,7 @@ export default {
       this.isLodaing = true;
       this.timer = setTimeout(async () => {
         const res = await getPurseInfo(this.$store.getters.token);
-        if (res.status == 200 && res.data.success) {
+        if (res.status == 200 && res.data.code === 20011) {
           this.$store.commit("setPurseInfo", res.data.data);
           this.timer = "";
           this.isLodaing = false;
@@ -103,7 +145,7 @@ export default {
     // 获取套餐
     async getCombo() {
       const res = await getRechargeCombo(this.$store.getters.token);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         this.chargeCombo = res.data.data;
         return;
       }
@@ -111,16 +153,26 @@ export default {
     },
 
     // 充值对应的金额
-    toReCharge(id, price, points) {
+    toReCharge(type, price, points, id) {
+      let msg = points ? `,赠送${points}积分` : "";
       Dialog.confirm({
         title: "是否充值？",
-        message: `您将充值${price}元,赠送${points}积分`,
+        message: `您将充值${price}元${msg}`,
         beforeClose: (action, done) => {
           if (action === "confirm") {
             setTimeout(async () => {
-              // 请求
-              const res = await reCharge(this.$store.getters.token, id, price);
-              if (res.status === 200 && res.data.success) {
+              // 请求 套餐充值 、 自定义充值
+              const res = type
+                ? await reChargeByBombo(type, id, this.$store.getters.token)
+                : await reChargeByValue(
+                    type,
+                    this.customValues,
+                    this.$store.getters.token
+                  );
+              // console.log(res);
+              if (res.status === 200 && res.data.code === 20011) {
+                this.showCustomCharge = false;
+                this.customValues = "";
                 Notify({ message: "充值成功！", type: "success" });
                 this.reqPurseInfo(); // 重新获取
               } else {
@@ -238,5 +290,31 @@ export default {
 }
 .center-title span {
   font-size: 0.32rem;
+}
+
+/* 自定义充值 */
+.user-popup {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+}
+.user-popup .title {
+  font-size: 0.45rem;
+  font-weight: 600;
+  width: 100%;
+  text-align: center;
+}
+.user-popup .v-input {
+  width: 82%;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color5);
+  margin-top: 0.4rem;
+  padding-left: 0.4rem;
+}
+.user-popup .btn-group {
+  width: 100%;
 }
 </style>

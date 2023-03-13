@@ -51,7 +51,7 @@ export default {
     // 请求活动
     (async () => {
       const res = await getEventActives();
-      if (res.data.success) {
+      if (res.data.code === 20011) {
         res.data.data.forEach((p) => {
           if (p.id == this.$route.query?.eid) {
             this.active = p;
@@ -60,7 +60,7 @@ export default {
           }
         });
       }
-      return res.data.success;
+      return res.data.code === 20011;
     })().then(() => {
       const url = this.getImgSrc(this.active?.icon);
       analyze(url, { scale: 0.1 })

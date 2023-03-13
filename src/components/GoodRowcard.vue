@@ -54,7 +54,7 @@ export default {
         .then(() => {
           deleteCollectByGid(gid, this.$store.getters.token)
             .then((res) => {
-              if (res.data.success) {
+              if (res.data.code === 20011) {
                 this.$emit("deleteCollect", index);
                 Toast(" 取消成功！");
               } else {

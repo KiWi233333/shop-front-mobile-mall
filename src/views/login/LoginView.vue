@@ -178,7 +178,7 @@ export default {
     // 1）密码登录
     async toLoginByPwd() {
       let res = await loginByPwd(this.username, this.password);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         // 记住密码
         if (this.savePwd) {
           localStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
@@ -205,7 +205,7 @@ export default {
         phone: this.username,
         code: this.code,
       });
-      if (res.status === 200 && res.data?.success) {
+      if (res.status === 200 && res.data?.code === 20011) {
         // 记住密码
         if (this.savePwd) {
           localStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
@@ -247,7 +247,8 @@ export default {
       const res = this.isUpdatePwd
         ? await getUpdatePwdCode(this.username)
         : await getLoginCode(this.username);
-      if (res.data?.success) {
+
+      if (res.data.code === 20011) {
         Notify({
           type: "success",
           message: `获取成功！验证码为：\n${res.data.data}`,
@@ -269,7 +270,7 @@ export default {
         phone: this.username,
         newPassword: this.newPassword,
       });
-      if (res.data?.success) {
+      if (res.data?.code === 20011) {
         Notify({
           type: "success",
           message: `修改成功！`,
@@ -297,7 +298,7 @@ export default {
           phone: this.username,
           code: this.code,
         });
-        if (res.status === 200 && res.data.success) {
+        if (res.status === 200 && res.data.code === 20011) {
           this.isUpdateCodeCheck = true;
           Notify({
             type: "success",
@@ -334,7 +335,7 @@ export default {
       this.$store.commit("setLoginTime", time);
       // 检查用户
       checkUser(token).then((res) => {
-        if (res.data.success) {
+        if (res.data.code === 20011) {
           this.$store.commit("setUserInfo", res.data.data);
         } else {
           this.$store.commit("loginOut");
@@ -376,7 +377,7 @@ export default {
       this.$store.commit("setToken", token); // vuex保存token
       if (token === "") return;
       const res = await checkUser(token);
-      if (!res.data.success || res.status !== 200) {
+      if (!res.data.code === 20011 || res.status !== 200) {
         this.password = "";
         this.$store.commit("loginOut"); // 登出
         this.$toast({ type: "fail", message: "登录过期，请重新登陆" });
@@ -385,7 +386,7 @@ export default {
       let second = 2;
       let timer;
       // 自动登录弹窗
-      if (res.data?.success) {
+      if (res.data?.code === 20011) {
         this.password = "..*****...";
         this.savePwd = true;
         this.username = res.data.data.username;

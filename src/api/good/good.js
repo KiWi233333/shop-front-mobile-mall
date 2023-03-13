@@ -13,11 +13,11 @@ import { request } from "@/util/request";
     saleSort: "Asc", // Asc/Des,销量排序
     priceSort: "Asc", // Asc/Des,价格排序
  */
-export function getGoodsListByPageSize(page, size, { data }) {
+export function getGoodsListByPageSize(page, size, type) {
   return request({
     method: "post",
     url: `/goods/query/${page}/${size}`,
-    data,
+    data: type,
   });
 }
 

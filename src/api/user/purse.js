@@ -8,29 +8,51 @@ import { request } from "@/util/request";
 export function getPurseInfo(token) {
   return request({
     method: "get",
-    url: "/account/query",
+    url: "/waller",
     headers: {
       Authorization: token,
     },
   });
 }
+
 /**
- *  用户钱包充值
- * @param {*} token
- * @param {Number} rechargeComboId 充值套餐
+ *  用户钱包自定义金额充值
+ * @param {Number} chargeType 充值类型
  * @param {Number} recharge 充值金额
+ * @param {String} token
  * @returns
  */
-export function reCharge(token, rechargeComboId, recharge) {
+export function reChargeByBombo(chargeType, rechargeComboId, token) {
   return request({
-    method: "put",
-    url: "/account/recharge",
+    method: "post",
+    url: "/waller/recharge",
     headers: {
       Authorization: token,
     },
     data: {
+      chargeType,
       rechargeComboId,
-      recharge,
+    },
+  });
+}
+
+/**
+ *  用户钱包自定义金额充值
+ * @param {Number} chargeType 充值类型
+ * @param {Number} recharge 充值金额
+ * @param {String} token
+ * @returns
+ */
+export function reChargeByValue(chargeType, rechargeAmount, token) {
+  return request({
+    method: "post",
+    url: "/waller/recharge",
+    headers: {
+      Authorization: token,
+    },
+    data: {
+      chargeType,
+      rechargeAmount,
     },
   });
 }
@@ -58,14 +80,14 @@ export function getBills(token, year, month, day) {
 }
 
 /**
- * 查询用户账单
+ * 查询充值列表
  * @param {string} token
  * @returns
  */
 export function getRechargeCombo(token) {
   return request({
     method: "get",
-    url: "/rechargeCombo/query",
+    url: "/rechargeCombo/all",
     headers: { Authorization: token },
   });
 }

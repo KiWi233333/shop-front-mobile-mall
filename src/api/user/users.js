@@ -2,29 +2,32 @@ import { request } from "@/util/request";
 
 // --------------用户注册、登录---------------
 /**
- *  用户注册
- *@userInfo  {
+ * 
+ * @param {Object} userInfo{
    username: "tom",
    phone: "134150000001",
    password: "pariatur",
    code: "232332",
- };
- **/
-export function register(userInfo) {
+ }; 
+ * @returns 
+ */
+export function register({ username, phone, password, code }) {
   return request({
     method: "post",
     url: "/users/register",
-    data: userInfo,
+    data: {
+      username,
+      phone,
+      password,
+      code,
+    },
   });
 }
 // 用户注册-获取短信验证码 phone
 export function getRegisterCode(phone) {
   return request({
     method: "get",
-    url: "/users/register/code",
-    params: {
-      phone,
-    },
+    url: `/users/registerCode/${phone}`,
   });
 }
 /**
@@ -35,12 +38,13 @@ export function getRegisterCode(phone) {
    "loginType": 1(验证码) 0(用户名密码)
   }
  **/
-export function loginByCode(userInfo) {
+export function loginByCode({ phone, code }) {
   return request({
     method: "post",
     url: "/users/login",
     data: {
-      ...userInfo,
+      phone,
+      code,
       loginType: 1,
     },
   });
@@ -67,10 +71,7 @@ export function loginByPwd(username, password, loginType = 0) {
 export function getLoginCode(phone) {
   return request({
     method: "get",
-    url: "/users/code",
-    params: {
-      phone,
-    },
+    url: `/users/loginCode/${phone}`,
   });
 }
 // 用户验证-查询个人用户
@@ -189,9 +190,8 @@ export function updateNickName(nickname, token) {
 export function updateUserName(username, token) {
   return request({
     method: "put",
-    url: "/users/updateUsername",
+    url: `/users/updateUsername/${username}`,
     headers: { Authorization: token },
-    data: { username },
   });
 }
 /**
@@ -233,11 +233,10 @@ export function updatePhone(phone, code, token) {
 export function getUpdateCode(phone, token) {
   return request({
     method: "get",
-    url: "/users/codePhone",
+    url: `/users/updateTelCode/${phone}`,
     headers: {
       Authorization: token,
     },
-    params: { phone },
   });
 }
 
@@ -245,7 +244,7 @@ export function getUpdateCode(phone, token) {
  * 修改密码（新旧）
  * @param {*} newPassword
  * @param {*} oldPassword
- * @param {*} token
+ * @param {String} token
  * @returns
  */
 export function changeUserPwd(newPassword, oldPassword, token) {
@@ -265,33 +264,5 @@ export function exitLogin(token) {
     method: "delete",
     url: "/users/logout",
     headers: { Authorization: token },
-  });
-}
-
-/**
- * 获取用户基本信息
- * @param {String} token
- * @returns
- */
-export function getBaseInfo(token) {
-  return request({
-    method: "get",
-    url: "/userInfo/me",
-    headers: { Authorization: token },
-  });
-}
-
-/**
- * 更新用户基本信息
- * @param {Object} info 用户信息
- * @param {String} token
- * @returns
- */
-export function updateBaseInfo({ fullName, gender, age, email, birthday, qq }, token) {
-  return request({
-    method: "put",
-    url: "/userinfo/update",
-    headers: { Authorization: token },
-    data: { fullName, gender, age: +age, email, birthday, qq },
   });
 }

@@ -73,7 +73,7 @@ export default {
         this.$store.getters.token
       );
       // 上传头像文件
-      if (fileRes.status !== 200 || !fileRes.data.success) {
+      if (fileRes.status !== 200 || !fileRes.data.code === 20011) {
         file.status = "failed";
         file.message = "上传失败";
         return this.$toast({ type: "fail", message: "上传失败！" });
@@ -95,7 +95,7 @@ export default {
         this.uploadPath,
         this.$store.getters.token
       );
-      if (res.status !== 200 || !res.data.success)
+      if (res.status !== 200 || !res.data.code === 20011)
         return this.$toast({ type: "fail", message: "修改失败！" });
       // 修改成功
       this.$set(this.userInfo, "icon", this.uploadPath);

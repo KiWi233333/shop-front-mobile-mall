@@ -63,7 +63,7 @@ export default {
         .then(() => {
           deleteAddressById(this.item.id, this.$store.getters.token)
             .then((res) => {
-              if (res.data.success) {
+              if (res.data.code === 20011) {
                 this.$emit("deleteAddressByIndex", this.index);
                 this.$toast(" 删除成功！");
               } else {

@@ -62,9 +62,9 @@ export default {
     reqGoodsByType() {
       if (this.type === undefined) return;
       this.loading = true;
-      getGoodsListByPageSize(this.currentPage, 8, { ...this.type })
+      getGoodsListByPageSize(this.currentPage, 8, this.type)
         .then((res) => {
-          if (res.data.success) {
+          if (res.data.code === 20011) {
             const data = res.data.data;
             data.records.forEach((p) => {
               this.goodsList.push(p);
@@ -74,7 +74,7 @@ export default {
             this.loading = false; // 下一页
 
             // 数据全部加载完成
-            if (this.goodsList.length === data.total) {
+            if (data.total >= this.goodsList.length) {
               // console.log(this.currentPage, data.pages);// 数据页数
               this.finished = true;
             } else {
@@ -99,7 +99,7 @@ export default {
       getEventGoodsById(this.currentPage, 8, this.$route.query?.eid)
         .then((res) => {
           console.log(res.data);
-          if (res.status === 200 && res.data.success) {
+          if (res.status === 200 && res.data.code === 20011) {
             const data = res.data.data;
             data.records.forEach((p) => {
               this.goodsList.push(p);

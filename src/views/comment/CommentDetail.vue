@@ -104,7 +104,7 @@ export default {
         this.$route?.query.id,
         this.$store.getters.token
       );
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         console.log(res.data);
         this.comment_child.splice(0); // 清空
         res.data.data.forEach((p) => {
@@ -140,7 +140,7 @@ export default {
         this.$store.getters.token
       );
       this.commentText = "";
-      if (res.data.success && res.status === 200) {
+      if (res.data.code === 20011 && res.status === 200) {
         // 重新获取评论
         this.reqGetItem();
         console.log(res.data);
@@ -161,7 +161,7 @@ export default {
                 id,
                 this.$store.getters.token
               );
-              if (res.data.success && res.status === 200) {
+              if (res.data.code === 20011 && res.status === 200) {
                 console.log(res.data);
                 this.$toast("删除成功！");
                 this.reqGetItem(); // 重新获取评论

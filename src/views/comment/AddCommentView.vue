@@ -55,7 +55,7 @@ export default {
         duration: 0,
       });
       getOrderById(this.orderId, this.$store.getters.token).then((res) => {
-        if (res.status === 200 && res.data.success) {
+        if (res.status === 200 && res.data.code === 20011) {
           this.isError = false;
           res.data.data?.orderItems.forEach((p) => {
             p.rate = 0;
@@ -85,7 +85,7 @@ export default {
           checkText(p?.content), // 内容xxs
           this.$store.getters.token
         );
-        if (res.status === 200 && res.data.success) {
+        if (res.status === 200 && res.data.code === 20011) {
           this.$toast.success(" 提交成功！");
           // 跳转
           this.$router.replace({

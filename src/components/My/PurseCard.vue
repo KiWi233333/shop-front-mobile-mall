@@ -68,7 +68,7 @@ export default {
       this.isLodaing = true;
       this.timer = setTimeout(async () => {
         const res = await getPurseInfo(this.$store.getters.token);
-        if (res.status == 200 && res.data.success) {
+        if (res.status == 200 && res.data.code === 20011) {
           this.$store.commit("setPurseInfo", res.data.data);
           this.isLodaing = false;
           this.timer = "";

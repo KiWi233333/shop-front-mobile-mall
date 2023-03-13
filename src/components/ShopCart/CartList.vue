@@ -75,7 +75,7 @@ export default {
     async getAllShopCartList() {
       this.loading = true;
       const res = await getAllShopCart(this.$store.getters.token);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         const data = res.data.data;
         if (data.length === 0) {
           this.loading = false;
@@ -98,7 +98,7 @@ export default {
             this.$emit("getCartLength", data);
           }
         }, 100);
-      } else if (res.status === 200 && !res.data.success) {
+      } else if (res.status === 200 && !res.data.code === 20011) {
         this.isEmpty = true;
       } else {
         this.isEmpty = true;
@@ -122,7 +122,7 @@ export default {
         duration: 0,
       });
       const res = await deleteOneShopCart(id, this.$store.getters.token);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         this.cartList.splice(i, 1);
         this.$toast.clear();
       } else {

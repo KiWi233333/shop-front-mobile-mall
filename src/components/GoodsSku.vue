@@ -66,7 +66,7 @@ export default {
       // 获取路由的信息
       if (this.GOOD_ID === "") return (this.isError = true);
       const res = await getGoodPropsById(this.GOOD_ID);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         this.goodProps = res.data.data;
         // 初始化属性组合
         this.initProps();
@@ -270,7 +270,7 @@ export default {
         info?.selectedNum,
         this.$store.getters.token
       );
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         this.$emit("updataShopcart"); // 刷新
         this.$toast.clear();
         this.show = false;

@@ -54,7 +54,7 @@
 <script>
 import { getResourImageByName } from "@/api/res";
 import DefaultPage from "@/components/DefaultPage.vue";
-import { getBaseInfo, updateBaseInfo } from "@/api/user/users";
+import { getBaseInfo, updateBaseInfo } from "@/api/user/info";
 import { copyTextAsync } from "@/util/copy";
 export default {
   components: { DefaultPage },
@@ -80,7 +80,7 @@ export default {
         gender: {
           name: "性别",
           type: "text",
-          rules: [{ validator: this.changeName, required: true }],
+          rules: [{ validator: this.changeSex, required: true }],
         },
         age: {
           name: "年龄",
@@ -119,22 +119,23 @@ export default {
     // 获取基本信息
     async getUserBaseInfo() {
       const res = await getBaseInfo(this.$store.getters.token);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         const data = res.data.data;
         this.info.fullName = data?.fullName;
         this.info.gender = data?.gender;
         this.info.email = data?.email;
         this.info.qq = data?.qq;
-        this.info.age = data?.level;
+        this.info.age = data?.age;
+        this.info.birthday = data?.birthday;
         this.id = data?.id;
       }
     },
 
     // 保存请求
     async saveChangeInfo() {
-      console.log(this.info);
+      // console.log(this.info);
       const res = await updateBaseInfo(this.info, this.$store.getters.token);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         this.$notify({ type: "success", message: " 修改成功！" });
       } else {
         this.$notify({ type: "warning", message: " 修改失败！" });
@@ -150,9 +151,9 @@ export default {
     changeAge(val) {
       return val > 0 && val < 180;
     },
-    // changeAge
-    changeName(val) {
-      this.info.fullName = val.trim();
+    // changeSex
+    changeSex(val) {
+      this.info.gender = val.trim();
       if (val.trim() === "男") {
         return true;
       } else if (val.trim() === "女") {

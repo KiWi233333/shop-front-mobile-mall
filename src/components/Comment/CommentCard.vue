@@ -70,8 +70,6 @@
 
 <script>
 import { addCommentLiked } from "@/api/comment/comment";
-import { delteOrderComment } from "@/api/comment/ordercomment";
-
 import { getResourImageByName } from "@/api/res";
 import { ImagePreview } from "vant";
 import { mapState } from "vuex";
@@ -128,23 +126,7 @@ export default {
 
     // 删除评论
     deleteOrderComment() {
-      this.$dialog
-        .confirm({
-          title: "是否删除评论？",
-          beforeClose: async (action, done) => {
-            if (action === "confirm") {
-              const res = await delteOrderComment(this.comment.id);
-              if (res.data.success) {
-                done();
-                this.$toast({ type: "success", message: "删除成功" });
-              } else {
-                this.$toast({ type: "fail", message: "删除失败" });
-              }
-            }
-            done();
-          },
-        })
-        .catch(() => {});
+      this.$emit("deleteOneOrderComment");
     },
 
     // 修改评论点赞
@@ -154,7 +136,7 @@ export default {
         this.comment.id,
         this.$store.state.token
       );
-      if (res.data.success) {
+      if (res.data.code === 20011) {
         if (this.comment.isLiked) {
           this.$set(this.comment, "isLiked", false);
           this.$set(this.comment, "liked", this.comment.liked - 1);

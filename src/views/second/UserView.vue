@@ -100,8 +100,8 @@ import {
   getIsNotUpdateUsername,
 } from "@/api/user/users";
 import { mapState } from "vuex";
-import ChangeIcon from "@/components/My/ChangeIcon.vue";
 import ChangePhone from "@/components/ChangePhone.vue";
+import ChangeIcon from "@/components/My/ChangeIcon.vue";
 import { copyTextAsync } from "@/util/copy";
 export default {
   components: { TopNav, ChangeIcon, ChangePhone },
@@ -137,7 +137,7 @@ export default {
               this.user.nickname.trim(),
               this.$store.getters.token
             );
-            if (res.status === 200 && res.data.success) {
+            if (res.status === 200 && res.data.code === 20011) {
               this.$notify({ type: "success", message: "修改成功！" });
               this.showInfoPanel = false;
               this.$set(this.userInfo, "nickname", this.user.nickname);
@@ -163,7 +163,7 @@ export default {
               this.user.username.trim(),
               this.$store.getters.token
             );
-            if (res.status === 200 && res.data.success) {
+            if (res.status === 200 && res.data.code === 20011) {
               this.showInfoPanel = false;
               this.$notify({ type: "success", message: "修改成功！" });
               this.$set(this.userInfo, "username", this.user.username);
@@ -182,7 +182,7 @@ export default {
           clickFn: async () => {},
         },
         {
-          title: "修改密码",
+          title: "密码",
           value: "",
           clickFn: async () => {
             if (!this.isUpdatePwd) {
@@ -193,7 +193,7 @@ export default {
               this.user.oldPwd.trim(),
               this.$store.getters.token
             );
-            if (res.status === 200 && res.data.success) {
+            if (res.status === 200 && res.data.code === 20011) {
               this.$notify({
                 type: "success",
                 message: "修改密码成功！",
@@ -236,16 +236,16 @@ export default {
         this.userInfo.username.trim(),
         this.user.oldPwd.trim()
       );
-      if (res.status !== 200 || !res.data.success) {
+      if (res.status !== 200 || !res.data.code === 20011) {
         this.$notify({ type: "danger", message: "旧密码错误！" });
       }
-      this.isUpdatePwd = res.data.success;
+      this.isUpdatePwd = res.data.code === 20011;
     },
 
     // 验证是否修改过用户名
     async checkIsUpdateUsername() {
       const res = await getIsNotUpdateUsername(this.$store.getters.token);
-      if (res.status !== 200 || !res.data.success) {
+      if (res.status !== 200 || !res.data.code === 20011) {
         this.isDisUsername = true;
       }
       console.log(res.data);

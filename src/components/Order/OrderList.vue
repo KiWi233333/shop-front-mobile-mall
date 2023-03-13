@@ -152,7 +152,7 @@ export default {
           break;
       }
       // console.log(res.data);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         let count = 0;
         const data = res?.data?.data;
         // 判断是否为空
@@ -249,7 +249,7 @@ export default {
           beforeClose: async (action, done) => {
             if (action === "confirm") {
               const res = await cancelOrderById(id, this.$store.getters.token);
-              if (res.status === 200 && res.data.success) {
+              if (res.status === 200 && res.data.code === 20011) {
                 done();
                 this.$toast({
                   message: "取消成功！",
@@ -283,7 +283,7 @@ export default {
           beforeClose: async (action, done) => {
             if (action === "confirm") {
               const res = await doneOrder(id, this.$store.getters.token);
-              if (res.status === 200 && res.data.success) {
+              if (res.status === 200 && res.data.code === 20011) {
                 done();
                 this.$toast({
                   message: "收货成功！",
@@ -331,7 +331,7 @@ export default {
           beforeClose: async (action, done) => {
             if (action === "confirm") {
               const res = await doneOrder(id, this.$store.getters.token);
-              if (res.status === 200 && res.data.success) {
+              if (res.status === 200 && res.data.code === 20011) {
                 done();
                 this.$toast({
                   message: "收货成功~",

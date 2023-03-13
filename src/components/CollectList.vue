@@ -43,7 +43,7 @@ export default {
       getAllCollectByGid(this.$store.getters.token)
         .then((res) => {
           // console.log(res.data);
-          if (res.data.success) {
+          if (res.data.code === 20011) {
             const data = res.data.data;
             data.forEach((p) => {
               this.collectList.push(p);

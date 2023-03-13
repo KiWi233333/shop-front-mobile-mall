@@ -79,7 +79,7 @@ export default {
     async pickLike(fid) {
       if (this.pickTimer) return;
       const res = await addCommentlikedByfid(fid, this.$store.state.token);
-      if (res.data.success) {
+      if (res.data.code === 20011) {
         if (this.comment.isLiked) {
           this.$set(this.comment, "isLiked", false);
           this.$set(this.comment, "liked", this.comment.liked - 1);

@@ -54,7 +54,7 @@ export default {
     isTodaySignIn(this.$store.getters.token)
       .then((res) => {
         this.show = true;
-        this.isSignin = res.data.success;
+        this.isSignin = res.data.code === 20011;
       })
       .catch();
     // 签到天数
@@ -71,7 +71,7 @@ export default {
       // 签到总天数
       getSignDays(this.$store.getters.token)
         .then((res) => {
-          if (res.data.success) {
+          if (res.data.code === 20011) {
             this.siginDays = res.data.data;
           }
         })
@@ -81,7 +81,7 @@ export default {
     // 签到
     async addSignin() {
       const res = await setUserSignIn(this.$store.getters.token);
-      if (res.status === 200 && res.data.success) {
+      if (res.status === 200 && res.data.code === 20011) {
         this.isSignin = true;
         // 签到天数
         this.getAllSigninDays();

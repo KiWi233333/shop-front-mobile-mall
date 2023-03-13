@@ -377,7 +377,7 @@ export default {
       const res = await getDefaultAddress(this.$store.getters.token);
       if (res.status === 200) {
         // 有默认地址
-        if (res.data.success && res.data.data?.id !== "") {
+        if (res.data.code === 20011 && res.data.data?.id !== "") {
           this.getAddressList(false); //获取全部地址
           for (const key in res.data.data) {
             this.$set(this.defaultAddress, key, res.data.data[key]);
@@ -396,7 +396,7 @@ export default {
     async getAddressList(getFirst = false) {
       const res = await getAllAddress(this.$store.getters.token);
 
-      if (res.data.success && res.status === 200) {
+      if (res.data.code === 20011 && res.status === 200) {
         const data = res.data.data;
         if (data.length > 0 && getFirst) {
           for (const key in data[0]) {
@@ -506,7 +506,7 @@ export default {
             checkText(this.remarks),
             this.$store.getters.token
           );
-          if (res.status === 200 && res.data.success) {
+          if (res.status === 200 && res.data.code === 20011) {
             this.submitId = res.data.data;
             this.isEdit = false; // 关闭编辑
             this.isSubmit = true;
@@ -538,7 +538,7 @@ export default {
         forbidClick: true,
         onOpened: async () => {
           const res = await payOrder(this.submitId, this.$store.getters.token);
-          this.isPayDone = res.data.success;
+          this.isPayDone = res.data.code === 20011;
           this.showPayPanel = false;
         },
         onClose: () => {
@@ -573,7 +573,7 @@ export default {
           checkText(this.remarks),
           this.$store.getters.token
         );
-        if (res.status === 200 && res.data.success) {
+        if (res.status === 200 && res.data.code === 20011) {
           this.showPayPanel = true;
           this.submitId = res.data.data?.orderId;
         } else {
@@ -596,7 +596,7 @@ export default {
                   this.submitId,
                   this.$store.getters.token
                 );
-                if (res.status === 200 && res.data.success) {
+                if (res.status === 200 && res.data.code === 20011) {
                   done();
                   this.$toast({ message: "取消成功！", type: "success" });
                   this.$router.back();

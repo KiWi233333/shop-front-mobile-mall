@@ -106,7 +106,7 @@ export default {
         password: this.password.trim(),
       });
 
-      if (res.data?.success) {
+      if (res.data.code === 20011) {
         this.disabled = true;
         Notify({ type: "success", message: "注册成功！即将返回登录" });
         setTimeout(() => {
@@ -144,7 +144,7 @@ export default {
         }
       }, 1000);
       const res = await getRegisterCode(this.phone);
-      if (res.data.success) {
+      if (res.data.code === 20011) {
         Notify({
           type: "success",
           message: `获取成功！验证码为：\n${res.data.data}`,

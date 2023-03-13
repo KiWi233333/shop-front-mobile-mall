@@ -42,7 +42,7 @@ export default {
     // 获取所有的一级分类
     getFirstSortList()
       .then((res) => {
-        if (res.data.success) {
+        if (res.data.code === 20011) {
           // 同步操作
           for (let p of res.data.data) {
             this.firstSortList.push(p);
@@ -67,7 +67,7 @@ export default {
       this.secondSortList.splice(0);
       getSecondSortList(id)
         .then((res) => {
-          if (res.data.success) {
+          if (res.data.code === 20011) {
             res.data.data.forEach((p) => {
               this.secondSortList.push(p);
             });

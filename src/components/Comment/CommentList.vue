@@ -12,9 +12,10 @@
       <!-- 商品卡片 -->
       <comment-card
         :comment="item"
-        v-for="item in commentList"
+        v-for="(item, i) in commentList"
         :key="item.id"
         class="v-card item"
+        @deleteOneOrderComment="deleteOneOrderComment(item.id, i)"
       />
     </transition-group>
   </van-list>
@@ -22,6 +23,7 @@
 <script>
 import { getGoodCommentById } from "@/api/comment/comment";
 import CommentCard from "./CommentCard.vue";
+import { delteOrderComment } from "@/api/comment/ordercomment";
 export default {
   components: { CommentCard },
   props: {
@@ -52,13 +54,39 @@ export default {
       this.reqCommentListBySort();
     },
 
+    // 删除评论
+    deleteOneOrderComment(id, index) {
+      console.log(id, index);
+      this.$dialog
+        .confirm({
+          title: "是否删除评论？",
+          beforeClose: async (action, done) => {
+            if (action === "confirm") {
+              const res = await delteOrderComment(
+                id,
+                this.$store.getters.token
+              );
+              if (res.data.code === 20011) {
+                this.commentList.splice(index, 1); // 删除
+                done();
+                this.$toast({ type: "success", message: "删除成功" });
+              } else {
+                this.$toast({ type: "fail", message: "删除失败" });
+              }
+            }
+            done();
+          },
+        })
+        .catch(() => {});
+    },
+
     // 请求评论列表
     reqCommentListBySort() {
       this.loading = true;
       getGoodCommentById(this.gid, this.reqType, this.$store.getters.token)
         .then((res) => {
           // console.log(res.data);
-          if (res.data.success) {
+          if (res.data.code === 20011) {
             const data = res.data.data;
             let count = 0;
             let timer = setInterval(() => {
