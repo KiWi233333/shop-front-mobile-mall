@@ -98,7 +98,7 @@ export default {
       // 请求活动商品
       getEventGoodsById(this.currentPage, 8, this.$route.query?.eid)
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           if (res.status === 200 && res.data.code === 20011) {
             const data = res.data.data;
             data.records.forEach((p) => {

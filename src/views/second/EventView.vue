@@ -55,7 +55,7 @@ export default {
         res.data.data.forEach((p) => {
           if (p.id == this.$route.query?.eid) {
             this.active = p;
-            // 浏览器标题设置
+            // 浏览器标题设置 活动名称
             document.title = p.name || this.$route.meta?.title;
           }
         });
@@ -81,7 +81,9 @@ export default {
 <style scoped>
 .top >>> .top-nav {
   background-image: none;
-  border: none;
+  backdrop-filter: blur(4px);
+  border-bottom: none;
+  background-color: transparent;
 }
 .event-view {
   width: 100%;

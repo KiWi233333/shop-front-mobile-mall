@@ -19,6 +19,7 @@
               class="grey text"
               @click="toComment(comment.id)"
               @touchstart="toComment(comment.id)"
+              @focus="toComment(comment.id)"
               >回复</span
             >
           </div>
@@ -78,7 +79,7 @@ export default {
     // 点赞
     async pickLike(fid) {
       if (this.pickTimer) return;
-      const res = await addCommentlikedByfid(fid, this.$store.state.token);
+      const res = await addCommentlikedByfid(fid, this.$store.getters.token);
       if (res.data.code === 20011) {
         if (this.comment.isLiked) {
           this.$set(this.comment, "isLiked", false);

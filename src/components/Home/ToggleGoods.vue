@@ -46,6 +46,10 @@ export default {
 };
 </script>
 <style scoped>
+.goods {
+  border-radius: 10px 10px 0 0;
+  background-color: var(--theme-color);
+}
 .tabs {
   width: 100%;
   margin-top: -50px;

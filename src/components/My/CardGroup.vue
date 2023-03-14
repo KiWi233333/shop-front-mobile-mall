@@ -18,7 +18,6 @@
   </div>
 </template>
 <script>
-import router from "@/router";
 export default {
   name: "CardGroup",
   data() {
@@ -27,9 +26,8 @@ export default {
   methods: {
     // 二级页面跳转
     toView(target) {
-      const _this = this;
-      router.push({
-        name: _this.$store.state.isLoginState ? target : "login",
+      this.$router.push({
+        name: this.$store.getters.token !== "" ? target : "login",
         params: {
           animate: "forward",
           toBack: true,

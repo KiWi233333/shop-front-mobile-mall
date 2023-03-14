@@ -41,12 +41,7 @@
         </transition-group>
       </div>
       <!-- 评论输入 -->
-      <div
-        class="to-comment"
-        ref="toCommentBar"
-        @touchend="clearCommentObj"
-        @mouseleave="clearCommentObj"
-      >
+      <div class="to-comment" ref="toCommentBar" @mouseleave="clearCommentObj">
         <van-image
           lazy-load
           round
@@ -276,7 +271,7 @@ export default {
 
 /* 评论栏 */
 .to-comment {
-  padding: 0 0.2rem;
+  padding: 0.14rem 0.2rem;
   width: 100%;
   position: fixed;
   bottom: 0;
@@ -285,7 +280,6 @@ export default {
   align-items: center;
   justify-content: space-between;
   background-color: var(--theme-color);
-  /* box-shadow: var(--shadow-color2); */
   border-top: 1px solid var(--border-color);
 }
 .to-comment .user-icon {

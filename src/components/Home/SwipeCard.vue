@@ -52,10 +52,12 @@ export default {
 </script>
 <style scoped>
 .v-card {
-  height: 4.2rem;
+  height: 4.5rem;
   padding: 0;
   margin-top: 0.5rem;
   margin-bottom: 0.3rem;
+  box-shadow: var(--shadow-color3);
+  border-radius: 10px;
 }
 .home-swiper img {
   width: 100%;

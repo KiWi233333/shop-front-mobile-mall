@@ -1,5 +1,5 @@
 <template>
-  <div class="sort-class" v-show="firstSortList">
+  <div class="v-card sort-class" v-show="firstSortList">
     <div
       class="v-click item"
       v-for="(p, i) in firstSortList"
@@ -51,21 +51,54 @@ export default {
 </script>
 <style scoped>
 .sort-class {
+  /* box-shadow: var(--shadow-color3); */
+  box-shadow: none;
   margin-top: 0.1rem;
   display: flex;
   align-items: center;
   justify-content: space-around;
   flex-wrap: wrap;
+  backdrop-filter: saturate(50%) blur(10px);
+  position: relative;
+  backdrop-filter: blur(20px);
+  border-radius: 10px;
+  padding: 0.3rem 0;
+
+  /* background-image: radial-gradient(
+    var(--bg-color5) 1px,
+    var(--theme-color) 1px
+  );
+  background-size: 4px 4px;
+  backdrop-filter: saturate(50%) blur(10px); */
+}
+.sort-class::before,
+.sort-class::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  filter: blur(20px);
+  z-index: -1;
+  background: linear-gradient(160deg, #fdb513, rgba(255, 255, 255, 0.288) 23%);
+}
+
+.sort-class::after {
+  background: linear-gradient(
+    -50deg,
+    #ff2b4fad,
+    rgba(255, 255, 255, 0.288) 20%
+  );
 }
 .sort-class .item {
   width: 20%;
   text-align: center;
-  padding: 0.2rem;
+  padding: 0 0.12rem;
+  margin-bottom: 0.1rem;
 }
 .sort-class .item .img {
   display: block;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.25rem;
+  height: 1.25rem;
   margin: auto;
   padding: 0.25rem;
   display: flex;

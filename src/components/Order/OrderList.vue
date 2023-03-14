@@ -83,6 +83,12 @@
           </div>
           <!-- 去评论 -->
           <div class="btns" v-if="getState(order) === '已签收，待评价'">
+            <button
+              class="v-click btn cancel"
+              @click="deleteOrder(order?.orderId, i)"
+            >
+              删除订单
+            </button>
             <button class="v-click btn" @click="toAddComment(order?.orderId)">
               去评论
             </button>
@@ -103,6 +109,7 @@ import {
   getUnPaidOrder,
   cancelOrderById,
   doneOrder,
+  deleteOrderById,
 } from "@/api/order/order";
 import currency from "currency.js";
 import GoodsInfo from "../Goods/GoodsInfo.vue";
@@ -256,7 +263,7 @@ export default {
               if (res.status === 200 && res.data.code === 20011) {
                 this.$toast({
                   message: "取消成功！",
-                  duration: 500,
+                  duration: 1000,
                   type: "success",
                 });
                 this.orderList.splice(i, 1);
@@ -366,6 +373,33 @@ export default {
       });
     },
 
+    // 删除订单
+    async deleteOrder(id, i) {
+      if (id === "") return;
+      this.$dialog
+        .confirm({
+          title: "是否删除订单？",
+          message: "删除后无法恢复，请谨慎操作！",
+          beforeClose: async (action, done) => {
+            if (action === "confirm") {
+              const res = await deleteOrderById(id, this.$store.getters.token);
+              if (res.status === 200 && res.data.code === 20011) {
+                this.$toast({
+                  message: "删除成功！",
+                  duration: 500,
+                  type: "success",
+                });
+                this.orderList.splice(i, 1);
+              } else {
+                this.$toast("删除失败，稍后再试！");
+              }
+              done();
+            }
+            done();
+          },
+        })
+        .catch(() => {});
+    },
     // 6）查看评论页面
     toOrderComment(id) {
       console.log(id);

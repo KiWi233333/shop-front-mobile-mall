@@ -16,8 +16,8 @@
   --bg-color2: #186bfb;
   --bg-color3: rgba(216, 216, 216, 0.7);
   --bg-color4: #ffc714;
-  --bg-color5: rgba(216, 216, 216, 0.4);
-  --bg-color6: #eeeeee6b;
+  --bg-color5: rgba(216, 216, 216, 0.3);
+  --bg-color6: #eeeeee56;
 
   --shadow-color: rgba(50, 50, 93, 0.2) 0px 2px 5px -1px, rgba(0, 0, 0, 0.2) 0px 1px 3px -1px;
   --shadow-color2: rgba(122, 122, 122, 0.2) 0px 2px 5px 4px, rgba(101, 101, 101, 0.4) 0px 1px 3px -1px;
@@ -53,7 +53,7 @@ small {
   padding: 0.3rem;
   padding-top: 0.5rem;
   /* 底部 */
-  padding-bottom: 2rem;
+  padding-bottom: 1.6rem;
 }
 
 /* 自定义类 */
@@ -87,9 +87,9 @@ small {
   margin: auto;
 }
 .v-card {
-  border-radius: 16px;
+  border-radius: 14px;
   backdrop-filter: blur(20px);
-  box-shadow: var(--shadow-color);
+  box-shadow: var(--shadow-color3);
   padding: 0.4rem;
 }
 .lable-group {

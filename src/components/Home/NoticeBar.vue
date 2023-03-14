@@ -1,7 +1,5 @@
 <template>
-  <div class="notice-bar">
-    <van-notice-bar scrollable :text="notice?.content" />
-  </div>
+  <div class="notice-bar"></div>
 </template>
 <script>
 import { getIndexNotice } from "@/api/system/notice";
@@ -15,6 +13,9 @@ export default {
   },
   async created() {
     const res = await getIndexNotice();
+    // for (const key in res.data.data) {
+    //   this.$set(this.notice, key, res.data.data[key]);
+    // }
     this.notice = res.data.data;
   },
   methods: {},

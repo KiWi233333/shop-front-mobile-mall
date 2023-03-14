@@ -22,7 +22,6 @@ import SwipeCard from "@/components/Home/SwipeCard.vue";
 import SortClass from "@/components/Home/SortClass.vue";
 import ToggleGoods from "@/components/Home/ToggleGoods.vue";
 import NoticeBar from "@/components/Home/NoticeBar.vue";
-import { getNoticeByPage } from "@/api/system/notice";
 export default {
   name: "HomeView",
   components: { SwipeCard, SortClass, ToggleGoods, NoticeBar },
@@ -37,12 +36,6 @@ export default {
       });
     },
   },
-  created() {
-    getNoticeByPage(1, 8).then((res) => {
-      // console.log(res.data);
-      res.data.dta;
-    });
-  },
 };
 </script>
 
@@ -51,6 +44,7 @@ export default {
 .home {
   display: flex;
   flex-direction: column;
+  background-color: var(--bg-color6);
 }
 .bg {
   position: absolute;
@@ -58,7 +52,7 @@ export default {
   left: 0;
   width: 100vw;
   z-index: 0;
-  height: 4.5rem;
+  height: 3.5rem;
   background-image: linear-gradient(
     var(--theme-color2) 40%,
     var(--theme-color)

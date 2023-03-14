@@ -96,7 +96,7 @@ export default {
             },
           });
         } else {
-          this.$toast.fail(" 提交失败！");
+          this.$toast.fail("提交失败 !");
         }
         // 清空
         setTimeout(() => {

@@ -23,11 +23,7 @@
       v-html="comment?.content"
     ></div>
     <!-- 评论照片 -->
-    <div
-      class="good-imgs"
-      @click="!disableComment ? toCommentView() : ''"
-      v-if="comment?.images"
-    >
+    <div class="good-imgs" v-if="comment?.images">
       <van-image
         lazy-load
         class="img"
@@ -38,6 +34,7 @@
         @click="showPreImg(comment?.images, i)"
       />
     </div>
+
     <!-- 点赞留言 -->
     <div class="lable-group tips">
       <div class="lable">
@@ -134,7 +131,7 @@ export default {
       if (this.pickTimer) return;
       const res = await addCommentLiked(
         this.comment.id,
-        this.$store.state.token
+        this.$store.getters.token
       );
       if (res.data.code === 20011) {
         if (this.comment.isLiked) {

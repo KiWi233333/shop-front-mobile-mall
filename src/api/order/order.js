@@ -151,7 +151,7 @@ export function doneOrder(id, token) {
 export function deleteOrderById(id, token) {
   return request({
     method: "delete",
-    url: `/orders/cancel/${id}`,
+    url: `/orders/delete/${id}`,
     headers: { Authorization: token },
   });
 }
