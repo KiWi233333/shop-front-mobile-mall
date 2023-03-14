@@ -31,7 +31,6 @@ export default new Vuex.Store({
         if (delay <= state.tokenLife) {
           return state.token; // 返回token
         } else {
-          // 登录失效
           // 清空vuex
           for (const key in state.userInfo) {
             Vue.set(state.userInfo, key, "");
@@ -43,27 +42,20 @@ export default new Vuex.Store({
           localStorage.removeItem(state.TOKEN_NAME);
           localStorage.removeItem("loginTime");
           sessionStorage.removeItem(state.TOKEN_NAME);
+
           // 跳转登录
-          try {
-            router.push({
-              name: "login",
-              params: { animate: "forward", toBack: true },
-            });
-          } catch (e) {
-            e;
-          }
-          return "";
-        }
-      } else {
-        // 跳转登录
-        try {
           router.push({
             name: "login",
             params: { animate: "forward", toBack: true },
           });
-        } catch (e) {
-          e;
+          return "";
         }
+      } else {
+        // 跳转登录
+        router.push({
+          name: "login",
+          params: { animate: "forward", toBack: true },
+        });
         return "";
       }
     },

@@ -101,6 +101,7 @@
             ></span
           >
           <div
+            v-if="getPointsVal !== ''"
             class="lable"
             :style="isPoints ? 'color: var(--tip-color2)' : ''"
           >
@@ -110,7 +111,7 @@
                 : "无可用"
             }}&nbsp;
             <van-checkbox
-              v-if="!$route.query?.isOrder || !isReadonly"
+              v-if="!isReadonly"
               v-model="isPoints"
               :disabled="$store.state.purseInfo?.points <= 0"
               checked-color="var(--tip-color2)"
@@ -120,13 +121,20 @@
       </div>
 
       <!-- 总价 -->
-      <div class="v-card allPrice">
-        <span>总价：</span>
-        <span style="color: var(--tip-color2); font-size: 0.5rem"
-          ><small style="color: var(--tip-color2)">￥</small
-          >{{ finallyPrice }}</span
-        >
+      <div class="v-card">
+        <div class="allPrice reduces" v-show="isPoints">
+          <small>减免：</small>
+          <small class="reduce-price">-{{ getPointsVal }}</small>
+        </div>
+        <div class="allPrice">
+          <span>总价：</span>
+          <span style="color: var(--tip-color2); font-size: 0.5rem"
+            ><small style="color: var(--tip-color2)">￥</small
+            >{{ finallyPrice }}</span
+          >
+        </div>
       </div>
+
       <!-- 4）订单信息 -->
       <van-cell-group inset class="group v-card" v-if="isReadonly">
         <van-cell
@@ -240,9 +248,9 @@
       <van-button
         class="v-btn"
         @click="payOrder"
-        :disabled="purseInfo.balance < allPrice / 100"
+        :disabled="purseInfo.balance < finallyPrice.value"
         >{{
-          purseInfo.balance < allPrice / 100 ? "余额不足" : "确认付款"
+          purseInfo.balance < finallyPrice.value ? "余额不足" : "确认付款"
         }}</van-button
       >
     </van-popup>
@@ -276,7 +284,6 @@ import currency from "currency.js";
 import { getPurseInfo } from "@/api/user/purse";
 import { copyTextAsync } from "@/util/copy";
 import { mapState } from "vuex";
-import { isReadonly } from "vue";
 export default {
   name: "CheckOrder",
   components: {
@@ -309,6 +316,7 @@ export default {
       submitError: false, // 提交订单失败
       showPayPanel: false, // 打开交易的钱包
       showPopover: false, // 修改栏目
+      isReadonly: false,
       isPoints: false, // 是否选用积分
       // 地址
       emptyAddress: false, // 是否为空地址
@@ -331,6 +339,9 @@ export default {
         { type: "zfb", icon: "zfb.png", name: "支付宝", open: false },
         { type: "ysf", icon: "ysf.png", name: "云闪付", open: false },
       ],
+
+      // 取消订单原因
+      reason: "",
     };
   },
   mounted() {
@@ -352,7 +363,7 @@ export default {
       this.defaultAddress.name = name;
       this.defaultAddress.phone = phone;
       this.defaultAddress.address = address;
-      this.defaultAddress.id = phone;
+      this.defaultAddress.id = null;
       this.remarks = q.info.remarks;
       // 订单页面的数据
       q.goodsList.forEach((goods) => {
@@ -570,10 +581,13 @@ export default {
         message: "支付中...",
         forbidClick: true,
         onOpened: async () => {
-          let ponits =
-            this.isPoints && this.purseInfo.points > 1000
-              ? 1000
-              : this.purseInfo.points;
+          let ponits = 0;
+          if (this.isPoints) {
+            ponits =
+              this.getPointsVal.intValue > this.allPrice
+                ? this.allPrice
+                : this.getPointsVal.intValue / 100;
+          }
           const res = await payOrder(
             this.submitId,
             ponits,
@@ -610,8 +624,8 @@ export default {
         if (this.submitId === "") return;
         const res = await updateOrder(
           this.submitId,
-          this.defaultAddress.id,
-          checkText(this.remarks),
+          this.defaultAddress.id || null,
+          checkText(this.remarks) || null,
           this.$store.getters.token
         );
         if (res.status === 200 && res.data.code === 20011) {
@@ -635,19 +649,19 @@ export default {
               setTimeout(async () => {
                 const res = await cancelOrderById(
                   this.submitId,
+                  this.reason, // 原因
                   this.$store.getters.token
                 );
                 if (res.status === 200 && res.data.code === 20011) {
-                  done();
                   this.$toast({ message: "取消成功！", type: "success" });
                   this.$router.back();
                 } else {
-                  this.$toast("取消失败，请重新提交！");
+                  this.$toast("取消失败，稍后再试！");
                 }
+                done();
               }, 1000);
-            } else {
-              done();
             }
+            done();
           },
         })
         .catch(() => {});
@@ -683,14 +697,6 @@ export default {
     prices() {
       return currency(this.allPrice / 100);
     },
-    // 只读
-    isReadonly() {
-      if (this.orderType !== "") {
-        return !(this.orderType === "update" || this.orderType === "unpaid");
-      } else {
-        return false;
-      }
-    },
 
     // 计算运费
     getPostage() {
@@ -703,14 +709,17 @@ export default {
 
     // 计算积分抵扣
     getPointsVal() {
-      if (!this.$route.query?.isOrder && !isReadonly()) {
-        if (this.allPrice * 100 >= this.purseInfo.points) {
-          return this.purseInfo.points / 100;
-        } else {
-          return this.allPrice / 100;
-        }
-      } else {
+      if (this.$route.query.isOrder && this.isReadonly) {
         return "";
+      } else {
+        if (
+          this.purseInfo.points >=
+          currency(this.allPrice).add(this.allPostage)?.intValue
+        ) {
+          return currency(this.finallyPrice?.intValue / 100);
+        } else {
+          return currency(this.purseInfo.points / 100);
+        }
       }
     },
   },
@@ -723,6 +732,15 @@ export default {
       },
     },
 
+    // 只读
+    orderType(val) {
+      if (val !== "") {
+        this.isReadonly = !(val === "update" || val === "unpaid");
+      } else {
+        this.isReadonly = false;
+      }
+    },
+
     // 积分抵扣
     isPoints(val) {
       if (val) {
@@ -730,7 +748,7 @@ export default {
           this.getPointsVal
         );
       } else {
-        this.finallyPrice = currency(this.allPrice / 100);
+        this.finallyPrice = currency(this.allPrice / 100).add(this.allPostage);
       }
     },
   },
@@ -747,6 +765,7 @@ export default {
   margin-bottom: 1.4rem;
 }
 .v-card {
+  transition: all 0.3s;
   border-radius: 10px;
   box-shadow: var(--shadow-color3);
   background-color: var(--theme-color);
@@ -879,6 +898,12 @@ export default {
 .group {
   width: 100%;
   margin: 0.4rem 0;
+}
+.reduces {
+  padding: 0.1rem;
+}
+.reduce-price {
+  padding: 0.1rem 0;
 }
 .allPrice {
   display: flex;

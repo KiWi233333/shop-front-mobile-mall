@@ -124,7 +124,7 @@ export default {
       loading: false, // 加载中
       finished: false, // 完成
       isRefreshing: false, // 刷新
-
+      comment: "", // 取消订单理由
       typeColor: "var(--text-color4)",
     };
   },
@@ -248,9 +248,12 @@ export default {
           title: "是否取消订单？",
           beforeClose: async (action, done) => {
             if (action === "confirm") {
-              const res = await cancelOrderById(id, this.$store.getters.token);
+              const res = await cancelOrderById(
+                id,
+                this.comment,
+                this.$store.getters.token
+              );
               if (res.status === 200 && res.data.code === 20011) {
-                done();
                 this.$toast({
                   message: "取消成功！",
                   duration: 500,
@@ -258,11 +261,11 @@ export default {
                 });
                 this.orderList.splice(i, 1);
               } else {
-                this.$toast("取消失败，请重新提交！");
+                this.$toast("取消失败，稍后再试！");
               }
-            } else {
               done();
             }
+            done();
           },
         })
         .catch(() => {});

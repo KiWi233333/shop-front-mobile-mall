@@ -9,13 +9,16 @@
       @click="toGoodsView(item.goodsId)"
     />
     <div class="content">
-      <div class="title">{{ item.name }}</div>
+      <div class="title">{{ item?.name }}</div>
       <!-- 规格展示 -->
-      <p class="props" @click="$emit('onSelectProps', item?.goodsId, item?.id)">
-        {{ item.props }}
-        <van-icon :name="$attrs.showSku ? 'arrow-down' : 'arrow'" />
+      <p class="props" @click="onselectProps">
+        <span>{{ item?.props }}</span>
+        <van-icon
+          style="display: inline-block; line-height: 0.4rem"
+          :name="$attrs.showSku && isItem ? 'arrow-down' : 'arrow'"
+        />
       </p>
-      <div class="price">￥{{ item.unitPrice }}</div>
+      <div class="price">￥{{ item?.unitPrice }}</div>
     </div>
     <!-- 件数 -->
     <div
@@ -62,6 +65,8 @@ export default {
     return {
       num: 1,
       showCount: false,
+
+      isItem: false,
     };
   },
   methods: {
@@ -88,6 +93,12 @@ export default {
       this.$emit("deleteCartByOne", this.item.id, this.index);
     },
 
+    // 打开属性弹窗
+    onselectProps() {
+      this.isItem = true;
+      this.$emit("onSelectProps", this.item?.goodsId, this.item?.id);
+    },
+
     // 跳转详情页
     toGoodsView(id) {
       this.$router.push({
@@ -106,6 +117,12 @@ export default {
     // 修改数量
     num(newVal) {
       this.$set(this.item, "quantity", newVal);
+    },
+
+    "$attrs.showSku"(val) {
+      if (!val) {
+        this.isItem = false;
+      }
     },
   },
 };
@@ -130,7 +147,8 @@ export default {
 }
 .content .props {
   cursor: pointer;
-  display: inline-block;
+  display: inline-flex;
+  padding-right: 0.1rem;
   max-width: 3.6rem;
   color: var(--text-color3);
   background-color: var(--bg-color5);

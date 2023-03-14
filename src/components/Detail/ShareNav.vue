@@ -124,8 +124,11 @@ export default {
   left: 0;
   z-index: 99;
   width: 100%;
-  background-color: rgba(182, 182, 182, 0.1);
-  backdrop-filter: blur(20px);
+  /* background-color: rgba(182, 182, 182, 0.1); */
+  background-image: radial-gradient(transparent 1px, var(--theme-color) 1px);
+  background-size: 4px 4px;
+  backdrop-filter: saturate(50%) blur(10px);
+  border-bottom: 1px solid var(--theme-color);
   display: flex;
   justify-content: space-between;
   padding: 0.2rem;

@@ -84,6 +84,10 @@ export default {
   bottom: 0;
   width: 100%;
   display: inline-flex;
+  /* background-image: radial-gradient(transparent 1px, var(--theme-color) 1px);
+  background-size: 4px 4px;
+  backdrop-filter: saturate(50%) blur(10px);
+  border-bottom: 1px solid var(--theme-color); */
   background-color: var(--theme-color3);
   box-shadow: var(--shadow-color2);
   z-index: 999;

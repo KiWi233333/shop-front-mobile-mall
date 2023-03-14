@@ -7,4 +7,16 @@ const request = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+// request.interceptors.request.use(
+//   config => {
+//     if (config.headers.Authorization && config.headers.Authorization === "" && store.getters.token !== "") {
+//       return false;
+//     } else {
+//       return config;
+//     }
+//   },
+//   err => {
+//     return Promise.reject(err);
+//   }
+// );
 export { request, baseURL };

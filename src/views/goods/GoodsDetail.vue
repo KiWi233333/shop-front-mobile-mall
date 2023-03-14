@@ -153,7 +153,7 @@
     <!-- 网络错误 -->
     <error-card
       v-if="isError"
-      @refresh="getGoodDetail"
+      @refresh="location.reload()"
       :image="'network'"
       text="网络错误，请稍后再试！"
     />

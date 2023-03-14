@@ -35,6 +35,7 @@ export default {
   font-size: 0.4rem;
   /* box-shadow: var(--shadow-color3); */
   /* border-bottom: 1px solid var(--bg-color3); */
+  background-image: radial-gradient(transparent 1px, var(--theme-color) 1px);
   position: relative;
 }
 .top-nav .title {

@@ -159,13 +159,20 @@ export function deleteOrderById(id, token) {
 /**
  * 取消订单
  * @param {number} id 订单id
+ * @param {string} reason 原因
  * @param {string} token
  * @returns
  */
-export function cancelOrderById(id, token) {
+export function cancelOrderById(id, reason, token) {
   return request({
     method: "delete",
     url: `/orders/cancel/${id}`,
-    headers: { Authorization: token },
+    headers: {
+      Authorization: token,
+      "Content-Type": "x-www-form-urlencoded",
+    },
+    params: {
+      reason: reason || "",
+    },
   });
 }

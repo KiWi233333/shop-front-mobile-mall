@@ -1,6 +1,6 @@
 <template>
   <div class="notice-bar">
-    <van-notice-bar scrollable :text="notice?.content" :key="notice?.cid" />
+    <van-notice-bar scrollable :text="notice?.content" />
   </div>
 </template>
 <script>

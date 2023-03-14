@@ -112,6 +112,13 @@ small {
 .lable-group .props {
   width: 80%;
 }
+.props span {
+  display: inline-block;
+  font-size: 0.3rem;
+  max-width: 90%;
+  text-overflow: clip;
+  overflow: hidden;
+}
 .lable-group .box {
   cursor: pointer;
   display: inline-block;

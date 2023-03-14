@@ -11,7 +11,7 @@
     >
       <!-- 1) 多选组 -->
       <van-checkbox-group v-model="selectList" @change="changeSelectArr">
-        <transition-group name="bottomRight" tag="div">
+        <transition-group name="item" tag="div">
           <!-- 购物车卡片 -->
           <cart-card
             v-bind="$attrs"
@@ -46,7 +46,7 @@
   </div>
 </template>
 <script>
-import CartCard from "@/components/ShopCart/CartCard";
+import CartCard from "@/components/ShopCart/CartCard.vue";
 import { getAllShopCart, deleteOneShopCart } from "@/api/shopcart/shopcart";
 import GoodsSku from "@/components/GoodsSku.vue";
 export default {

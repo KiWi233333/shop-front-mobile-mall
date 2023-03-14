@@ -227,7 +227,7 @@ const routes = [
     meta: {
       title: "商品详情",
       lv: 2,
-      permission: true,
+      // permission: true,
     },
   },
 
@@ -288,14 +288,15 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode: "history",
+  // mode: "history",
+  mode: "hash",
   base: process.env.BASE_URL,
   routes,
 });
 // 拦截器
 router.beforeEach((to, from, next) => {
   // 浏览器标题设置
-  document.title = to.meta?.title ?? "水院商城";
+  document.title = to.meta?.title || "水院商城";
   // 权限设置
   if (to.meta.permission) {
     // 权限成功
@@ -306,6 +307,7 @@ router.beforeEach((to, from, next) => {
         name: "login",
         params: {
           animate: "forward",
+          toBack: true,
         },
       });
     }

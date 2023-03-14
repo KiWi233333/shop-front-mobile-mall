@@ -83,13 +83,12 @@ export function putAddres(addressInfo, token) {
       isDefault: 0,
  * @returns 
  */
-export function updateAddress(updateInfo, token) {
-  const { id, uid, name, phone, province, city, district, address, isDefault } = updateInfo;
+export function updateAddress({ id, uid, name, phone, province, city, district, address, isDefault, token }) {
   return request({
     method: "put",
-    url: "/address/update",
+    url: `/address/update/${id}`,
     headers: { Authorization: token },
-    data: { id, uid, name, phone, province, city, district, address, isDefault: +isDefault },
+    data: { uid, name, phone, province, city, district, address, isDefault: +isDefault },
   });
 }
 

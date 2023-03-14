@@ -162,6 +162,19 @@
       />
     </van-popup>
 
+    <!-- 地区弹窗 -->
+    <van-popup v-model="showMaps" position="bottom" class="maps-popup" round>
+      <baidu-map
+        Animation="BMAP_ANIMATION_DROP"
+        class="bm-view"
+        @ready="mapReady"
+        :center="mapsAreas || '北京市 东城区'"
+      />
+      <div class="btn-group">
+        <button class="v-btn">确定</button>
+      </div>
+    </van-popup>
+
     <!-- 网络错误 -->
     <error-card
       v-if="isEmpty || isError"
@@ -183,7 +196,6 @@ import {
   deleteAddressById,
   deleteAddressByIdsArray,
   getAllAddress,
-  getDefaultAddress,
   putAddres,
   updateAddress,
 } from "@/api/user/address";
@@ -206,12 +218,13 @@ export default {
       areaList, // 区县集合
       showAddress: false, // 显示地址表单
       showArea: false, // 显示地址list
-
+      // 错误 编辑 空
       isError: false,
       isEmpty: false,
-
       isEdit: false,
-
+      // 百度地图
+      showMaps: true,
+      mapsAreas: "",
       // 数据
       addressList: [],
       active: 0,
@@ -232,10 +245,11 @@ export default {
     async getAllAddressList() {
       this.addressList.splice(0); // 清空
       this.loading = true;
-      const first = await getDefaultAddress(this.$store.getters.token);
-      if (first.status === 200 && first.data.code === 20011) {
-        this.addressList.push(first.data.data);
-      }
+      // 请求默认地址
+      // const first = await getDefaultAddress(this.$store.getters.token);
+      // if (first.status === 200 && first.data.code === 20011) {
+      //   this.addressList.push(first.data.data);
+      // }
       const res = await getAllAddress(this.$store.getters.token);
       if (res.status === 200 && res.data.code === 20011) {
         const data = res.data.data;
@@ -243,9 +257,12 @@ export default {
         data.forEach((p) => {
           if (!p.isDefault) {
             this.addressList.push(p);
-            if (data.length >= this.addressList.length) {
-              this.finished = true;
-            }
+          } else {
+            this.addressList.unshift(p);
+          }
+
+          if (data.length >= this.addressList.length) {
+            this.finished = true;
           }
         });
       } else if (res.status === 200 && res.data.data?.length < 0) {
@@ -279,7 +296,7 @@ export default {
 
     // 加入单例编辑
     toEdit(item, i) {
-      console.log(item);
+      // console.log(item);
       for (const key in item) {
         if (key === "isDefault") {
           this.$set(this.address, key, Boolean(item[key]));
@@ -370,7 +387,14 @@ export default {
 
     // 获取定位
     getLocation() {
-      console.log("定位");
+      if (this.area != "") {
+        this.showMaps = true;
+      }
+    },
+
+    // 百度地图
+    mapReady(maps) {
+      console.log(maps);
     },
 
     // 设置区域
@@ -393,6 +417,7 @@ export default {
         this.selectList.splice(0);
       }
     },
+    //
   },
 };
 </script>
@@ -484,5 +509,18 @@ export default {
 }
 .address-popup >>> .van-switch--on {
   background-color: var(--theme-color2);
+}
+
+/* 百度地图 */
+.maps-popup {
+  width: 100%;
+  height: 40%;
+}
+.bm-view {
+  border-radius: 10px;
+  height: 10rem;
+  overflow: hidden;
+  margin: auto;
+  border: 2px solid var(--border-color);
 }
 </style>

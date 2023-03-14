@@ -4,7 +4,7 @@
     :style="themeColor.color ? `background-color:${themeColor.color};` : ''"
   >
     <!-- 顶部导航 -->
-    <share-nav />
+    <share-nav class="top" />
     <!-- 背景 -->
     <div
       class="top animate__animated animate__fadeIn"
@@ -79,6 +79,10 @@ export default {
 </script>
 
 <style scoped>
+.top >>> .top-nav {
+  background-image: none;
+  border: none;
+}
 .event-view {
   width: 100%;
   min-height: 100vh;
