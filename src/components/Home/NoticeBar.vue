@@ -36,7 +36,11 @@ export default {
   border-radius: 10px;
 }
 .content {
+  width: 100%;
   padding-left: 0.2rem;
   font-size: 0.3rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>

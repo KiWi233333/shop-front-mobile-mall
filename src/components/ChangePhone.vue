@@ -127,6 +127,7 @@ export default {
       const res = this.isUser
         ? await getUpdateCode(this.newPhone, this.$store.getters.token)
         : await getLoginCode(this.userInfo.phone);
+      console.log(res.data);
       if (res.status === 200 && res.data.code === 20011) {
         Notify({
           type: "success",

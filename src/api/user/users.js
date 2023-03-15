@@ -218,9 +218,7 @@ export function getUpdateCode(phone, token) {
   return request({
     method: "get",
     url: `/users/updateTelCode/${phone}`,
-    headers: {
-      Authorization: token,
-    },
+    headers: { Authorization: token },
   });
 }
 

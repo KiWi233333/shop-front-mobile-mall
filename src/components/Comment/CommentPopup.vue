@@ -94,7 +94,7 @@ export default {
 
       // 功能
       showPopup: false,
-      isAnimate: false, // 控制动画
+      isAnimate: true, // 控制动画
     };
   },
   mounted() {
@@ -103,6 +103,7 @@ export default {
   methods: {
     // 获取评论子评论
     async reqGetItem() {
+      this.isAnimate = false;
       this.clearCommentObj(); // 清空状态
       const res = await getCommentSons(
         this.commentId,
@@ -112,14 +113,18 @@ export default {
         this.comment_child.splice(0); // 清空
         this.commentLength = 0;
         this.commentLength += res.data.data.length;
-        res.data.data.forEach((p) => {
+        res.data.data.forEach((p, i) => {
           this.comment_child.push(p);
           if (!p?.childComments) return;
+          if (res.data.data.length === i + 1) {
+            this.isAnimate = true;
+          }
           p?.childComments.filter((item) => {
             this.commentLength++;
-            item.content.replace(
-              /^@:$/,
-              `<span style='color:var(--bg-color2);'>@${item.content}:233</span>`
+            item.content = item.content.replace(
+              /(^@.*?:)/,
+              "<span class='at-comment'>$1</span>"
+              // "<span style='color:var(--tip-color2);'>$1</span>"
             );
             return item;
           });
@@ -210,8 +215,10 @@ export default {
     firstIndex() {
       if (this.commentNickName && this.firstIndex >= 0) {
         if (this.commentNickName === this.$store.state.userInfo?.nickname) {
-          this.placeText = "@自己";
+          this.commentText = "@自己:";
+          this.placeText = "@自己:";
         } else {
+          this.commentText = `@${this.commentNickName}:`;
           this.placeText = `@${this.commentNickName}`;
         }
       } else {
@@ -222,17 +229,25 @@ export default {
     secondIndex() {
       if (this.commentNickName && this.secondIndex >= 0) {
         if (this.commentNickName === this.$store.state.userInfo?.nickname) {
-          this.commentText = "@自己:";
+          this.placeText = this.commentText = "@自己:";
         } else {
-          this.commentText = `@${this.commentNickName}:`;
+          this.placeText = this.commentText = `@${this.commentNickName}:`;
         }
       } else {
         this.commentText = "";
       }
     },
+    // 评论对象清空
+    commentText(val) {
+      if (val.trim() === "") {
+        this.clearCommentObj();
+      }
+    },
+
     // 评论id
     commentId(newVal, oldVal) {
       if (newVal !== oldVal && newVal !== undefined) {
+        this.isAnimate = false;
         this.reqGetItem();
       }
     },

@@ -111,6 +111,7 @@ export default {
   display: flex;
   align-items: center;
   background-color: var(--theme-color3);
+  padding: 0.3rem;
 }
 .my-top .left {
   display: flex;

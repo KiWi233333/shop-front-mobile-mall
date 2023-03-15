@@ -86,8 +86,9 @@ export default {
   background-color: var(--theme-color2);
   backdrop-filter: blur(20px);
   padding: 0.3rem;
-  margin-top: 0.5rem;
+  margin-top: 0.3rem;
   padding-bottom: 0;
+  box-sizing: border-box;
 }
 
 span {

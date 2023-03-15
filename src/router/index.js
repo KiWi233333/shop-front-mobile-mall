@@ -18,6 +18,7 @@ import UserView from "@/views/second/UserView";
 import InfoView from "@/views/second/InfoView";
 import SigninView from "@/views/second/SigninView";
 import AddressView from "@/views/second/AddressView";
+import BillsView from "@/views/second/BillsView";
 // 商品详情
 import GoodsDetail from "@/views/goods/GoodsDetail.vue";
 // 评论
@@ -61,8 +62,8 @@ const routes = [
   },
   // 1.2 活动页面
   {
-    path: "/active",
     name: "active",
+    path: "/events",
     component: EventView,
     meta: {
       title: "活动",
@@ -71,8 +72,8 @@ const routes = [
   },
   // 2.分类页面
   {
-    path: "/category",
     name: "category",
+    path: "/category",
     component: CategoryView,
     meta: {
       title: "分类",
@@ -142,7 +143,7 @@ const routes = [
   },
   // 4.4 签到页面
   {
-    path: "/signin",
+    path: "/my/signin",
     name: "signin",
     component: SigninView,
     meta: {
@@ -184,7 +185,19 @@ const routes = [
       permission: true,
     },
   },
-  // 4.6 地址集合页面
+  // 4.6 账单页面
+  {
+    name: "bills",
+    path: "/my/bills",
+    component: BillsView,
+    meta: {
+      title: "收获地址",
+      lv: 2,
+      keepAlive: true,
+      permission: true,
+    },
+  },
+  // 4.7 地址集合页面
   {
     name: "address",
     path: "/address",

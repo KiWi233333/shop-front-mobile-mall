@@ -11,26 +11,26 @@
       @load="getAllAddressList"
     >
       <van-checkbox-group v-model="selectList">
-        <transition-group name="bottomRight" tag="div">
-          <!-- 地址卡片 -->
-          <address-card
-            class="v-card"
-            v-for="(p, i) in addressList"
-            :key="i + p.id"
-            :item="p"
-            @toEdit="toEdit"
-            @deleteAddressByIndex="deleteAddressByIndex"
-            :index="i"
-            v-bind="$attrs"
-          >
-            <van-checkbox
-              icon-size="0.5rem"
-              :name="i"
-              checked-color="var(--tip-color2)"
-              >选中
-            </van-checkbox>
-          </address-card>
-        </transition-group>
+        <!-- <transition-group name="sliceInZoomOut" tag="div"> -->
+        <!-- 地址卡片 -->
+        <address-card
+          class="v-card"
+          v-for="(p, i) in addressList"
+          :key="i + p.id"
+          :item="p"
+          @toEdit="toEdit"
+          @deleteAddressByIndex="deleteAddressByIndex"
+          :index="i"
+          v-bind="$attrs"
+        >
+          <van-checkbox
+            icon-size="0.5rem"
+            :name="i"
+            checked-color="var(--tip-color2)"
+            >选中
+          </van-checkbox>
+        </address-card>
+        <!-- </transition-group> -->
       </van-checkbox-group>
     </van-list>
     <!-- 按钮 -->
@@ -171,7 +171,8 @@
         :center="mapsAreas || '北京市 东城区'"
       />
       <div class="btn-group">
-        <button class="v-btn">确定</button>
+        <button class="v-btn v-cancel" @click="showMaps = false">取消</button>
+        <button class="v-btn" @click="showMaps = false">确定</button>
       </div>
     </van-popup>
 
@@ -223,7 +224,7 @@ export default {
       isEmpty: false,
       isEdit: false,
       // 百度地图
-      showMaps: true,
+      showMaps: false,
       mapsAreas: "",
       // 数据
       addressList: [],
@@ -243,7 +244,6 @@ export default {
 
     // 获取所有地址
     async getAllAddressList() {
-      this.addressList.splice(0); // 清空
       this.loading = true;
       // 请求默认地址
       // const first = await getDefaultAddress(this.$store.getters.token);
@@ -286,6 +286,7 @@ export default {
     async reqAddAddress() {
       const res = await putAddres(this.address, this.$store.getters.token);
       if (res.status === 200 && res.data.code === 20011) {
+        this.addressList.splice(0); // 清空
         this.getAllAddressList(); // 刷新
         Toast({ type: "success", position: "bottom", message: "添加成功！" });
       } else {
@@ -296,7 +297,6 @@ export default {
 
     // 加入单例编辑
     toEdit(item, i) {
-      // console.log(item);
       for (const key in item) {
         if (key === "isDefault") {
           this.$set(this.address, key, Boolean(item[key]));
@@ -514,13 +514,19 @@ export default {
 /* 百度地图 */
 .maps-popup {
   width: 100%;
-  height: 40%;
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .bm-view {
   border-radius: 10px;
-  height: 10rem;
+  width: 100%;
+  height: 80%;
   overflow: hidden;
   margin: auto;
   border: 2px solid var(--border-color);
+}
+.maps-popup .btn-group {
 }
 </style>

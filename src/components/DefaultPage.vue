@@ -1,6 +1,11 @@
 <template>
   <div class="view">
-    <top-nav :title="title" @click-left="$router.back()" :r-title="rtitle" />
+    <top-nav
+      :title="title"
+      @click-left="$router.back()"
+      :r-title="rtitle"
+      @click-right="clickRight"
+    />
     <div class="content">
       <!-- 内容 -->
       <slot name="default"></slot>
@@ -32,6 +37,11 @@ export default {
   },
   components: { TopNav },
   name: "DefaultPage",
+  methods: {
+    clickRight() {
+      this.$emit("clickRight");
+    },
+  },
 };
 </script>
 <style scoped>

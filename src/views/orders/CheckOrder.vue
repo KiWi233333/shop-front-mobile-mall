@@ -600,7 +600,7 @@ export default {
           if (this.isPayDone) {
             this.$toast({
               type: "success",
-              message: "支付成功！",
+              message: "支付成功!",
               forbidClick: true,
             });
             this.$router.replace({
@@ -713,10 +713,10 @@ export default {
         return "";
       } else {
         if (
-          this.purseInfo.points >=
-          currency(this.allPrice).add(this.allPostage)?.intValue
+          this.purseInfo.points >
+          (this.allPrice / 100 + this.allPostage) * 100
         ) {
-          return currency(this.finallyPrice?.intValue / 100);
+          return currency(this.allPrice / 100).add(this.allPostage);
         } else {
           return currency(this.purseInfo.points / 100);
         }

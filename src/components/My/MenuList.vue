@@ -49,6 +49,7 @@ export default {
 <style scoped>
 .MenuList {
   margin-top: 0.5rem;
+  padding: 0 0.3rem;
 }
 .lg-off {
   margin-top: 0.4rem;

@@ -163,7 +163,7 @@ export function deleteOrderById(id, token) {
  * @param {string} token
  * @returns
  */
-export function cancelOrderById(id, reason, token) {
+export function cancelOrderById(id, reason = "", token) {
   return request({
     method: "delete",
     url: `/orders/cancel/${id}`,

@@ -58,24 +58,17 @@ export function reChargeByValue(chargeType, rechargeAmount, token) {
 }
 /**
  * 查询用户账单
+ * @param {String} year
+ * @param {String} month
+ * @param {String} day
  * @param {string} token
- * @param {number} year
- * @param {number} month
- * @param {number} day
  * @returns
  */
-export function getBills(token, year, month, day) {
+export function getBills(year, month, token) {
   return request({
-    method: "put",
-    url: "/account/bill",
-    headers: {
-      Authorization: token,
-    },
-    data: {
-      year,
-      month,
-      day,
-    },
+    method: "get",
+    url: `/waller/bill/${year}/${month}`,
+    headers: { Authorization: token },
   });
 }
 

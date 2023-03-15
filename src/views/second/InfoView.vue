@@ -137,6 +137,7 @@ export default {
       const res = await updateBaseInfo(this.info, this.$store.getters.token);
       if (res.status === 200 && res.data.code === 20011) {
         this.$notify({ type: "success", message: " 修改成功！" });
+        this.isEdit = false;
       } else {
         this.$notify({ type: "warning", message: " 修改失败！" });
       }

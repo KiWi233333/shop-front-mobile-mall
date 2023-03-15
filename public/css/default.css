@@ -133,6 +133,12 @@ small {
   overflow: hidden;
 }
 
+/* @评论 */
+.at-comment {
+  color: var(--tip-color);
+  font-size: 0.3rem;
+}
+
 /* 按钮 */
 .v-btn {
   cursor: pointer;

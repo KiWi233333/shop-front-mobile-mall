@@ -73,7 +73,6 @@ export function putAddres(addressInfo, token) {
  * @param {string} token 
  * @param {object} updateInfo 
  *    id: 0,收货地址id
-      uid: 0,用户id
       name: "string",
       phone: "string",
       province: "string",
@@ -83,12 +82,22 @@ export function putAddres(addressInfo, token) {
       isDefault: 0,
  * @returns 
  */
-export function updateAddress({ id, uid, name, phone, province, city, district, address, isDefault, token }) {
+export function updateAddress(item, token) {
+  const { uid, id, name, phone, province, city, district, address, isDefault } = item;
   return request({
     method: "put",
     url: `/address/update/${id}`,
     headers: { Authorization: token },
-    data: { uid, name, phone, province, city, district, address, isDefault: +isDefault },
+    data: {
+      uid,
+      name,
+      phone,
+      province,
+      city,
+      district,
+      address,
+      isDefault: +isDefault,
+    },
   });
 }
 

@@ -76,7 +76,7 @@
         v-show="active === 3"
       />
       <!-- 按钮 -->
-      <div class="btn-group" v-show="active !== 2">
+      <div class="btns" v-show="active !== 2">
         <input
           @click="showInfoPanel = false"
           type="button"
@@ -121,6 +121,7 @@ export default {
       isUpdatePwd: false,
 
       option: [
+        // 修改昵称
         {
           title: "昵称",
           value: "nickname",
@@ -146,6 +147,7 @@ export default {
             }
           },
         },
+        // 修改账号
         {
           title: "账号",
           value: "username",
@@ -176,11 +178,13 @@ export default {
             }
           },
         },
+        // 修改手机号
         {
           title: "手机号",
           value: "phone",
           clickFn: async () => {},
         },
+        // 修改密码
         {
           title: "密码",
           value: "",
@@ -215,7 +219,7 @@ export default {
     };
   },
   mounted() {
-    // this.checkIsUpdateUsername();
+    this.checkIsUpdateUsername();
   },
   methods: {
     // 提交请求
@@ -244,11 +248,15 @@ export default {
 
     // 验证是否修改过用户名
     async checkIsUpdateUsername() {
-      const res = await getIsNotUpdateUsername(this.$store.getters.token);
-      if (res.status !== 200 || !res.data.code === 20011) {
-        this.isDisUsername = true;
-      }
-      console.log(res.data);
+      getIsNotUpdateUsername(this.$store.getters.token)
+        .then((res) => {
+          if (res.status === 200 || res.data.code === 20011) {
+            this.isDisUsername = true;
+          }
+        })
+        .catch(() => {
+          this.isDisUsername = true;
+        });
     },
 
     // 打开弹窗
@@ -338,15 +346,17 @@ export default {
   padding: 0.2rem 0.4rem;
   margin: 0.2rem 0;
 }
-.contain .btn-group {
+.btns {
   width: 100%;
   margin: 0.3rem 0;
+  display: flex;
+  justify-content: space-around;
 }
 
 .code .v-btn {
   font-size: 0.2rem;
   box-shadow: none;
-  padding: 0 0.5rem;
+  padding: 0.1rem 0.2rem;
   opacity: 0.2rem;
 }
 </style>
