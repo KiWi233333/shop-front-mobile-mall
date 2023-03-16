@@ -2,7 +2,7 @@
   <div class="view">
     <top-nav
       :title="title"
-      @click-left="$router.back()"
+      @click-left="toBack()"
       :r-title="rtitle"
       @click-right="clickRight"
     />
@@ -40,6 +40,18 @@ export default {
   methods: {
     clickRight() {
       this.$emit("clickRight");
+    },
+    toBack() {
+      if (this.$route.params.animate) {
+        this.$router.back();
+      } else {
+        this.$router.push({
+          name: "home",
+          params: {
+            animate: "forward",
+          },
+        });
+      }
     },
   },
 };

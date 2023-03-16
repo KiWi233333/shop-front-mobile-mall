@@ -78,7 +78,6 @@ export default {
 </script>
 <style scoped>
 .CardGroup {
-  animation-delay: calc(var(--router-delay) / 1.5);
   display: flex;
   align-items: center;
   margin: 0.3rem 0rem;

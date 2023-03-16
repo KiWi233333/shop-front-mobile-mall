@@ -45,6 +45,7 @@ export default {
   display: flex;
   flex-direction: column;
   background-color: var(--bg-color6);
+  min-height: 100vh;
 }
 .bg {
   position: absolute;

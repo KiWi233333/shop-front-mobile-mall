@@ -201,6 +201,7 @@ export default {
 }
 /* 下拉 */
 .toDown-leave-active {
+  z-index: 2000;
   transition: all calc(var(--router-delay)) ease-in;
   position: absolute;
   transform: scale(0.8);

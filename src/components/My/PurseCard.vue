@@ -1,10 +1,7 @@
 <template>
-  <div
-    class="animate__animated animate__fadeIn v-card purse-card"
-    v-show="purseInfo"
-  >
+  <div class="v-card purse-card" v-show="purseInfo">
     <!-- 积分 -->
-    <div class="v-click top animate__animated animate__slideInUp">
+    <div class="v-click animate__animated animate__slideInUp top">
       <div class="left">
         <img class="bg" src="@/assets/image/icon/balance_icon.png" />
       </div>
@@ -104,6 +101,7 @@ span {
   backdrop-filter: blur(20px);
   border-radius: 16px 16px 0 0;
   border: 1px solid var(--bg-color3);
+  animation-timing-function: cubic-bezier(0.35, 0.225, 0.035, 1.035);
 }
 .top .left .bg {
   margin: 0.1rem;

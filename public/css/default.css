@@ -271,10 +271,16 @@ label {
   font-weight: 600;
   font-size: 0.36rem;
 }
-/*  */
+/* placeholder */
 .v-input::placeholder,
 .v-input >>> .van-field__control::placeholder {
   color: var(--text-color3);
+}
+
+/* .van-dialog */
+.van-dialog {
+  width: 80vw;
+  font-size: 0.42rem;
 }
 /* 滚动条 */
 /* 设置滚动条的样式 */

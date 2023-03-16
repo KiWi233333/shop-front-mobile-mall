@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="animate__animated animate__fadeIn my-top">
+    <div class="my-top">
       <div class="left" v-if="isLoginState" @click="showIconPanel = true">
         <van-image
           class="img"
@@ -164,6 +164,7 @@ export default {
 }
 .my-top .signin {
   position: absolute;
+  animation: 6s rubberBand2 0.3s infinite;
   right: 0.9rem;
   padding: 0.1rem 0.6rem;
   background-color: var(--tip-color2);
@@ -173,10 +174,75 @@ export default {
   font-size: 0.4rem;
 }
 .tolg-btn {
-  animation: 0.7s rubberBand 0.4s ease;
+  animation: 0.6s rubberBand 0.3s ease;
   width: 80%;
   margin: 0.2rem 0;
   padding: 0.2rem 0.1rem;
+}
+
+@keyframes rubberBand2 {
+  0% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+  }
+  90% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+  }
+  91.5% {
+    -webkit-transform: scale3d(1.25, 0.75, 1);
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  93% {
+    -webkit-transform: scale3d(0.75, 1.25, 1);
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  94.5% {
+    -webkit-transform: scale3d(1.15, 0.85, 1);
+    transform: scale3d(1.15, 0.85, 1);
+  }
+  96% {
+    -webkit-transform: scale3d(0.95, 1.05, 1);
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  97.8% {
+    -webkit-transform: scale3d(1.05, 0.95, 1);
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  100% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+  }
+}
+@keyframes rubberBand {
+  0% {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+  }
+  30% {
+    -webkit-transform: scale3d(1.25, 0.75, 1);
+    transform: scale3d(1.25, 0.75, 1);
+  }
+  40% {
+    -webkit-transform: scale3d(0.75, 1.25, 1);
+    transform: scale3d(0.75, 1.25, 1);
+  }
+  50% {
+    -webkit-transform: scale3d(1.15, 0.85, 1);
+    transform: scale3d(1.15, 0.85, 1);
+  }
+  65% {
+    -webkit-transform: scale3d(0.95, 1.05, 1);
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  75% {
+    -webkit-transform: scale3d(1.05, 0.95, 1);
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  to {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+  }
 }
 </style>
   

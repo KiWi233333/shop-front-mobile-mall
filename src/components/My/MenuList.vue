@@ -1,5 +1,5 @@
 <template>
-  <div class="animate__animated animate__fadeIn MenuList">
+  <div class="MenuList">
     <menu-item
       v-for="(p, i) in option"
       :title="p.title"
