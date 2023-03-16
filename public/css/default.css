@@ -26,7 +26,9 @@
   /* 边框 */
   --border-color: rgba(140, 140, 140, 0.2);
   /* 延迟 */
-  --router-delay: 0.3s;
+  --router-delay: 0.22s;
+  /* 曲线 */
+  --cubic-bezier: cubic-bezier(0.86, -0.42, 0.105, 1.425);
 }
 body,
 html {
@@ -46,6 +48,7 @@ small {
 }
 * {
   box-sizing: border-box;
+  transition-timing-function: var(--cubic-bezier);
 }
 /* 初始窗口大小边距 */
 .wind-init {
@@ -67,6 +70,7 @@ small {
   width: 50%;
 }
 .animate__animated {
+  animation-timing-function: var(--cubic-bezier);
   animation-delay: calc(var(--router-delay) / 2);
 }
 .flex-center-center,
@@ -218,6 +222,11 @@ label {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+/* 选框 */
+.van-checkbox__icon,
+.van-radio__icon {
+  font-size: 0.46rem;
 }
 
 /* 购物 */

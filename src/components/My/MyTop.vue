@@ -107,10 +107,10 @@ export default {
   <style scoped>
 /* 头部个人信息 */
 .my-top {
-  margin-top: 5vh;
+  margin-top: 4vh;
   display: flex;
   align-items: center;
-  background-color: var(--theme-color3);
+  background-color: transparent;
   padding: 0.3rem;
 }
 .my-top .left {

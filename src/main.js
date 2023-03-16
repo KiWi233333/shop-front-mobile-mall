@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue"; // App.js
 import router from "./router"; // vue-router
 import store from "./store"; // vuex
+import * as filters from "@/util/filters";
 import "amfe-flexible"; // 移动端适配
 import "@/assets/css/animate.min.css"; // 动画库
 import BaiduMap from "vue-baidu-map";
@@ -60,6 +61,10 @@ import {
   NoticeBar,
 } from "vant";
 
+// 全局过滤器
+for (const key in filters) {
+  Vue.filter(key, filters[key]);
+}
 // van按需t注册组件
 Vue.use(Button)
   .use(Tabbar)

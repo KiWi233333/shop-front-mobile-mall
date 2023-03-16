@@ -147,9 +147,9 @@ export default {
             }
           },
         },
-        // 修改账号
+        // 修改用户名
         {
-          title: "账号",
+          title: "用户名",
           value: "username",
           clickFn: async () => {
             if (this.user.username === this.userInfo.username) {
@@ -169,6 +169,7 @@ export default {
               this.showInfoPanel = false;
               this.$notify({ type: "success", message: "修改成功！" });
               this.$set(this.userInfo, "username", this.user.username);
+              this.$store.commit("loginOut");
               this.$router.push({
                 name: "login",
                 params: { animate: "forward", toBack: true },
