@@ -118,6 +118,7 @@ export default {
     },
     // 外改内 全选
     onChangeSelectAll() {
+      this.$refs.cardList.selectList.splice(0);
       if (this.selectAll) {
         this.cartList.forEach((p, i) => {
           this.$refs.cardList.selectList.push(i);
