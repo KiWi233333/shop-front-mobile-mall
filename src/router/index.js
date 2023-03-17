@@ -191,7 +191,19 @@ const routes = [
     path: "/my/bills",
     component: BillsView,
     meta: {
-      title: "收获地址",
+      title: "账单",
+      lv: 2,
+      keepAlive: true,
+      permission: true,
+    },
+  },
+  // 4.6.2 账单详细页
+  {
+    name: "billsdetail",
+    path: "/my/bills/detial",
+    component: require("@/views/second/BillsDetailView"),
+    meta: {
+      title: "账单详细",
       lv: 2,
       keepAlive: true,
       permission: true,

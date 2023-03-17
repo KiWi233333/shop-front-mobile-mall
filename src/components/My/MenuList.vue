@@ -18,10 +18,8 @@ export default {
   data() {
     return {
       option: [
-        // { title: "账单", targetName: "bill" },
-        { title: "地址管理", targetName: "address" },
-        { title: "个人信息", targetName: "user" },
-        { title: "基本信息", targetName: "userinfo" },
+        { title: "账号与安全", targetName: "user" },
+        { title: "个人信息", targetName: "userinfo" },
         { title: "设置", targetName: "option" },
       ],
     };

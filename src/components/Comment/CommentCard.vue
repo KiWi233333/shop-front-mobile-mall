@@ -42,7 +42,10 @@
       </div>
       <div class="lable">
         <!-- 删除自己的评论 -->
-        <span v-if="comment?.isMe" class="text" @click="deleteOrderComment"
+        <span
+          v-if="comment?.isMe && !disableComment"
+          class="text"
+          @click="deleteOrderComment"
           >删除</span
         >
         <div class="left" @click="addCommentPick">

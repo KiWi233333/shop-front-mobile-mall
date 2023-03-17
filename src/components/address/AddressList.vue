@@ -11,26 +11,26 @@
       @load="getAllAddressList"
     >
       <van-checkbox-group v-model="selectList">
-        <!-- <transition-group name="sliceInZoomOut" tag="div"> -->
-        <!-- 地址卡片 -->
-        <address-card
-          class="v-card"
-          v-for="(p, i) in addressList"
-          :key="i + p.id"
-          :item="p"
-          @toEdit="toEdit"
-          @deleteAddressByIndex="deleteAddressByIndex"
-          :index="i"
-          v-bind="$attrs"
-        >
-          <van-checkbox
-            icon-size="0.5rem"
-            :name="i"
-            checked-color="var(--tip-color2)"
-            >选中
-          </van-checkbox>
-        </address-card>
-        <!-- </transition-group> -->
+        <transition-group name="sliceInZoomOut" tag="div">
+          <!-- 地址卡片 -->
+          <address-card
+            class="v-card"
+            v-for="(p, i) in addressList"
+            :key="i + p.id"
+            :item="p"
+            @toEdit="toEdit"
+            @deleteAddressByIndex="deleteAddressByIndex"
+            :index="i"
+            v-bind="$attrs"
+          >
+            <van-checkbox
+              icon-size="0.5rem"
+              :name="i"
+              checked-color="var(--tip-color2)"
+              >选中
+            </van-checkbox>
+          </address-card>
+        </transition-group>
       </van-checkbox-group>
     </van-list>
     <!-- 按钮 -->

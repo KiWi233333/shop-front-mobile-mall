@@ -109,12 +109,17 @@ export default {
       this.$emit("changeSelectArr", arr, this.cartList);
     },
 
+    /**
+     * @更新全部购物车
+     */
     updataShopcart() {
       this.cartList.splice(0);
       this.getAllShopCartList();
     },
 
-    // 删除单一购物车
+    /**
+     * @删除单一购物车
+     */
     async deleteCartByOne(id, i) {
       this.$toast.loading({
         message: "删除中...",

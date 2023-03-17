@@ -263,7 +263,7 @@ export default {
     // 修改规格
     async changeShorCartProps(info) {
       this.$toast.loading({ forbidClick: true, duration: 0 });
-
+      this.show = false;
       // 修改属性
       const res = await updateShopCartProps(
         this.cartId,
@@ -278,7 +278,6 @@ export default {
       } else {
         this.$toast.fail("修改失败！");
       }
-      this.show = false;
     },
 
     // 获取图片

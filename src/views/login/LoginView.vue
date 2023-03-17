@@ -180,11 +180,11 @@ export default {
       let res = await loginByPwd(this.username, this.password);
       if (res.status === 200 && res.data.code === 20011) {
         // 记住密码
-        if (this.savePwd) {
-          localStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
-        } else {
-          sessionStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
-        }
+        // if (this.savePwd) {
+        //   localStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
+        // } else {
+        //   sessionStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
+        // }
         this.reqUserInfo(res.data.data);
         // 查询用户信息
         Notify({ type: "success", message: "登录成功！" });
@@ -201,17 +201,14 @@ export default {
     // 2）验证码登录
     async toLoginByReg() {
       // 验证码登录
-      const res = await loginByCode({
-        phone: this.username,
-        code: this.code,
-      });
+      const res = await loginByCode(this.username, this.code);
       if (res.status === 200 && res.data?.code === 20011) {
-        // 记住密码
-        if (this.savePwd) {
-          localStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
-        } else {
-          sessionStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
-        }
+        // // 记住密码
+        // if (this.savePwd) {
+        //   localStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
+        // } else {
+        //   sessionStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
+        // }
         // 查询用户信息
         this.reqUserInfo(res.data.data);
         Notify({ type: "success", message: "登录成功！" });
@@ -315,6 +312,7 @@ export default {
     // 跳转
     toView() {
       this.$store.commit("setLoginState", true); // vuex保存登录状态
+      this.$store.commit("setLoginState", true); // vuex保存登录状态
 
       if (this.$route.params.toBack) {
         this.$router.back();
@@ -331,7 +329,7 @@ export default {
       // 添加用户登录状态
       const time = new Date().getTime(); // 获取时间戳
       localStorage.setItem("loginTime", time);
-      this.$store.commit("setToken", token);
+      this.$store.commit("setToken", { token, savePwd: this.savePwd });
       this.$store.commit("setLoginTime", time);
       // 检查用户
       checkUser(token).then((res) => {

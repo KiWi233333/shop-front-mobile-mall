@@ -353,7 +353,7 @@ export default {
       return (this.isError = true);
     }
     this.orderType = q.orderType || ""; // 订单类型
-    // 1）读取已经传入地址
+    // 1）订单页进入
     if (q.isOrder && q.info.orderId) {
       this.getAddressList(); // 获取列表
       this.checkOrderType(); // 确定订单状态
@@ -374,7 +374,8 @@ export default {
           (goods.combo || "") +
           (goods.edition || "");
         this.goodsList.push(goods);
-        this.allPrice = currency(this.allPrice).add(goods.unitPrice);
+        this.allPostage = currency(this.allPostage).add(goods.postage);
+        this.allPrice = currency(this.allPrice).add(goods.price);
       });
       for (const key in q.info) {
         this.$set(this.info, key, q.info[key]);

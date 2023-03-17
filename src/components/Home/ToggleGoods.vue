@@ -19,6 +19,8 @@
       line-width="1.6rem"
       color="var(--theme-color2)"
       animated
+      swipeable
+      lazy-render
     >
       <!-- 四种商品栏目 -->
       <van-tab v-for="(p, i) in option" :key="i">

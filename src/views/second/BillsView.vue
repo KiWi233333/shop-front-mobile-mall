@@ -14,7 +14,12 @@
             <span class="all-in">&emsp;收入:￥{{ m.allIn | price }}</span>
           </div>
           <!-- 单个账单 -->
-          <div class="bill" v-for="p in billList" :key="p.id">
+          <div
+            class="bill"
+            v-for="p in billList"
+            :key="p.id"
+            @click="toDetailView(p.id)"
+          >
             <img :src="p.icon" class="icon" />
             <div class="center">
               <span class="name">{{ p.name }}：</span>
@@ -124,6 +129,18 @@ export default {
       }
       this.loading = false;
     },
+
+    // 去到详情页面
+    toDetailView() {
+      this.$router.push({
+        name: "billsdetail",
+        params: {
+          animate: "forward",
+        },
+      });
+    },
+
+    // 获取icon类型
     getTypeIcon(type) {
       switch (type) {
         case "钱包充值":

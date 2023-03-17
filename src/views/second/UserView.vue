@@ -73,6 +73,7 @@
         type="password"
         left-icon="closed-eye"
         class="v-input"
+        :disabled="disabledUpdatePwd"
         v-show="active === 3"
       />
       <!-- 按钮 -->
@@ -118,7 +119,7 @@ export default {
       },
       isDisUsername: false, // 是否修改过用户名
       showInfoPanel: false,
-      isUpdatePwd: false,
+      disabledUpdatePwd: true, // 是否可修改
 
       option: [
         // 修改昵称
@@ -190,9 +191,13 @@ export default {
           title: "密码",
           value: "",
           clickFn: async () => {
-            if (!this.isUpdatePwd) {
-              return this.$notify({ type: "danger", message: "旧密码错误!" });
+            if (this.disabledUpdatePwd) {
+              return this.$notify({ type: "danger", message: " 旧密码错误！" });
             }
+            if (this.user.newPwd === "")
+              return this.$toast(" 新密码不能为空！");
+            if (this.user.newPwd === this.user.oldPwd)
+              return this.$toast(" 新旧密码一致！");
             const res = await changeUserPwd(
               this.user.newPwd.trim(),
               this.user.oldPwd.trim(),
@@ -211,7 +216,7 @@ export default {
                 },
               });
             } else {
-              this.$notify({ type: "danger", message: "修改密码失败！" });
+              this.$notify({ type: "danger", message: " 修改密码失败！" });
             }
           },
         },
@@ -241,10 +246,13 @@ export default {
         this.userInfo.username.trim(),
         this.user.oldPwd.trim()
       );
-      if (res.status !== 200 || !res.data.code === 20011) {
-        this.$notify({ type: "danger", message: "旧密码错误！" });
+      if (res.status !== 200 || res.data.code !== 20011) {
+        this.$notify({ type: "danger", message: " 旧密码错误！" });
+      } else {
+        // 修改token
+        this.$store.commit("setToken", { token: res.data.data });
       }
-      this.isUpdatePwd = res.data.code === 20011;
+      this.disabledUpdatePwd = res.data.code !== 20011;
     },
 
     // 验证是否修改过用户名

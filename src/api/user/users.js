@@ -31,14 +31,12 @@ export function getRegisterCode(phone) {
   });
 }
 /**
- *  用户登录
- *@userInfo {
-   "phone": ,/ username
-   "code": ,/"password"
-   "loginType": 1(验证码) 0(用户名密码)
-  }
- **/
-export function loginByCode({ phone, code }) {
+ * 用户通过验证码登录
+ * @param {number} phone
+ * @param {number} code
+ * @returns
+ */
+export function loginByCode(phone, code) {
   return request({
     method: "post",
     url: "/users/login",
@@ -53,17 +51,17 @@ export function loginByCode({ phone, code }) {
  * 用户登录-密码
  * @param {*} username
  * @param {*} password
- * @param {*} loginType 到来类型默认0
+ * @param {*} loginType 密码登录0
  * @returns
  */
-export function loginByPwd(username, password, loginType = 0) {
+export function loginByPwd(username, password) {
   return request({
     method: "post",
     url: "/users/login",
     data: {
       username,
       password,
-      loginType,
+      loginType: 0,
     },
   });
 }

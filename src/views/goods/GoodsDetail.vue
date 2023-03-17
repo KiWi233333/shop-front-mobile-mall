@@ -54,7 +54,7 @@
                   item?.goods?.postage ? `${item.goods.postage} 元` : "免运费"
                 }}</span
               >
-              <span class="lable">配送至：{{ "市" }}</span>
+              <span class="lable">急速发货</span>
             </div>
             <van-icon name="arrow" />
           </div>
@@ -93,8 +93,6 @@
           />
         </div>
       </div>
-      <!-- 评论弹窗 -->
-      <!-- <comment-popup /> -->
 
       <!-- 商品详情 -->
       <div class="detail-info">
@@ -658,6 +656,7 @@ export default {
 
 <style scoped>
 .goods-detail {
+  background-color: var(--bg-color6);
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -743,13 +742,13 @@ export default {
 .lable-group .box {
   cursor: pointer;
   display: inline-block;
-  max-width: calc(100% - 4em);
+  max-width: calc(100% - 1.6rem);
   color: var(--text-color3);
   background-color: var(--bg-color5);
   border-radius: 0.4em;
   padding: 0.08rem 0.15rem;
   font-size: 0.25rem;
-  text-overflow: clip;
+  text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -761,12 +760,14 @@ export default {
 /* 商品详情 */
 .detail-info {
   width: 100%;
+  padding: 0 0.3rem;
+  border-radius: 10px;
 }
 .detail-info .title {
   text-align: center;
 
   padding: 0 0.4rem;
-  margin-bottom: 0.3rem;
+  margin: 0.3rem 0;
   color: var(--border-color);
 }
 .detail-info .title span {
@@ -778,10 +779,14 @@ export default {
 .detail-info .label1 {
   width: 100%;
   text-align: center;
-  box-shadow: var(--shadow-color3);
-  margin-bottom: 0.5rem;
+  /* box-shadow: var(--shadow-color3); */
+  margin-bottom: 0.4rem;
+  border-radius: 8px;
+  background-color: var(--theme-color);
 }
 .detail-info .img {
   width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
 }
 </style>

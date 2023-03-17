@@ -16,6 +16,7 @@
 </template>
 <script>
 import { getEventActives, getResourImageByName } from "@/api/res";
+import { asyncCacheData } from "@/util/cache";
 export default {
   name: "SwipeCard",
   data() {
@@ -23,17 +24,14 @@ export default {
       eventData: [],
     };
   },
-  mounted() {
-    // 请求活动
-    (async () => {
-      const res = await getEventActives();
-      if (res.data.code === 20011) {
-        res.data.data.forEach((p) => {
-          p.icon = getResourImageByName(p.icon);
-          this.eventData.push(p);
-        });
-      }
-    })();
+  created() {
+    // 获取活动
+    asyncCacheData(getEventActives, {}, "eventData").then((list) => {
+      list.forEach((p) => {
+        p.icon = getResourImageByName(p.icon);
+        this.eventData.push(p);
+      });
+    });
   },
   methods: {
     toEventView(p) {

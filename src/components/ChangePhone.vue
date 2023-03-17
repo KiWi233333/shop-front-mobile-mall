@@ -41,7 +41,7 @@
         type="tel"
         size="11"
         left-icon="label-o"
-        placeholder=" 输入手机号"
+        placeholder=" 输入新的手机号"
         class="v-input code-input"
         :rules="[{ required: true }]"
       />
@@ -86,7 +86,6 @@ import {
   getUpdateCode,
 } from "@/api/user/users";
 import { copyTextAsync } from "@/util/copy";
-import { Notify, Toast } from "vant";
 import { mapState } from "vuex";
 export default {
   name: "ChangePhone",
@@ -119,7 +118,11 @@ export default {
         return;
       }
       if (!this.phoneReg.test(this.newPhone) && this.isUser) {
-        return Notify("手机号格式错误！");
+        return this.$toast("手机号格式错误！");
+      }
+
+      if (this.userInfo.phone === this.newPhone) {
+        return this.$toast("新旧手机号不能一致！");
       }
       this.codeBtnInit(); // 获取按钮状态
 
@@ -127,16 +130,16 @@ export default {
       const res = this.isUser
         ? await getUpdateCode(this.newPhone, this.$store.getters.token)
         : await getLoginCode(this.userInfo.phone);
-      console.log(res.data);
       if (res.status === 200 && res.data.code === 20011) {
-        Notify({
+        this.$notify({
           type: "success",
           message: `获取成功！验证码为：\n${res.data.data}`,
           duration: 5000,
         });
+        // 剪切板
         copyTextAsync(res.data.data)
           .then(() => {
-            Toast("自动复制到剪切板！");
+            this.$toast("自动复制到剪切板！");
           })
           .catch();
         if (!this.isUser) {
@@ -147,7 +150,7 @@ export default {
           this.newCode = res.data.data; // 自动填写
         }
       } else {
-        Notify({
+        this.$notify({
           type: "danger",
           message: `此手机号已被绑定！`,
         });
@@ -157,18 +160,21 @@ export default {
     // 2) 验证码登录
     async toLoginByReg() {
       // 验证码登录验证
-      const res = await loginByCode({
-        phone: this.userInfo.phone,
-        code: this.oldCode,
-      });
+      const res = await loginByCode(this.userInfo.phone, this.oldCode);
       if (res.status === 200 && res.data.code === 20011) {
-        localStorage.setItem(this.$store.state.TOKEN_NAME, res.data.data);
         this.isUser = true; // 登录成功
-        Notify({ type: "success", message: `验证成功！`, duration: 1000 });
+        this.$notify({
+          type: "success",
+          message: `验证成功！`,
+          duration: 1000,
+        });
+        // 修改token
+        this.$store.commit("setToken", { token: res.data.data });
       } else {
-        Notify({ type: "danger", message: "验证码错误！" });
+        this.$notify({ type: "danger", message: "验证码错误！" });
       }
     },
+
     // 3) 更新手机号
     async updatePhone() {
       const res = await updatePhone(
@@ -176,13 +182,14 @@ export default {
         this.newCode,
         this.$store.getters.token
       );
+      // console.log(res.data);
       if (res.status === 200 && res.dat.code === 20011) {
-        Notify({ type: "success", message: "修改成功！" });
+        this.$notify({ type: "success", message: "修改成功！" });
         this.$emit("input", false);
         this.$set(this.userInfo, "phone", this.newPhone);
         this.init();
       } else {
-        Notify({ type: "danger", message: "修改失败！" });
+        this.$notify({ type: "danger", message: "修改失败！" });
       }
     },
 

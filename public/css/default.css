@@ -299,23 +299,27 @@ label {
 }
 
 /* 弹出框 */
-.popup-enter-active {
-  transform-origin: -22% -22%;
-  animation: 0.3s zoomIn cubic-bezier(0.82, -0.27, 0.17, 1.23);
-}
+.popup-enter-active,
 .popup-leave-active {
-  transform-origin: -22% -22%;
-  animation: 0.3s zoomIn cubic-bezier(0.83, -0.27, 0.17, 1.23) reverse;
+  transition: all calc(var(--router-delay) * 2) var(--cubic-bezier);
 }
-
+.popup-enter {
+  transition: all calc(var(--router-delay) * 2) var(--cubic-bezier);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.4);
+}
+.popup-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.4);
+}
 /* Toast */
 .toast-enter-active {
   transform-origin: -22% -22%;
-  animation: 0.3s zoomIn cubic-bezier(0.82, -0.27, 0.17, 1.23);
+  animation: 0.3s zoomIn var(--cubic-bezier);
 }
 .toast-leave-active {
   transform-origin: -22% -22%;
-  animation: 0.4s fadeIn cubic-bezier(0.83, -0.27, 0.17, 1.23) reverse;
+  animation: calc(var(--router-delay) * 2) fadeIn ease reverse;
 }
 
 /* 上进下出 */
@@ -332,7 +336,7 @@ label {
 /* 下进右出 */
 .bottomRight-enter-active,
 .bottomRight-leave-active {
-  transition: all 0.4s ease;
+  transition: all calc(var(--router-delay) * 2) ease;
 }
 .bottomRight-enter {
   transition: all 0.5s;
@@ -348,7 +352,7 @@ label {
 /* 下进右出 */
 .item-enter-active,
 .item-leave-active {
-  transition: all 0.4s ease;
+  transition: all calc(var(--router-delay) * 2) ease;
 }
 .item-enter {
   transition: all 0.5s;
@@ -365,7 +369,7 @@ label {
 .sliceInZoomOut-enter-active,
 .sliceInZoomOut-leave-active {
   /* float: left; */
-  transition: all 0.4s ease;
+  transition: all calc(var(--router-delay) * 2) ease;
 }
 .sliceInZoomOut-enter {
   transition: all 0.5s;
@@ -380,10 +384,10 @@ label {
 /* 内凹下出 */
 .resliceInZoomOut-enter-active,
 .resliceInZoomOut-leave-active {
-  transition: all 0.4s ease;
+  transition: all calc(var(--router-delay) * 2) ease;
 }
 .resliceInZoomOut-enter {
-  transition: all 0.4s;
+  transition: all calc(var(--router-delay) * 2);
   opacity: 0;
   transform: translateY(-50%) scale(0.7);
 }

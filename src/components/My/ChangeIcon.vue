@@ -98,7 +98,9 @@ export default {
 
     // 图片
     open() {
-      this.$set(this.imgList, [0], { url: this.userIcon });
+      if (this.userIcon) {
+        this.$set(this.imgList, [0], { url: this.userIcon });
+      }
     },
     // 文件大小
     overSizeFile() {
@@ -108,7 +110,11 @@ export default {
   computed: {
     ...mapState(["userInfo"]),
     userIcon() {
-      return getResourImageByName(this.userInfo?.icon);
+      if (this.userInfo?.icon) {
+        return getResourImageByName(this.userInfo.icon);
+      } else {
+        return "";
+      }
     },
   },
   watch: {

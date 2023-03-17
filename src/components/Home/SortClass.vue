@@ -19,6 +19,7 @@
 <script>
 import { getFirstSortList } from "@/api/good/good";
 import { getResourImageByName } from "@/api/res";
+import { asyncCacheData } from "@/util/cache";
 export default {
   name: "SortClass",
   data() {
@@ -26,10 +27,13 @@ export default {
       firstSortList: [],
     };
   },
-  async mounted() {
-    // 获取icons
-    const res = await getFirstSortList();
-    this.firstSortList = res.data.data;
+  mounted() {
+    // 设置前置缓存
+    asyncCacheData(getFirstSortList, this.firstSortList, "firstSortList").then(
+      (list) => {
+        this.firstSortList = list;
+      }
+    );
   },
   methods: {
     // 跳转到分类页面
