@@ -1,4 +1,4 @@
-<template>
+<template :keepAlive="true">
   <van-swipe
     class="v-click v-card home-swiper"
     :autoplay="6000"
@@ -10,7 +10,7 @@
       v-for="(p, i) in eventData"
       :key="i"
     >
-      <img v-lazy="p.icon" />
+      <img v-lazy="getImgSrc(p.icon)" />
     </van-swipe-item>
   </van-swipe>
 </template>
@@ -26,12 +26,11 @@ export default {
   },
   created() {
     // 获取活动
-    asyncCacheData(getEventActives, {}, "eventData").then((list) => {
-      list.forEach((p) => {
-        p.icon = getResourImageByName(p.icon);
-        this.eventData.push(p);
-      });
-    });
+    asyncCacheData(this.eventData, getEventActives, {}, "eventData").then(
+      (list) => {
+        this.eventData = list;
+      }
+    );
   },
   methods: {
     toEventView(p) {
@@ -44,6 +43,10 @@ export default {
           event: p,
         },
       });
+    },
+
+    getImgSrc(icon) {
+      return getResourImageByName(icon);
     },
   },
 };

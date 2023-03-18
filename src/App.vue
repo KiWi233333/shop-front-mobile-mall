@@ -30,19 +30,24 @@ export default {
     // 导航栏显示
     this.isNavBar = !(this.$route.meta.lv !== 1);
     // 验证用户登录状态
-    const token =
-      localStorage.getItem(this.$store.state.TOKEN_NAME) ||
-      sessionStorage.getItem(this.$store.state.TOKEN_NAME);
-    if (!token) return;
-
+    const locationToken =
+      localStorage.getItem(this.$store.state.TOKEN_NAME) || "";
+    const sessionToken =
+      sessionStorage.getItem(this.$store.state.TOKEN_NAME) || "";
+    if (locationToken === "" || sessionToken === "") return;
+    let token = locationToken || sessionToken;
     // 验证token
     checkUser(token)
       .then((res) => {
         if (res.data.code === 20011) {
           // 初始化store
           this.$store.commit("setUserInfo", res.data.data);
-          this.$store.commit("setLoginState", res.data.code === 20011);
-          this.$store.commit("setToken", token);
+          // 登录状态
+          this.$store.commit("setLoginState", true);
+          this.$store.commit("setToken", {
+            token,
+            savePwd: locationToken !== "",
+          });
           this.$store.commit(
             "setLoginTime",
             +localStorage.getItem("loginTime")

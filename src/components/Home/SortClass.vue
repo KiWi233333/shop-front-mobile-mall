@@ -27,13 +27,16 @@ export default {
       firstSortList: [],
     };
   },
-  mounted() {
+  created() {
     // 设置前置缓存
-    asyncCacheData(getFirstSortList, this.firstSortList, "firstSortList").then(
-      (list) => {
-        this.firstSortList = list;
-      }
-    );
+    asyncCacheData(
+      this.firstSortList,
+      getFirstSortList,
+      {},
+      "firstSortList"
+    ).then((list) => {
+      this.firstSortList = list;
+    });
   },
   methods: {
     // 跳转到分类页面

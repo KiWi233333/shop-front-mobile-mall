@@ -1,27 +1,31 @@
 /**
  * 异步缓存数组数据 list Array
+ * @param {Array} oldList 旧函数
  * @param {function} asyncFn
- * @param {array} asyncDate
+ * @param {object} asyncParams 异步函数的参数
  * @param {string} uuid
  * @returns caches
  */
-export async function asyncCacheData(asyncFn, asyncDate = {}, uuid) {
+export const asyncCacheData = async (oldList, asyncFn, asyncParams = {}, uuid) => {
   // 缓存
-  let caches = [];
-  const list = JSON.parse(sessionStorage.getItem(uuid)) || [];
-  caches = list.length > 0 ? list : [];
-  // 获取icons检测是否更新
-  const res = JSON.stringify(asyncDate) === "{}" ? await asyncFn() : await asyncFn(...asyncDate);
+  let list = JSON.parse(sessionStorage.getItem(uuid)) || [];
+  if (list.length > 0) {
+    list.forEach(p => {
+      oldList.push(p);
+    });
+  }
+  // 是否为空的异步形参
+  const res = JSON.stringify(asyncParams) === "{}" ? await asyncFn() : await asyncFn(...asyncParams);
   if (list.length > 0) {
     if (JSON.stringify(list) !== JSON.stringify(res.data.data)) {
       // 若更新了
       console.log("更新了分类");
-      caches = res.data.data;
+      list = res.data.data;
       sessionStorage.setItem(uuid, JSON.stringify(res.data.data));
     }
   } else {
-    caches = res.data.data;
+    list = res.data.data;
     sessionStorage.setItem(uuid, JSON.stringify(res.data.data));
   }
-  return caches;
-}
+  return list;
+};

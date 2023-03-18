@@ -27,11 +27,11 @@ export default new Vuex.Store({
       if (state.token !== "") {
         // 续签
         const date = new Date().getTime();
-        localStorage.setItem("loginTime", `${date}`);
         const delay = (date - +state.loginTime) / 1000;
         console.log(delay);
         // 登录有效
         if (delay <= state.tokenLife) {
+          localStorage.setItem("loginTime", `${date}`);
           return state.token; // 返回token
         } else {
           // 清空vuex
@@ -66,6 +66,9 @@ export default new Vuex.Store({
   mutations: {
     // 登录
     setToken(state, { token, savePwd }) {
+      const date = new Date().getTime();
+      state.loginTime = date;
+      localStorage.setItem("loginTime", date);
       if (savePwd) {
         localStorage.setItem(state.TOKEN_NAME, token);
       } else {
@@ -73,6 +76,7 @@ export default new Vuex.Store({
       }
       state.token = token;
     },
+    // 登录状态
     setLoginState(state, val) {
       state.isLoginState = val;
     },
