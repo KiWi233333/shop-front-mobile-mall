@@ -19,6 +19,7 @@ import InfoView from "@/views/second/InfoView";
 import SigninView from "@/views/second/SigninView";
 import AddressView from "@/views/second/AddressView";
 import BillsView from "@/views/second/BillsView";
+import BillsDetailView from "@/views/second/BillsDetailView";
 // 商品详情
 import GoodsDetail from "@/views/goods/GoodsDetail.vue";
 // 评论
@@ -201,11 +202,10 @@ const routes = [
   {
     name: "billsdetail",
     path: "/my/bills/detial",
-    component: require("@/views/second/BillsDetailView"),
+    component: BillsDetailView,
     meta: {
       title: "账单详细",
       lv: 2,
-      keepAlive: true,
       permission: true,
     },
   },
@@ -217,7 +217,6 @@ const routes = [
     meta: {
       title: "收获地址",
       lv: 2,
-      keepAlive: true,
       permission: true,
     },
   },
@@ -324,17 +323,20 @@ router.beforeEach((to, from, next) => {
   document.title = to.meta?.title || "水院商城";
   // 权限设置
   if (to.meta.permission) {
-    // 权限成功
+    // 权限验证
     if (store.getters.token) {
       next();
     } else {
-      next({
-        name: "login",
-        params: {
-          animate: "forward",
-          toBack: true,
-        },
-      });
+      new Promise((resolve, reject) => {
+        next({
+          name: "login",
+          params: {
+            animate: "forward",
+            toBack: true,
+          },
+        });
+        reject(false);
+      }).catch(() => {});
     }
   } else {
     next();

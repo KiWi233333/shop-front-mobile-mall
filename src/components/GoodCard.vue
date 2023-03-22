@@ -1,7 +1,7 @@
 <template>
   <div class="v-card good-card" @click="toGoodsDetail(item.goods.id)">
     <!-- 商品图片 -->
-    <van-image class="bg" lazy-load :src="getImgSrc(item.goods.images)">
+    <van-image class="bg" lazy-load :src="getImgSrc(item.goods.images[0])">
       <template v-slot:loading>
         <van-loading type="spinner" size="24" />
       </template>

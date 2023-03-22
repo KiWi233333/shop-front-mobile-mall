@@ -18,7 +18,7 @@
             class="bill"
             v-for="p in billList"
             :key="p.id"
-            @click="toDetailView(p.id)"
+            @click="toDetailView(p)"
           >
             <img :src="p.icon" class="icon" />
             <div class="center">
@@ -26,8 +26,9 @@
               <span class="phone">{{ userInfo.phone | hidePhone }}</span>
               <div class="time">{{ p.time }}</div>
             </div>
-            <span :class="p.type === '收入' ? 'amount' : 'amount reduce'">
-              {{ p.type === "收入" ? "+" : "-" }}￥{{ p.amount | price }}
+            <span :class="p.type === '收入' ? 'amount add' : 'amount '">
+              {{ p.type === "收入" ? "+" : "-" }}{{ p.monetaryUnit ? "" : "￥"
+              }}{{ p.amount | price }}
             </span>
           </div>
         </div>
@@ -100,7 +101,7 @@ export default {
           // 遍历数据
           for (let i = 0; i < data.length; i++) {
             // 处理对应的图标
-            data[i].icon = this.getTypeIcon(data[i].name);
+            data[i].icon = this.getTypeIcon(data[i].name, data[i]);
             // 总支出收入
             if (data[i].type === "收入") {
               allIn += data[i].amount;
@@ -131,17 +132,18 @@ export default {
     },
 
     // 去到详情页面
-    toDetailView() {
+    toDetailView(bill) {
       this.$router.push({
         name: "billsdetail",
         params: {
           animate: "forward",
+          bill,
         },
       });
     },
 
     // 获取icon类型
-    getTypeIcon(type) {
+    getTypeIcon(type, p) {
       switch (type) {
         case "钱包充值":
           type = require("@/assets/image/icon/phonebill.png");
@@ -155,6 +157,10 @@ export default {
         default:
           type = require("@/assets/image/icon/onShopcar.png");
           break;
+      }
+      if (p?.monetaryUnit == "积分") {
+        p.name = "积分获取";
+        type = require("@/assets/image/icon/coins_icon.png");
       }
       return type;
     },
@@ -203,7 +209,6 @@ export default {
 .bill .amount {
   font-weight: 600;
   font-size: 0.45rem;
-  padding-bottom: 1em;
   font-family: Helvetica;
 }
 .bill .center {
@@ -213,7 +218,7 @@ export default {
   color: var(--text-color3);
   font-size: 0.3rem;
 }
-.reduce {
+.add {
   color: var(--tip-color2);
 }
 </style>

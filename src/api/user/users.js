@@ -230,7 +230,7 @@ export function getUpdateCode(phone, token) {
 export function changeUserPwd(newPassword, oldPassword, token) {
   return request({
     method: "put",
-    url: "/users/setPassword",
+    url: "/users/updatePassword",
     headers: {
       Authorization: token,
     },

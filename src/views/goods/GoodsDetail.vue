@@ -4,16 +4,14 @@
     <share-nav />
     <div class="contents" v-if="!isError">
       <!-- 商品图片 -->
-      <van-swipe>
-        <van-swipe-item>
-          <van-image
-            lazy-load
-            :src="getImgSrc(item?.goods?.images)"
-            class="imags"
-          />
+      <van-swipe @change="onChangeGoodImg">
+        <van-swipe-item v-for="(img, i) in item?.goods?.images" :key="i">
+          <van-image lazy-load :src="getImgSrc(img)" class="imags" />
         </van-swipe-item>
         <template #indicator>
-          <div class="custom-indicator">{{ current + 1 }}/1</div>
+          <div class="custom-indicator">
+            {{ current + 1 }}/{{ item?.goods?.images?.length }}
+          </div>
         </template>
       </van-swipe>
       <!-- 主内容 -->
@@ -238,6 +236,7 @@ export default {
         .then((res) => {
           this.isError = !res.data.code === 20011;
           if (res.data.code === 20011) {
+            res.data.data.goods.images = res.data.data.goods.images.split(",");
             this.item = res.data.data;
           }
         })
@@ -621,6 +620,11 @@ export default {
       return ((price * 1000 * this.item.discount) / 1000).toFixed(2);
     },
 
+    // 轮播图
+    onChangeGoodImg(index) {
+      this.current = index;
+    },
+
     // 获取图片地址
     getImgSrc(url) {
       return getResourImageByName(url);
@@ -667,9 +671,9 @@ export default {
   position: absolute;
   right: 0.4rem;
   bottom: 0.6rem;
-  padding: 0.1rem 0.24rem;
+  padding: 0.1rem 0.2rem;
   letter-spacing: 0.1em;
-  font-size: 0.4rem;
+  font-size: 0.3rem;
   color: rgba(255, 255, 255, 0.8);
   background-color: rgba(128, 128, 128, 0.4);
   backdrop-filter: blur(20px);

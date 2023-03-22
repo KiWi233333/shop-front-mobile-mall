@@ -216,7 +216,7 @@ export default {
         return Notify("手机号格式错误！");
       }
       this.codeFontDis = true;
-      let times = 30;
+      let times = 60;
       let timer = setInterval(() => {
         times--;
         this.codeFont = times + "s";
@@ -234,10 +234,14 @@ export default {
         : await getLoginCode(this.username);
 
       if (res.data.code === 20011) {
+        // Notify({
+        //   type: "success",
+        //   message: `获取成功！验证码为：\n${res.data.data}`,
+        //   duration: 5000,
+        // });
         Notify({
           type: "success",
-          message: `获取成功！验证码为：\n${res.data.data}`,
-          duration: 5000,
+          message: `获取成功,请查看手机验证码！`,
         });
 
         this.code = res.data.data; // 自动填写
@@ -276,7 +280,7 @@ export default {
         });
       }
     },
-    // 4）验证--修改密码的验证码
+    // 4）验证--修改密码
     async checkUpdateCode() {
       if (this.isUpdatePwd) {
         const res = await checkUpdatePwdCode({

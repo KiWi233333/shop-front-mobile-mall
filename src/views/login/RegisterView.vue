@@ -128,7 +128,7 @@ export default {
         return Notify("手机号格式错误！");
       }
       this.codeFontDis = true;
-      let times = 30;
+      let times = 60;
       let timer = setInterval(() => {
         if (times === 1) {
           this.codeFont = "获取";
@@ -144,12 +144,14 @@ export default {
         }
       }, 1000);
       const res = await getRegisterCode(this.phone);
+      console.log(res.data);
       if (res.data.code === 20011) {
         Notify({
           type: "success",
-          message: `获取成功！验证码为：\n${res.data.data}`,
+          // message: `获取成功！验证码为：\n${res.data.data}`,
+          message: `获取成功,请查看手机验证码！`,
         });
-        this.code = res.data.data; // 自动填写
+        // this.code = res.data.data; // 自动填写
       } else {
         Notify({
           type: "danger",

@@ -8,8 +8,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     token: "", // token
-    loginTime: 0,
-    tokenLife: 1 * 3600, //一小时
+    loginTime: +localStorage.getItem("loginTime"),
+    tokenLife: 1 * 3600 * 1000, //一小时
     TOKEN_NAME: "SD_SHOP_TOKEN", // 本地存储的key值
     isLoginState: false, // 登录状态
     userInfo: {}, // 用户信息
@@ -27,7 +27,7 @@ export default new Vuex.Store({
       if (state.token !== "") {
         // 续签
         const date = new Date().getTime();
-        const delay = (date - +state.loginTime) / 1000;
+        const delay = date - +state.loginTime;
         console.log(delay);
         // 登录有效
         if (delay <= state.tokenLife) {
@@ -40,7 +40,7 @@ export default new Vuex.Store({
           }
           state.isLoginState = false;
           state.token = "";
-          state.loginTime = 0;
+          state.loginTime = -1;
           // 清空本地存储
           localStorage.removeItem(state.TOKEN_NAME);
           localStorage.removeItem("loginTime");
@@ -104,7 +104,6 @@ export default new Vuex.Store({
 
     // 设置地址弹窗
     setShowCommentPopup(state, { show, commentId }) {
-      // console.log(show, commentId);
       state.showCommentPopup = show;
       state.commentId = commentId;
     },
@@ -131,7 +130,7 @@ export default new Vuex.Store({
         Vue.set(state.purseInfo, key, "");
       }
       state.token = "";
-      state.loginTime = 0;
+      state.loginTime = -1;
       // 清空本地存储
       localStorage.removeItem(state.TOKEN_NAME);
       sessionStorage.removeItem(state.TOKEN_NAME);

@@ -17,6 +17,7 @@
 import NavBar from "./components/NavBar.vue";
 import { checkUser } from "@/api/user/users";
 import { getPurseInfo } from "@/api/user/purse";
+import { mapState } from "vuex";
 export default {
   components: { NavBar },
   data() {
@@ -40,18 +41,14 @@ export default {
     checkUser(token)
       .then((res) => {
         if (res.data.code === 20011) {
-          // 初始化store
-          this.$store.commit("setUserInfo", res.data.data);
           // 登录状态
           this.$store.commit("setLoginState", true);
           this.$store.commit("setToken", {
             token,
             savePwd: locationToken !== "",
           });
-          this.$store.commit(
-            "setLoginTime",
-            +localStorage.getItem("loginTime")
-          ); // 设置初始登录时间
+          this.$store.commit("setUserInfo", res.data.data);
+          // 初始化store
           // 钱包信息
           this.reqPurseInfo();
         }
@@ -102,6 +99,12 @@ export default {
         }
       }
     },
+
+    token(value) {
+      if (!value) {
+        this.$store.commit("setLoginState", false);
+      }
+    },
   },
 
   methods: {
@@ -113,6 +116,9 @@ export default {
         this.$store.commit("setPurseInfo", res.data.data);
       }
     },
+  },
+  computed: {
+    ...mapState(["token"]),
   },
 };
 </script>

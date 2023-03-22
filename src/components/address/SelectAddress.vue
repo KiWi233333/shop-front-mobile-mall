@@ -17,7 +17,7 @@
       :finished="finished"
       @load="getAllAddressList"
     >
-      <van-radio-group v-model="select">
+      <van-radio-group v-model="selectId">
         <transition-group name="item" tag="div">
           <!-- 地址卡片 -->
           <div
@@ -50,8 +50,8 @@ export default {
   name: "SelectAddress",
   data() {
     return {
-      active: 0,
-      select: "",
+      active: -1,
+      selectId: "",
       // 加载
       show: false,
       loading: false,
@@ -64,10 +64,10 @@ export default {
     // 获取全部地址
     getAllAddressList() {
       this.loading = true;
-      this.select = this.addressList[0].id;
+      this.selectId = this.addressList[0].id;
       this.addressList.forEach((p) => {
         if (p.isDefault) {
-          this.select = p.id;
+          this.selectId = p.id;
           this.addresses.unshift(p);
         } else {
           this.addresses.push(p);
@@ -79,7 +79,8 @@ export default {
     },
 
     clickItem(id, i) {
-      this.select = id;
+      console.log(id, i);
+      this.selectId = id;
       this.active = i;
     },
 
@@ -88,7 +89,11 @@ export default {
       this.$emit("input", false);
     },
   },
-  watch: {},
+  watch: {
+    active(val) {
+      console.log(val);
+    },
+  },
 };
 </script>
 <style scoped>

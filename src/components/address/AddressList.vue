@@ -122,8 +122,8 @@
           :rules="[{ required: true }]"
         >
           <template #right-icon>
-            <div class="flex-center-center flex-col" @click="getLocation">
-              <van-icon name="location" clss="tip" />
+            <div class="flex-center-center flex-col" @click="onLocation">
+              <van-icon name="location" />
               <span class="tip">定位</span>
             </div>
           </template>
@@ -165,14 +165,61 @@
     <!-- 地区弹窗 -->
     <van-popup v-model="showMaps" position="bottom" class="maps-popup" round>
       <baidu-map
+        @dblclick="clickMap"
+        @click="clickMap"
         Animation="BMAP_ANIMATION_DROP"
         class="bm-view"
+        :zoom="mapZoom"
+        :min-zoom="12"
+        :max-zoom="200"
+        :scroll-wheel-zoom="true"
+        :inertial-dragging="true"
+        :continuous-zoom="true"
         @ready="mapReady"
-        :center="mapsAreas || '北京市 东城区'"
-      />
+        :center="mapsAreas || '北京市朝阳区'"
+      >
+        <!-- 搜索 -->
+        <!-- <div style="display: flex; justify-content: center; margin: 15px">
+          <bm-auto-complete
+            v-model="searchAddressText"
+            :sugStyle="{ zIndex: 9999 }"
+          >
+            <van-field
+              class="v-card"
+              v-model="searchAddressText"
+              placeholder="输入地址"
+            />
+          </bm-auto-complete>
+          <button class="v-card" @click="getBaiduMapPoint">搜索</button>
+        </div> -->
+        <!-- 右下角控件 -->
+        <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+        <!-- 定位控件 -->
+        <bm-geolocation
+          anchor="BMAP_ANCHOR_BOTTOM_RIGHT"
+          :showAddressBar="true"
+          :autoLocation="true"
+          @locationSuccess="locationSuccess"
+        />
+        <!-- 选点 -->
+        <bm-marker
+          :position="selectPoint"
+          :dragging="true"
+          animation="BMAP_ANIMATION_BOUNCE"
+        ></bm-marker>
+      </baidu-map>
+      <!-- 当前地址 -->
+      <div class="map-address">
+        <span class="city"></span>
+        <span class="province"></span>
+        <span class="district"></span>
+        <span class="address"></span>
+      </div>
       <div class="btn-group">
-        <button class="v-btn v-cancel" @click="showMaps = false">取消</button>
-        <button class="v-btn" @click="showMaps = false">确定</button>
+        <button class="v-btn v-cancel" @click="getLocationPositon()">
+          重新定位
+        </button>
+        <button class="v-btn" @click="showMaps = false">确认地址</button>
       </div>
     </van-popup>
 
@@ -201,6 +248,7 @@ import {
   updateAddress,
 } from "@/api/user/address";
 import { Dialog, Toast } from "vant";
+import { getPosition } from "@/util/position";
 export default {
   components: { ErrorCard, AddressCard },
   name: "AddressList",
@@ -225,7 +273,10 @@ export default {
       isEdit: false,
       // 百度地图
       showMaps: false,
-      mapsAreas: "",
+      mapsAreas: { lng: 116.4, lat: 39.9 },
+      selectPoint: { lng: 116.4, lat: 39.9 },
+      mapZoom: 12,
+      searchAddressText: "",
       // 数据
       addressList: [],
       active: 0,
@@ -245,11 +296,6 @@ export default {
     // 获取所有地址
     async getAllAddressList() {
       this.loading = true;
-      // 请求默认地址
-      // const first = await getDefaultAddress(this.$store.getters.token);
-      // if (first.status === 200 && first.data.code === 20011) {
-      //   this.addressList.push(first.data.data);
-      // }
       const res = await getAllAddress(this.$store.getters.token);
       if (res.status === 200 && res.data.code === 20011) {
         const data = res.data.data;
@@ -286,13 +332,22 @@ export default {
     async reqAddAddress() {
       const res = await putAddres(this.address, this.$store.getters.token);
       if (res.status === 200 && res.data.code === 20011) {
-        this.addressList.splice(0); // 清空
-        this.getAllAddressList(); // 刷新
+        this.addressList.splice(0);
+        this.getAllAddressList();
+        this.clearAddresFrom(); // 清空表单
         Toast({ type: "success", position: "bottom", message: "添加成功！" });
       } else {
         Toast({ position: "bottom", message: "添加失败！" });
       }
       this.showAddress = false;
+    },
+    // 清空表单
+    clearAddresFrom() {
+      for (const key in this.address) {
+        this.address[key] = "";
+      }
+      this.area = "";
+      this.active = -1;
     },
 
     // 加入单例编辑
@@ -311,10 +366,25 @@ export default {
     },
     // 更新地址
     async reqUpdateAddress() {
-      const res = await updateAddress(this.address, this.$store.getters.token);
-
+      const address = JSON.parse(JSON.stringify(this.address));
+      const res = await updateAddress(address, this.$store.getters.token);
       if (res.status === 200 && res.data.code === 20011) {
-        this.getAllAddressList(); // 刷新
+        // console.log(this.active);
+        for (const key in address) {
+          this.$set(this.addressList[this.active], key, address[key]);
+        }
+        if (address.isDefault) {
+          // 清空
+          for (let i = 0; i < this.addressList.length; i++) {
+            const p = this.addressList[i];
+            if (i !== this.active) {
+              p.isDefault = false;
+            }
+          }
+          // 重新排序
+          this.reorderAddressList();
+        }
+        this.clearAddresFrom();
         Toast({ type: "success", position: "bottom", message: "修改成功！" });
       } else {
         Toast({ position: "bottom", message: "修改失败！" });
@@ -332,7 +402,8 @@ export default {
           )
             .then((res) => {
               if (res.data.code === 20011) {
-                this.getAllAddressList(); // 刷新
+                this.addressList.splice(this.active, 1);
+                this.clearAddresFrom();
                 Toast(" 删除成功！");
               } else {
                 Toast(" 删除失败！");
@@ -385,18 +456,18 @@ export default {
         .catch(() => {});
     },
 
-    // 获取定位
-    getLocation() {
-      if (this.area != "") {
-        this.showMaps = true;
+    // 重新排序
+    reorderAddressList() {
+      const addressList_bak = JSON.parse(JSON.stringify(this.addressList));
+      for (let i = 0; i < addressList_bak.length; i++) {
+        const p = addressList_bak[i];
+        if (p.isDefault) {
+          this.addressList.unshift(p);
+          this.addressList.splice(i + 1, 1);
+          return;
+        }
       }
     },
-
-    // 百度地图
-    mapReady(maps) {
-      console.log(maps);
-    },
-
     // 设置区域
     setArea(info) {
       this.area = `${info[0].name} ${info[1].name} ${info[2].name}`;
@@ -405,11 +476,78 @@ export default {
         (this.address.district = info[2].name), //区/县
         (this.showArea = false);
     },
+
+    // 获取定位
+    onLocation() {
+      this.getLocationPositon();
+    },
+
+    // 百度地图
+    mapReady({ BMap, map }) {
+      console.log(BMap, map);
+    },
+
+    // 搜索地址
+    getBaiduMapPoint() {
+      let that = this;
+      let Geocoders = new this.BMap.Geocoder();
+      //逆地址解析
+      Geocoders.getPoint(this.searchJingwei, function (point) {
+        if (point) {
+          that.map.centerAndZoom(point, 25);
+          that.mapsAreas.lat = point.lat;
+          that.mapsAreas.lng = point.lng;
+        }
+      });
+    },
+    // 双击地图
+    clickMap({ point }) {
+      // 选点
+      this.selectPoint.lng = point.lng;
+      this.selectPoint.lat = point.lat;
+    },
+
+    // 自动定位
+    locationSuccess(map) {
+      console.log(map);
+      const { province, city, district, street, streetNumber } =
+        map.addressComponent;
+      this.address.city = city;
+      this.address.province = province;
+      this.address.district = district;
+      this.address.address = `${street}${streetNumber}`;
+      this.area = `${province} ${city} ${district}`;
+      // 选点
+      this.selectPoint.lng = map.point.lng;
+      this.selectPoint.lat = map.point.lat;
+    },
+
+    // 重新定位
+    getLocationPositon() {
+      this.$toast.loading({
+        duration: 0,
+        message: "自动定位...",
+      });
+      this.mapZoom = 22;
+      getPosition()
+        .then((res) => {
+          this.mapsAreas.lng = res.longitude;
+          this.mapsAreas.lat = res.latitude;
+          this.showMaps = true;
+          this.$toast.clear(true);
+        })
+        .catch(() => {
+          this.$toast("不支持自动定位,请手动选择！");
+          this.showMaps = true;
+          this.$toast.clear(true);
+        });
+    },
   },
   watch: {
     // 全选同步
     selectAll(newVal) {
       if (newVal) {
+        this.selectList.splice(0);
         this.addressList.forEach((p, i) => {
           this.selectList.push(i);
         });
@@ -417,7 +555,13 @@ export default {
         this.selectList.splice(0);
       }
     },
+
     //
+    showAddress(value) {
+      if (!value) {
+        this.clearAddresFrom();
+      }
+    },
   },
 };
 </script>
@@ -514,19 +658,23 @@ export default {
 /* 百度地图 */
 .maps-popup {
   width: 100%;
-  height: 50%;
+  height: 60%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  background-color: var(--theme-color);
 }
 .bm-view {
+  flex: 1;
   border-radius: 10px;
   width: 100%;
   height: 80%;
   overflow: hidden;
-  margin: auto;
   border: 2px solid var(--border-color);
+  top: 0;
 }
-.maps-popup .btn-group {
+.maps-popup .btn-group .v-btn {
+  border-radius: 10px;
+  font-size: 0.45rem;
+  margin: 0.3rem 0;
 }
 </style>

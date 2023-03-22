@@ -65,7 +65,6 @@
         left-icon="contact"
         class="v-input"
         v-show="active === 3"
-        @blur="checkPwd"
       />
       <van-field
         placeholder=" 请输入新密码"
@@ -73,7 +72,6 @@
         type="password"
         left-icon="closed-eye"
         class="v-input"
-        :disabled="disabledUpdatePwd"
         v-show="active === 3"
       />
       <!-- 按钮 -->
@@ -191,9 +189,9 @@ export default {
           title: "密码",
           value: "",
           clickFn: async () => {
-            if (this.disabledUpdatePwd) {
-              return this.$notify({ type: "danger", message: " 旧密码错误！" });
-            }
+            // if (this.disabledUpdatePwd) {
+            //   return this.$notify({ type: "danger", message: " 旧密码错误！" });
+            // }
             if (this.user.newPwd === "")
               return this.$toast(" 新密码不能为空！");
             if (this.user.newPwd === this.user.oldPwd)
@@ -216,7 +214,7 @@ export default {
                 },
               });
             } else {
-              this.$notify({ type: "danger", message: " 修改密码失败！" });
+              this.$notify({ type: "danger", message: " 旧密码错误！" });
             }
           },
         },
