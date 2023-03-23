@@ -275,14 +275,17 @@ export default {
           animate: "forward",
           toBack: "true",
         },
+
         query: {
           // 传参
           info: {
             price: selectedNum * selectedSkuComb.price, // 最终价格
           },
+
           goodsList: [
             {
               ...this.item.goods,
+              images: selectedSkuComb.icon, // 属性图片
               id: selectedSkuComb.id, // 选中商品id
               gid: this.item.goods.id,
               props: selectedSkuComb.props, // 选择属性

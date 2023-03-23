@@ -4,7 +4,7 @@
     <van-image
       class="bg"
       lazy-load
-      :src="getImgSrc"
+      :src="getImgSrc[0]"
       @click="toGoodsDetail(goods.gid)"
     >
       <template v-slot:loading>
@@ -70,7 +70,11 @@ export default {
   },
   computed: {
     getImgSrc() {
-      return getResourImageByName(this.goods.images);
+      const arr = this.goods.images.split(",");
+      arr.forEach((p, i) => {
+        arr[i] = getResourImageByName(p);
+      });
+      return arr;
     },
     getPrice() {
       return currency(this.goods.price);
@@ -126,6 +130,7 @@ export default {
   opacity: 0.7;
 }
 .lf-tip {
+  cursor: pointer;
   position: absolute;
   right: 0.3rem;
   bottom: 0.3rem;

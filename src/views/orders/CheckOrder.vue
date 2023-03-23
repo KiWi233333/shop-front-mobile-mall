@@ -124,7 +124,7 @@
       <div class="v-card">
         <div class="allPrice reduces" v-show="isPoints">
           <small>减免：</small>
-          <small class="reduce-price">-{{ getPointsVal }}</small>
+          <small class="reduce-price">-￥{{ getPointsVal }}</small>
         </div>
         <div class="allPrice">
           <span>总价：</span>
