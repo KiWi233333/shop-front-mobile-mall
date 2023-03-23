@@ -43,9 +43,8 @@ export default new Vuex.Store({
           state.loginTime = -1;
           // 清空本地存储
           localStorage.removeItem(state.TOKEN_NAME);
-          localStorage.removeItem("loginTime");
-
           sessionStorage.removeItem(state.TOKEN_NAME);
+          localStorage.removeItem("loginTime");
           // 跳转登录
           router.push({
             name: "login",
