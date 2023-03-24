@@ -672,7 +672,10 @@ export default {
     getBalance() {
       getPurseInfo(this.$store.getters.token)
         .then((res) => {
-          this.balance = currency(res.data.data.balance);
+          if (res.data.code === 20011) {
+            this.balance = currency(res.data.data.balance);
+            this.$store.commit("setPurseInfo", res.data.data);
+          }
         })
         .catch(() => {});
     },
