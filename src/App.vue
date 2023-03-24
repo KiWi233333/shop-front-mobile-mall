@@ -27,6 +27,7 @@ export default {
       isNavBar: false,
     };
   },
+
   created() {
     // 导航栏显示
     this.isNavBar = !(this.$route.meta.lv !== 1);
@@ -47,8 +48,8 @@ export default {
             token,
             savePwd: locationToken !== "",
           });
-          this.$store.commit("setUserInfo", res.data.data);
           // 初始化store
+          this.$store.commit("setUserInfo", res.data.data);
           // 钱包信息
           this.reqPurseInfo();
         }

@@ -344,7 +344,7 @@ export default {
       reason: "",
     };
   },
-  mounted() {
+  created() {
     // 初始化
     this.getBalance(); // 钱包
     const q = this.$route.query;

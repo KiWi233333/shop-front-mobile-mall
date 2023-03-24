@@ -5,7 +5,8 @@
       <div class="left">
         <img class="bg" src="@/assets/image/icon/balance_icon.png" />
       </div>
-      <div class="right" @click="toView('recharge')">
+      <!-- <div class="right" @click="toView('recharge')"> -->
+      <div class="right">
         <label>积分卡</label>
         <span>剩余:{{ purseInfo?.points || 0 }}</span>
       </div>
@@ -15,9 +16,7 @@
       <span>余额</span>
       <label @click="reqPurseInfo">
         <span>￥</span>
-        <label v-show="!isLodaing">{{
-          Number(purseInfo?.balance).toFixed(2) || "0.00"
-        }}</label>
+        <label v-show="!isLodaing">{{ purseInfo?.balance | price }}</label>
         <van-loading
           class="load"
           v-show="isLodaing"
