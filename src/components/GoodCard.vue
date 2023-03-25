@@ -39,9 +39,13 @@ export default {
         params: { animate: "forward" },
       });
     },
+  },
+  computed: {
     // 获取图片地址
-    getImgSrc(url) {
-      return getResourImageByName(url);
+    getImgSrc() {
+      return (url) => {
+        return getResourImageByName(url);
+      };
     },
   },
 };

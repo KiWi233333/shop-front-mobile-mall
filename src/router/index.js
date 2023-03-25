@@ -39,7 +39,15 @@ const routes = [
     path: "/",
     component: HomeView,
     children: [
-      { path: "", redirect: "/home" },
+      {
+        path: "",
+        redirect: "/home",
+        meta: {
+          title: "水院商城",
+          lv: 1,
+          keepAlive: true,
+        },
+      },
       {
         path: "home",
         name: "home",
@@ -50,6 +58,12 @@ const routes = [
         },
       },
     ],
+
+    meta: {
+      title: "水院商城",
+      lv: 1,
+      keepAlive: true,
+    },
   },
   // 1.1 搜索页面
   {
@@ -91,7 +105,7 @@ const routes = [
     meta: {
       title: "购物车",
       lv: 1,
-      // keepAlive: true,
+      keepAlive: true,
     },
   },
 
@@ -327,16 +341,13 @@ router.beforeEach((to, from, next) => {
     if (store.getters.token) {
       next();
     } else {
-      new Promise((resolve, reject) => {
-        next({
-          name: "login",
-          params: {
-            animate: "forward",
-            toBack: true,
-          },
-        });
-        reject(false);
-      }).catch(() => {});
+      next({
+        name: "login",
+        params: {
+          animate: "forward",
+          toBack: true,
+        },
+      });
     }
   } else {
     next();

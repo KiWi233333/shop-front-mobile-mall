@@ -1,5 +1,9 @@
 <template>
-  <van-pull-refresh v-model="isRefreshing" @refresh="reStart">
+  <van-pull-refresh
+    style="min-height: 90vh"
+    v-model="isRefreshing"
+    @refresh="reStart"
+  >
     <!-- 订单列表 -->
     <van-list
       class="orders-list"

@@ -1,48 +1,55 @@
 <template >
-  <div class="cart-list">
-    <!-- 列表 -->
-    <van-list
-      class="list"
-      v-if="!isEmpty"
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      @load="getAllShopCartList"
-    >
-      <!-- 1) 多选组 -->
-      <van-checkbox-group v-model="selectList" @change="changeSelectArr">
-        <transition-group name="item" tag="div">
-          <!-- 购物车卡片 -->
-          <cart-card
-            v-bind="$attrs"
-            v-for="(item, i) in cartList"
-            :showSku="showSku"
-            :key="item.id"
-            :item="item"
-            :index="i"
-            @onSelectProps="onSelectProps(item?.goodsId, item?.id)"
-            @deleteCartByOne="deleteCartByOne"
-          >
-            <template #checkbox>
-              <!-- 2)插槽多选框 -->
-              <van-checkbox
-                icon-size="0.5rem"
-                :name="i"
-                checked-color="var(--tip-color2)"
-              />
-            </template>
-          </cart-card>
-        </transition-group>
-      </van-checkbox-group>
-    </van-list>
-    <!-- 属性弹窗 -->
-    <goods-sku
-      @updataShopcart="updataShopcart"
-      :GOOD_ID="GOOD_ID"
-      v-model="showSku"
-      :cartId="shopcartId"
-    />
-  </div>
+  <van-pull-refresh
+    style="min-height: 90vh"
+    v-model="isRefresh"
+    :head-height="60"
+    @refresh="onReflesh"
+  >
+    <div class="cart-list">
+      <!-- 列表 -->
+      <van-list
+        class="list"
+        v-if="!isEmpty"
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="getAllShopCartList"
+      >
+        <!-- 1) 多选组 -->
+        <van-checkbox-group v-model="selectList" @change="changeSelectArr">
+          <transition-group name="sliceInZoomOut" tag="div">
+            <!-- 购物车卡片 -->
+            <cart-card
+              v-bind="$attrs"
+              v-for="(item, i) in cartList"
+              :showSku="showSku"
+              :key="item.id"
+              :item="item"
+              :index="i"
+              @onSelectProps="onSelectProps(item?.goodsId, item?.id)"
+              @deleteCartByOne="deleteCartByOne"
+            >
+              <template #checkbox>
+                <!-- 2)插槽多选框 -->
+                <van-checkbox
+                  icon-size="0.5rem"
+                  :name="i"
+                  checked-color="var(--tip-color2)"
+                />
+              </template>
+            </cart-card>
+          </transition-group>
+        </van-checkbox-group>
+      </van-list>
+      <!-- 属性弹窗 -->
+      <goods-sku
+        @updataShopcart="updataShopcart"
+        :GOOD_ID="GOOD_ID"
+        v-model="showSku"
+        :cartId="shopcartId"
+      />
+    </div>
+  </van-pull-refresh>
 </template>
 <script>
 import CartCard from "@/components/ShopCart/CartCard.vue";
@@ -53,6 +60,7 @@ export default {
   name: "CartList",
   data() {
     return {
+      isRefresh: false, // 是否更新
       loading: false,
       finished: false,
       isEmpty: false,
@@ -106,6 +114,16 @@ export default {
     // 获取选中的项目
     changeSelectArr(arr) {
       this.$emit("changeSelectArr", arr, this.cartList);
+    },
+
+    /**
+     * @刷新
+     */
+    onReflesh() {
+      this.cartList.splice(0);
+      this.isRefresh = true;
+      this.getAllShopCartList();
+      this.isRefresh = false;
     },
 
     /**
