@@ -85,7 +85,6 @@ import {
   updatePhone,
   getUpdateCode,
 } from "@/api/user/users";
-import { copyTextAsync } from "@/util/copy";
 import { mapState } from "vuex";
 export default {
   name: "ChangePhone",
@@ -112,7 +111,7 @@ export default {
     },
   },
   methods: {
-    // 1）请求登录验证码
+    // 1）请求验证码
     async getLoginCode() {
       if (this.timer !== "") {
         return;
@@ -133,27 +132,39 @@ export default {
       if (res.status === 200 && res.data.code === 20011) {
         this.$notify({
           type: "success",
-          message: `获取成功！验证码为：\n${res.data.data}`,
+          message: `获取成功，请查看手机验证码！`,
           duration: 5000,
         });
+        // this.$notify({
+        //   type: "success",
+        //   message: `获取成功！验证码为：\n${res.data.data}`,
+        //   duration: 5000,
+        // });
         // 剪切板
-        copyTextAsync(res.data.data)
-          .then(() => {
-            this.$toast("自动复制到剪切板！");
-          })
-          .catch();
-        if (!this.isUser) {
-          // 验证旧登录
-          this.oldCode = res.data.data; // 自动填写
-        } else {
-          // 验证新手机
-          this.newCode = res.data.data; // 自动填写
-        }
+        // copyTextAsync(res.data.data)
+        //   .then(() => {
+        //     this.$toast("自动复制到剪切板！");
+        //   })
+        //   .catch();
+        // if (!this.isUser) {
+        //   // 验证旧登录
+        //   this.oldCode = res.data.data; // 自动填写
+        // } else {
+        //   // 验证新手机
+        //   this.newCode = res.data.data; // 自动填写
+        // }
       } else {
-        this.$notify({
-          type: "danger",
-          message: `此手机号已被绑定！`,
-        });
+        if (this.isUser) {
+          this.$notify({
+            type: "danger",
+            message: `此手机号已被绑定！`,
+          });
+        } else {
+          this.$notify({
+            type: "danger",
+            message: `错误，请稍后重试！`,
+          });
+        }
       }
     },
 
@@ -177,11 +188,13 @@ export default {
 
     // 3) 更新手机号
     async updatePhone() {
+      this.$toast.loading({ duration: 0, forbidClick: true });
       const res = await updatePhone(
         this.newPhone,
         this.newCode,
         this.$store.getters.token
       );
+      this.$toast.clear();
       // console.log(res.data);
       if (res.status === 200 && res.dat.code === 20011) {
         this.$notify({ type: "success", message: "修改成功！" });
