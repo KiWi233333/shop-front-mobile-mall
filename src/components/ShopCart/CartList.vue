@@ -22,7 +22,6 @@
             :index="i"
             @onSelectProps="onSelectProps(item?.goodsId, item?.id)"
             @deleteCartByOne="deleteCartByOne"
-            @updataShopcart="updataShopcart"
           >
             <template #checkbox>
               <!-- 2)插槽多选框 -->
@@ -112,9 +111,15 @@ export default {
     /**
      * @更新全部购物车
      */
-    updataShopcart() {
-      this.cartList.splice(0);
-      this.getAllShopCartList();
+    updataShopcart(cartId, info) {
+      const { props, nums, icon } = info;
+      this.cartList.forEach((p, i) => {
+        if (p.id === cartId) {
+          this.$set(this.cartList[i], "props", props);
+          this.$set(this.cartList[i], "quantity", nums);
+          this.$set(this.cartList[i], "icon", icon);
+        }
+      });
     },
 
     /**

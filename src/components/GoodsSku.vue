@@ -78,6 +78,7 @@ export default {
 
     // 属性变化触发
     selectedSku(info) {
+      // console.log(info);
       if (!info.selectedSkuComb) return;
       this.selectPropsName = info.selectedSkuComb.props;
     },
@@ -272,7 +273,12 @@ export default {
         this.$store.getters.token
       );
       if (res.status === 200 && res.data.code === 20011) {
-        this.$emit("updataShopcart"); // 刷新
+        // 更新单项
+        this.$emit("updataShopcart", this.cartId, {
+          nums: info?.selectedNum,
+          icon: info?.selectedSkuComb.icon,
+          props: info?.selectedSkuComb.props,
+        }); // 刷新
         this.$toast.clear();
         this.$toast.success("修改成功！");
       } else {
