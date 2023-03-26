@@ -14,7 +14,9 @@
         void-icon="star"
         void-color="#eee"
         size="0.6rem"
+        @change="changeRate"
       />
+
       &emsp;{{ rateText }}
     </div>
     <!-- 内容 -->
@@ -118,6 +120,7 @@ export default {
     },
   },
   watch: {
+    // 图片列表
     imgList: {
       deep: true,
       handler(val) {
@@ -148,6 +151,7 @@ export default {
 .goods img {
   display: block;
   width: 1.4rem;
+  height: 1.4rem;
   border-radius: 8px;
   border: 1px solid var(--border-color);
   margin-right: 0.3rem;

@@ -223,7 +223,7 @@ export default {
     };
   },
   mounted() {
-    this.checkIsUpdateUsername();
+    // this.checkIsUpdateUsername();
   },
   methods: {
     // 提交请求
