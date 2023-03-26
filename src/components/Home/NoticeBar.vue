@@ -67,6 +67,7 @@ export default {
   padding-left: 0.2rem;
   font-size: 0.3rem;
   white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 .tag {
