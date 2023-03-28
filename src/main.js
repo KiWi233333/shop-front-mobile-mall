@@ -3,9 +3,9 @@ import App from "./App.vue"; // App.js
 import router from "./router"; // vue-router
 import store from "./store"; // vuex
 import * as filters from "@/util/filters";
+import BaiduMap from "vue-baidu-map";
 import "amfe-flexible"; // 移动端适配
 import "@/assets/css/animate.min.css"; // 动画库
-import BaiduMap from "vue-baidu-map";
 // 指令
 import "@/util/directive";
 // 按需ui库

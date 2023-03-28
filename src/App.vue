@@ -36,7 +36,7 @@ export default {
       localStorage.getItem(this.$store.state.TOKEN_NAME) || "";
     const sessionToken =
       sessionStorage.getItem(this.$store.state.TOKEN_NAME) || "";
-    if (locationToken === "" || sessionToken === "") return;
+    if (locationToken === "" && sessionToken === "") return;
     let token = locationToken || sessionToken;
     // 验证token
     checkUser(token)
@@ -125,6 +125,9 @@ export default {
 </script>
 <style>
 @import url("/public/css/default.css");
+.animate_animated {
+  will-change: transition aniamtion;
+}
 /* 前进 */
 .forward-enter-active,
 .forward-leave-active {
