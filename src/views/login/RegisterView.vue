@@ -144,7 +144,7 @@ export default {
         }
       }, 1000);
       const res = await getRegisterCode(this.phone);
-      console.log(res.data);
+      // console.log(res.data);
       if (res.data.code === 20011) {
         Notify({
           type: "success",

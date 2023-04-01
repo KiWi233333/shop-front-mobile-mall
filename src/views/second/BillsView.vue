@@ -1,5 +1,5 @@
 <template>
-  <default-page title="账单">
+  <default-page title="账单" rtitle="筛选" @clickRight="showSelectDate = true">
     <div class="Bills-view" v-show="!isEmpty && !isError">
       <van-list
         v-model="loading"
@@ -34,13 +34,28 @@
         </div>
       </van-list>
     </div>
+    <!-- 筛选月份 -->
+    <van-popup
+      style="width: 100%"
+      round
+      position="bottom"
+      v-model="showSelectDate"
+    >
+      <van-picker
+        @cancel="showSelectDate = false"
+        @confirm="onSelectDate"
+        show-toolbar
+        title="标题"
+        :columns="selectDate"
+      />
+    </van-popup>
     <!-- 网络错误 -->
     <error-card
       v-if="isEmpty || isError"
-      @refresh="isError ? getBillListByPage : $router.back()"
+      @refresh="isError ? getBillListByPage() : $router.back()"
       :btn-text="isError && !isEmpty ? '刷新' : '返回'"
       :image="isError ? 'network' : 'default'"
-      :text="isError ? '网络错误，请稍后重试！' : '还没有交易账单~'"
+      :text="isError ? '网络错误，请稍后重试！' : '这个月还没有交易账单~'"
       class="error"
     />
   </default-page>
@@ -69,6 +84,12 @@ export default {
 
       // 月份倒数总月份
       mounthRes: 0,
+      // 筛选
+      showSelectDate: false,
+      selectDate: [
+        { values: [], defaultIndex: 0 },
+        { values: [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1], defaultIndex: 0 },
+      ],
     };
   },
   created() {
@@ -76,6 +97,11 @@ export default {
     this.mounth = this.nowDate.getMonth() + 1;
     // 2000年至今的数据
     this.mounthRes = this.year * 12 + this.mounth; // 总月份
+    this.selectDate[0].defaultIndex = this.nowDate.getFullYear();
+    this.selectDate[1].defaultIndex = 11 - this.nowDate.getMonth();
+    for (let i = 0; i < this.year - 2000; i++) {
+      this.selectDate[0].values.push(2000 + i + 1);
+    }
   },
   methods: {
     // 获取账单
@@ -131,6 +157,13 @@ export default {
       this.loading = false;
     },
 
+    // 筛选
+    async onSelectDate(value) {
+      this.year = value[0];
+      this.mounth = value[1];
+      this.getBillListByPage();
+      this.showSelectDate = false;
+    },
     // 去到详情页面
     toDetailView(bill) {
       this.$router.push({

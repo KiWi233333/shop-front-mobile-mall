@@ -6,11 +6,22 @@
     <!-- 表单 -->
     <div class="froms">
       <van-form @submit="toSubmit">
+        <!-- 忘记密码 -->
+        <van-field
+          v-if="isUpdatePwd"
+          v-model="user"
+          name="user"
+          type="text"
+          left-icon="contact"
+          placeholder=" 请填写用户名"
+          :rules="[{ required: true }]"
+          class="v-input"
+        />
         <van-field
           v-model="username"
           name="username"
           :type="isUserPwd ? 'text' : 'tel'"
-          left-icon="contact"
+          :left-icon="isUserPwd ? 'contact' : 'phone'"
           :placeholder="isUserPwd ? ' 请填写用户名' : ' 请填写手机号'"
           :rules="[{ required: true }]"
           @blur="phoneCheck"
@@ -74,7 +85,7 @@
               @click="
                 {
                   isUserPwd = !isUserPwd;
-                  isUpdatePwd = !isUpdatePwd;
+                  isUpdatePwd = true;
                 }
               "
               v-show="isUserPwd"
@@ -123,7 +134,6 @@
 </template>
 <script>
 import router from "@/router";
-import { Dialog, Notify } from "vant";
 import TopNav from "@/components/TopNav.vue";
 import {
   getLoginCode,
@@ -145,6 +155,7 @@ export default {
       isUserPwd: true,
       username: "",
       password: "",
+      user: "", // 忘记密码
       newPassword: "",
       code: "",
       codeFont: "获取",
@@ -181,11 +192,11 @@ export default {
       if (res.status === 200 && res.data.code === 20011) {
         this.reqUserInfo(res.data.data);
         // 查询用户信息
-        Notify({ type: "success", message: "登录成功！" });
+        this.$notify({ type: "success", message: "登录成功！" });
         this.toView();
       } else {
         // console.log(res.data);
-        Notify({
+        this.$notify({
           type: "danger",
           message: this.isUserPwd ? "账号密码错误！" : "验证码有误！",
         });
@@ -199,10 +210,10 @@ export default {
       if (res.status === 200 && res.data?.code === 20011) {
         // 查询用户信息
         this.reqUserInfo(res.data.data);
-        Notify({ type: "success", message: "登录成功！" });
+        this.$notify({ type: "success", message: "登录成功！" });
         this.toView();
       } else {
-        Notify({
+        this.$notify({
           type: "danger",
           message: res.data?.message ?? "用户不存在，请进行注册",
         });
@@ -211,9 +222,9 @@ export default {
     // 请求获取登录||忘记密码 验证码
     async getLoginCode() {
       if (!this.username) {
-        return Notify("手机号不能为空！");
+        return this.$notify("手机号不能为空！");
       } else if (!this.phoneCheck()) {
-        return Notify("手机号格式错误！");
+        return this.$notify("手机号格式错误！");
       }
       this.codeFontDis = true;
       let times = 60;
@@ -230,23 +241,23 @@ export default {
       }, 1000);
       // 判断登录 || 忘记密码 验证码
       const res = this.isUpdatePwd
-        ? await getUpdatePwdCode(this.username)
+        ? await getUpdatePwdCode(this.user, this.username)
         : await getLoginCode(this.username);
 
       if (res.data.code === 20011) {
-        // Notify({
+        // this.$notify({
         //   type: "success",
         //   message: `获取成功！验证码为：\n${res.data.data}`,
         //   duration: 5000,
         // });
-        Notify({
+        this.$notify({
           type: "success",
           message: `获取成功,请查看手机验证码！`,
         });
 
         this.code = res.data.data; // 自动填写
       } else {
-        Notify({
+        this.$notify({
           type: "danger",
           message: `此手机号未注册！`,
         });
@@ -260,7 +271,7 @@ export default {
         newPassword: this.newPassword,
       });
       if (res.data?.code === 20011) {
-        Notify({
+        this.$notify({
           type: "success",
           message: `修改成功！`,
           onClose: () => {
@@ -274,7 +285,7 @@ export default {
           },
         });
       } else {
-        Notify({
+        this.$notify({
           type: "danger",
           message: `验证码已经失效`,
         });
@@ -284,17 +295,18 @@ export default {
     async checkUpdateCode() {
       if (this.isUpdatePwd) {
         const res = await checkUpdatePwdCode({
+          username: this.user,
           phone: this.username,
           code: this.code,
         });
         if (res.status === 200 && res.data.code === 20011) {
           this.isUpdateCodeCheck = true;
-          Notify({
+          this.$notify({
             type: "success",
             message: `验证通过！`,
           });
         } else {
-          Notify({
+          this.$notify({
             type: "danger",
             message: `验证码错误！`,
           });
@@ -348,7 +360,7 @@ export default {
     phoneCheck() {
       if (!this.isUserPwd) {
         if (this.username !== "" && !this.phoneReg.test(this.username.trim())) {
-          Notify({ type: "danger", message: "手机号格式错误！" });
+          this.$notify({ type: "danger", message: "手机号格式错误！" });
           return false;
         }
         return this.phoneReg.test(this.username.trim());
@@ -382,32 +394,34 @@ export default {
         this.password = "..*****...";
         this.savePwd = true;
         this.username = res.data.data.username;
-        Dialog.alert({
-          message: "自动登录中...",
-          confirmButtonText: "取消",
-        }).then(() => {
-          clearInterval(timer);
-          this.password = "";
-          this.$store.commit("loginOut"); // 登出
-        });
+        this.$dialog
+          .alert({
+            message: "自动登录中...",
+            confirmButtonText: "取消",
+          })
+          .then(() => {
+            clearInterval(timer);
+            this.password = "";
+            this.$store.commit("loginOut"); // 登出
+          });
 
         timer = setInterval(() => {
           second--;
           if (!second) {
             this.$store.commit("setUserInfo", res.data.data);
             this.toView(); // 跳转主页
-            Dialog.close(); // 关闭弹窗
+            this.$dialog.close(); // 关闭弹窗
           }
         }, 1000);
       }
     },
   },
   watch: {
-    isUserPwd(newVal) {
+    isUpdatePwd(newVal) {
       if (newVal) {
-        this.title = "登 录";
-      } else {
         this.title = "修改密码";
+      } else {
+        this.title = "登 录";
       }
     },
   },

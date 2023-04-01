@@ -185,7 +185,7 @@ const routes = [
     path: "/my/user",
     component: UserView,
     meta: {
-      title: "个人信息",
+      title: "账号与安全",
       lv: 2,
       permission: true,
     },

@@ -1,6 +1,7 @@
 <template >
   <div class="goods-info">
     <img :src="getImgSrc" class="left img" />
+    <!-- <img :src="icon" class="left img" /> -->
     <div class="center">
       <div class="title">{{ goods.name || goods.goodsName }}</div>
       <div class="props">{{ props }}</div>
@@ -16,13 +17,29 @@
 </template>
 <script>
 import { getResourImageByName } from "@/api/res";
+// import { getGoodPropsById } from "@/api/good/props";
 export default {
   name: "GoodsInfo",
+  data() {
+    return {
+      icon: undefined,
+    };
+  },
   props: ["goods", "price", "props", "num", "tips"],
   methods: {},
+  // mounted() {
+  //   const img = this.goods?.image || this.goods?.images || this.goods?.icon;
+  //   if (!img) {
+  //     getGoodPropsById(this.goods?.gid).then((res) => {
+  //       this.icon = res.data.data?.defaultOption?.icon;
+  //     });
+  //   }
+  // },
   computed: {
     getImgSrc() {
-      return getResourImageByName(this.goods?.image || this.goods?.images);
+      return getResourImageByName(
+        this.goods?.image || this.goods?.images || this.goods?.icon
+      );
     },
   },
 };

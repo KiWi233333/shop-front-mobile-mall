@@ -103,6 +103,7 @@ export default {
           if (res.status === 200 && res.data.code === 20011) {
             const data = res.data.data;
             data.records.forEach((p) => {
+              p.goods.images = p.goods.images.split(",");
               this.goodsList.push(p);
             });
 

@@ -87,27 +87,27 @@ export function checkUser(token) {
  * 忘记密码：发送验证码 phone
  * @修改密码
  */
-export function getUpdatePwdCode(phone) {
+export function getUpdatePwdCode(username, phone) {
   return request({
     method: "get",
-    url: "/users/codePassword",
-    params: {
-      phone,
-    },
+    url: `/users/forgetCode/${username}/${phone}`,
+    // params: {
+    //   phone,
+    // },
   });
 }
 
 /**
  *  验证验证码
- * @param {*} userInfo{phone&code}
+ * @param {*} userInfo {username,phone,code}
  * @returns
  */
-export function checkUpdatePwdCode(userInfo) {
-  const { phone, code } = userInfo;
+export function checkUpdatePwdCode({ username, phone, code }) {
   return request({
-    method: "get",
-    url: "/users/check/codePassword",
+    method: "post",
+    url: "/users/forgetCode/check",
     params: {
+      username,
       phone,
       code,
     },

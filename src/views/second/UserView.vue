@@ -1,6 +1,6 @@
 <template>
   <div class="user-view">
-    <top-nav title="个人信息" @click-left="$router.back()" />
+    <top-nav title="账号与安全" @click-left="$router.back()" />
     <!-- 头像 -->
     <div class="contain flex-col" @click="showIconPanel = true">
       <div class="user-icon">

@@ -59,6 +59,7 @@ import {
   Step,
   Stepper,
   NoticeBar,
+  Picker,
 } from "vant";
 
 // 全局过滤器
@@ -115,6 +116,7 @@ Vue.use(Button)
   .use(Stepper)
   .use(Rate)
   .use(NoticeBar)
+  .use(Picker)
   .use(Step);
 
 // 配置

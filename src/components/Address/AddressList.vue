@@ -483,8 +483,8 @@ export default {
     },
 
     // 百度地图
-    mapReady({ BMap, map }) {
-      console.log(BMap, map);
+    mapReady() {
+      // console.log(BMap, map);
     },
 
     // 搜索地址

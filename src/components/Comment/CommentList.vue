@@ -56,10 +56,10 @@ export default {
 
     // 删除评论
     deleteOneOrderComment(id, index) {
-      console.log(id, index);
+      // console.log(id, index);
       this.$dialog
         .confirm({
-          title: "是否删除评论？",
+          title: "是否删除评价？",
           beforeClose: async (action, done) => {
             if (action === "confirm") {
               const res = await delteOrderComment(

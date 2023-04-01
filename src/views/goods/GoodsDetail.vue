@@ -96,11 +96,11 @@
       <div class="detail-info">
         <div class="title">————<span>&emsp;宝贝详情&emsp;</span>————</div>
         <div class="label label1">{{ getSafeInfo }}</div>
-        <van-image
+        <!-- <van-image
           lazy-load
           :src="getImgSrc(item?.goods?.images)"
           class="img"
-        />
+        /> -->
       </div>
 
       <!-- 规格详情选择 -->
@@ -121,7 +121,12 @@
       <!-- 底部导航 -->
       <div class="shop-nav" v-if="!isError">
         <van-goods-action>
-          <van-goods-action-icon icon="chat-o" text="客服" color="#ee0a24" />
+          <van-goods-action-icon
+            @click="$toast('功能暂未开启！')"
+            icon="chat-o"
+            text="客服"
+            color="#ee0a24"
+          />
           <van-goods-action-icon
             icon="cart-o"
             text="购物车"
