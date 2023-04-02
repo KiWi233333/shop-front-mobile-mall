@@ -27,8 +27,17 @@ export default {
       isNavBar: false,
     };
   },
-
   created() {
+    // 控制台HELLO
+    console.log(
+      "%c    KIWI2333，欢迎你来到该商城！",
+      [
+        "padding:10px 10px;",
+        "padding-left:0;",
+        `background:url(${require("@/assets/image/favicon.png")}) left center no-repeat;`,
+      ].join("")
+    );
+
     // 导航栏显示
     this.isNavBar = !(this.$route.meta.lv !== 1);
     // 验证用户登录状态
