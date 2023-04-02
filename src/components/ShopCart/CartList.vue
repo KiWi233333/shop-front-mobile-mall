@@ -69,6 +69,7 @@ export default {
 
       // 当前gid
       GOOD_ID: "",
+
       // 当前购物车id
       shopcartId: "",
 
