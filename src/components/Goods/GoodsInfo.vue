@@ -1,7 +1,6 @@
 <template >
   <div class="goods-info">
     <img :src="getImgSrc" class="left img" />
-    <!-- <img :src="icon" class="left img" /> -->
     <div class="center">
       <div class="title">{{ goods.name || goods.goodsName }}</div>
       <div class="props">{{ props }}</div>
@@ -17,7 +16,6 @@
 </template>
 <script>
 import { getResourImageByName } from "@/api/res";
-// import { getGoodPropsById } from "@/api/good/props";
 export default {
   name: "GoodsInfo",
   data() {
