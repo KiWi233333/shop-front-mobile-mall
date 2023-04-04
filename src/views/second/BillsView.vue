@@ -112,37 +112,42 @@ export default {
         this.$store.getters.token
       );
       const data = res.data.data || [];
+      // console.log(data);
       if (res.data.code === 20011) {
-        if (data.length === 0) {
-          this.loading = false;
+        this.loading = false;
+        // 次月无数据
+        // console.log(this.mounth);
+        if (data.length === 0 && this.mounth === 1) {
           this.finished = true;
           if (this.mounth === this.nowDate.getMonth() + 1) {
             this.isEmpty = true;
           }
           return;
-        }
-        if (data.length !== 0) {
+        } else {
           let allIn = 0;
           let allOut = 0;
-          // 遍历数据
-          for (let i = 0; i < data.length; i++) {
-            // 处理对应的图标
-            data[i].icon = this.getTypeIcon(data[i].name, data[i]);
-            // 总支出收入
-            if (data[i].type === "收入") {
-              allIn += data[i].amount;
-            } else {
-              allOut += data[i].amount;
+          // 添加
+          if (data.length > 0) {
+            // 遍历数据
+            for (let i = 0; i < data.length; i++) {
+              // 处理对应的图标
+              data[i].icon = this.getTypeIcon(data[i].name, data[i]);
+              // 总支出收入
+              if (data[i].type === "收入") {
+                allIn += data[i].amount;
+              } else {
+                allOut += data[i].amount;
+              }
+              this.billList.push(data[i]);
             }
-            this.billList.push(data[i]);
+            // 月份统计
+            this.mounthList.push({
+              allIn,
+              allOut,
+              year: Math.floor(this.mounthRes / 12),
+              mounth: this.mounth,
+            });
           }
-          // 月份统计
-          this.mounthList.push({
-            allIn,
-            allOut,
-            year: Math.floor(this.mounthRes / 12),
-            mounth: this.mounth,
-          });
           if (this.mounth === 1) {
             this.mounthRes -= 12; // 去掉一年
             this.mounth = 12;
@@ -161,6 +166,8 @@ export default {
     async onSelectDate(value) {
       this.year = value[0];
       this.mounth = value[1];
+      this.mounthList.splice(0);
+      this.billList.splice(0);
       this.getBillListByPage();
       this.showSelectDate = false;
     },

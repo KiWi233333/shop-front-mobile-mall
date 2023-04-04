@@ -15,6 +15,7 @@
         class="v-input search"
         placeholder="输入商品名称"
         left-icon="search"
+        @keyup.enter="toSearchGoods"
       />
       <!-- 清除输入 -->
       <van-icon

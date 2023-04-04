@@ -164,6 +164,14 @@
 
     <!-- 地区弹窗 -->
     <van-popup v-model="showMaps" position="bottom" class="maps-popup" round>
+      <!-- 选中的地址 -->
+      <transition name="item">
+        <div class="all-address" v-show="newAddress.allAddress">
+          <van-icon name="location" color="var(--tip-color2)" />
+          {{ newAddress.allAddress }}
+        </div>
+      </transition>
+      <!-- 百度地图 -->
       <baidu-map
         @dblclick="clickMap"
         @click="clickMap"
@@ -178,20 +186,24 @@
         @ready="mapReady"
         :center="mapsAreas || '北京市朝阳区'"
       >
-        <!-- 搜索 -->
-        <!-- <div style="display: flex; justify-content: center; margin: 15px">
-          <bm-auto-complete
+        <!-- 地图视图 -->
+        <bm-view style="width: 100%; height: 100%"></bm-view>
+        <div class="searchMap" v-show="showMaps">
+          <input
             v-model="searchAddressText"
-            :sugStyle="{ zIndex: 9999 }"
-          >
-            <van-field
-              class="v-card"
-              v-model="searchAddressText"
-              placeholder="输入地址"
-            />
-          </bm-auto-complete>
-          <button class="v-card" @click="getBaiduMapPoint">搜索</button>
-        </div> -->
+            placeholder="搜索地点"
+            class="v-input"
+          />
+        </div>
+        <!-- 搜索结果列表 -->
+        <bm-local-search
+          class="search-list"
+          :keyword="searchAddressText"
+          :auto-viewport="true"
+          :location="address.city"
+          @infohtmlset="getSelectMapPointRes"
+        ></bm-local-search>
+
         <!-- 右下角控件 -->
         <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
         <!-- 定位控件 -->
@@ -201,6 +213,12 @@
           :autoLocation="true"
           @locationSuccess="locationSuccess"
         />
+        <bm-control anchor="BMAP_ANCHOR_BOTTOM_RIGHT">
+          <div class="cpyCtrl-text">
+            © 2023 Baidu - GS(2021)6026号 - 甲测资字11111342 - 京ICP证030173号 -
+            Data © 百度智图
+          </div>
+        </bm-control>
         <!-- 选点 -->
         <bm-marker
           :position="selectPoint"
@@ -219,7 +237,7 @@
         <button class="v-btn v-cancel" @click="getLocationPositon()">
           重新定位
         </button>
-        <button class="v-btn" @click="showMaps = false">确认地址</button>
+        <button class="v-btn" @click="makeMaps">确认地址</button>
       </div>
     </van-popup>
 
@@ -263,6 +281,14 @@ export default {
         address: "", //详细收货地址
         isDefault: 0, //是否默认收货地址
       },
+      newAddress: {
+        province: "", //省份
+        city: "", // 市
+        district: "", //区/县
+        address: "", //详细收货地址
+        allAddress: "", // 全部地址
+      },
+
       area: "",
       areaList, // 区县集合
       showAddress: false, // 显示地址表单
@@ -275,8 +301,9 @@ export default {
       showMaps: false,
       mapsAreas: { lng: 116.4, lat: 39.9 },
       selectPoint: { lng: 116.4, lat: 39.9 },
-      mapZoom: 12,
+      mapZoom: 13,
       searchAddressText: "",
+      searchNnearby: { center: this.center, radius: 10000 }, // 半径
       // 数据
       addressList: [],
       active: 0,
@@ -487,19 +514,6 @@ export default {
       // console.log(BMap, map);
     },
 
-    // 搜索地址
-    getBaiduMapPoint() {
-      let that = this;
-      let Geocoders = new this.BMap.Geocoder();
-      //逆地址解析
-      Geocoders.getPoint(this.searchJingwei, function (point) {
-        if (point) {
-          that.map.centerAndZoom(point, 25);
-          that.mapsAreas.lat = point.lat;
-          that.mapsAreas.lng = point.lng;
-        }
-      });
-    },
     // 双击地图
     clickMap({ point }) {
       // 选点
@@ -509,7 +523,6 @@ export default {
 
     // 自动定位
     locationSuccess(map) {
-      console.log(map);
       const { province, city, district, street, streetNumber } =
         map.addressComponent;
       this.address.city = city;
@@ -520,6 +533,33 @@ export default {
       // 选点
       this.selectPoint.lng = map.point.lng;
       this.selectPoint.lat = map.point.lat;
+    },
+
+    // 获取选中查找地址的点
+    getSelectMapPointRes(res) {
+      const { address, province, city, title } = res;
+
+      this.newAddress.province = province;
+      this.newAddress.city = city;
+      this.newAddress.address =
+        address.replace(
+          /^([\u4E00-\u9FA5]{2,}(省|自治区|特别行政区|区|市|县)){1}/,
+          ""
+        ) + title;
+
+      this.newAddress.allAddress = city + address;
+    },
+
+    // 确认地址
+    makeMaps() {
+      if (this.newAddress.address !== "") {
+        for (const key in this.newAddress) {
+          if (this.address[key] !== undefined) {
+            this.address[key] = this.newAddress[key];
+          }
+        }
+      }
+      this.showMaps = false;
     },
 
     // 重新定位
@@ -603,12 +643,11 @@ export default {
   width: 100%;
 }
 .address-popup {
-  width: 94%;
+  width: 88%;
   padding: 0.4rem;
 }
 .address-popup .title {
   display: block;
-  margin-top: 0.2rem;
   margin-bottom: 0.5rem;
   width: 100%;
   text-align: center;
@@ -622,6 +661,8 @@ export default {
 /* 添加 */
 .btn-group {
   width: 100%;
+  justify-content: space-between;
+  padding: 0 0.2rem;
 }
 .nav {
   background-color: var(--text-color2);
@@ -676,5 +717,64 @@ export default {
   border-radius: 10px;
   font-size: 0.45rem;
   margin: 0.3rem 0;
+}
+.searchMap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 0.3rem;
+  position: fixed;
+  justify-content: space-between;
+  top: 0;
+  width: 100%;
+  left: 0;
+  z-index: 3000;
+  backdrop-filter: blur(20px);
+  animation: fadeInDown 0.4s ease-in;
+  transition: 0.3s;
+}
+.searchMap .v-input {
+  flex: 1;
+  width: 7rem;
+  border: none;
+  background-color: var(--bg-color5);
+  color: var(--text-color2);
+  text-align: center;
+  padding: 0.3rem 0.4rem;
+  flex-direction: column;
+  font-size: 0.45rem;
+  font-weight: 600;
+}
+.searchMap .v-input::placeholder {
+  text-align: center;
+  color: var(--text-color2);
+  opacity: 0.9;
+  letter-spacing: 0.14em;
+}
+.searchMap .search-list {
+  display: none;
+  left: 0;
+  border-radius: 10px;
+  background-color: var(--bg-color5);
+  margin-top: 20px;
+}
+.all-address {
+  text-align: center;
+  font-size: 0.4rem;
+  padding: 0.3rem 0.2rem;
+  transition: 0.3s;
+}
+.cpyCtrl-text {
+  font-size: 0.3rem;
+  display: block;
+  padding: 0.1rem 0.2rem;
+  background-color: rgba(197, 197, 197, 0.6);
+  backdrop-filter: blur(15px);
+  text-align: right;
+  padding: 0.2rem 1.5rem 0.32rem 0.2rem;
+}
+
+.maps-popup >>> .anchorBL span {
+  font-size: 0.3rem !important;
 }
 </style>
