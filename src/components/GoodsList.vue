@@ -66,7 +66,7 @@ export default {
         .then((res) => {
           if (res.data.code === 20011) {
             const data = res.data.data;
-            data.records.forEach((p) => {
+            data.records.map((p) => {
               p.goods.images = p.goods.images.split(",");
               this.goodsList.push(p);
             });
