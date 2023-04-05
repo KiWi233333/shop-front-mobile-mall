@@ -81,7 +81,7 @@ export default {
 </script>
 <style scoped>
 .address-card {
-  padding: 0.3rem;
+  padding: 0.2rem;
   font-size: 0.4rem;
   margin-bottom: 0.2rem;
   border-radius: 10px;
@@ -127,11 +127,12 @@ export default {
 }
 .center .names {
   font-weight: 600;
-  font-size: 0.5rem;
+  font-size: 0.4rem;
 }
 .center .phone {
   color: var(--text-color3);
   padding: 0 0.12rem;
+  font-size: 0.32rem;
 }
 .center .default {
   border-radius: 4px;
@@ -140,7 +141,7 @@ export default {
   opacity: 0.8;
   box-shadow: var(--shadow-color3);
   padding: 0.05rem 0.1rem;
-  font-size: 0.3rem;
+  font-size: 0.24rem;
 }
 /* 编辑 */
 .bottom {

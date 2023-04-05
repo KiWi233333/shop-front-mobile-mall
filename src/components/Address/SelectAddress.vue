@@ -79,7 +79,7 @@ export default {
     },
 
     clickItem(id, i) {
-      console.log(id, i);
+      // console.log(id, i);
       this.selectId = id;
       this.active = i;
     },
@@ -89,18 +89,13 @@ export default {
       this.$emit("input", false);
     },
   },
-  watch: {
-    active(val) {
-      console.log(val);
-    },
-  },
 };
 </script>
 <style scoped>
 .address-popup {
   width: 94%;
   height: 80vh;
-  padding: 0.5rem;
+  padding: 0.3rem;
   display: flex;
   flex-direction: column;
 }
@@ -119,9 +114,8 @@ export default {
   box-shadow: none;
 }
 .address-popup .v-btn {
-  width: 90%;
-  position: absolute;
-  left: 5%;
+  width: 100%;
+  margin-bottom: 0.1rem !important;
   bottom: 0.3rem;
   text-align: center;
   margin: 0.2rem 0;

@@ -70,6 +70,7 @@
         <!-- 收货人 -->
         <van-field
           label="收货人"
+          size="6"
           clear-trigger="always"
           placeholder=" 收货人姓名"
           type="text"
@@ -525,11 +526,10 @@ export default {
     locationSuccess(map) {
       const { province, city, district, street, streetNumber } =
         map.addressComponent;
-      this.address.city = city;
-      this.address.province = province;
-      this.address.district = district;
-      this.address.address = `${street}${streetNumber}`;
-      this.area = `${province} ${city} ${district}`;
+      this.newAddress.city = city;
+      this.newAddress.province = province;
+      this.newAddress.district = district;
+      this.newAddress.address = `${street}${streetNumber}`;
       // 选点
       this.selectPoint.lng = map.point.lng;
       this.selectPoint.lat = map.point.lat;
@@ -558,6 +558,8 @@ export default {
             this.address[key] = this.newAddress[key];
           }
         }
+        const { province, city, district } = this.newAddress;
+        this.area = `${province} ${city} ${district}`;
       }
       this.showMaps = false;
     },
