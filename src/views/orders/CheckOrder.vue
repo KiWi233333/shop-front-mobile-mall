@@ -782,6 +782,10 @@ export default {
   font-size: 600;
   cursor: pointer;
 }
+
+.contain .address-card {
+  margin-bottom: 0.36rem;
+}
 .address .default {
   margin: 0 0.2rem;
   color: var(--tip-color2);

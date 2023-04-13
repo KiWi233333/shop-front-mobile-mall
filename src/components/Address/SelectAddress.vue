@@ -94,7 +94,8 @@ export default {
 <style scoped>
 .address-popup {
   width: 94%;
-  height: 80vh;
+  min-height: 70vh;
+  max-height: 90vh;
   padding: 0.3rem;
   display: flex;
   flex-direction: column;
@@ -114,10 +115,12 @@ export default {
   box-shadow: none;
 }
 .address-popup .v-btn {
-  width: 100%;
   margin-bottom: 0.1rem !important;
   bottom: 0.3rem;
   text-align: center;
   margin: 0.2rem 0;
+  position: absolute;
+  left: 4%;
+  width: 92%;
 }
 </style>
