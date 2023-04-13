@@ -30,7 +30,7 @@ export default {
   created() {
     // 控制台HELLO
     console.log(
-      "%c    KIWI2333，欢迎你来到该商城！",
+      "%c    欢迎你来到该商城！",
       [
         "padding:10px 10px;",
         "padding-left:0;",

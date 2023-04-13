@@ -43,7 +43,7 @@ const routes = [
         path: "",
         redirect: "/home",
         meta: {
-          title: "水院商城",
+          title: "美宜购网上商城 ",
           lv: 1,
           keepAlive: true,
         },
@@ -52,7 +52,7 @@ const routes = [
         path: "home",
         name: "home",
         meta: {
-          title: "水院商城",
+          title: "美宜购网上商城 ",
           lv: 1,
           keepAlive: true,
         },
@@ -60,7 +60,7 @@ const routes = [
     ],
 
     meta: {
-      title: "水院商城",
+      title: "美宜购网上商城 ",
       lv: 1,
       keepAlive: true,
     },
@@ -334,7 +334,7 @@ const router = new VueRouter({
 // 拦截器
 router.beforeEach((to, from, next) => {
   // 浏览器标题设置
-  document.title = to.meta?.title || "水院商城";
+  document.title = to.meta?.title || "美宜购网上商城 ";
   // 权限设置
   if (to.meta.permission) {
     // 权限验证
