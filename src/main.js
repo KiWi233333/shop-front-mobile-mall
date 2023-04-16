@@ -128,7 +128,6 @@ Dialog.setDefaultOptions({
 // 百度地图
 Vue.use(BaiduMap, {
   ak: "4da3Cxy4BG5RtWNa4GOPeCKTlDx7ENtr",
-  // ControlAnchor: "BMAP_ANCHOR_BOTTOM_LEFT",
   enableDragging: true,
 });
 
