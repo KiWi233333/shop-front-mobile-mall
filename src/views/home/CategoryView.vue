@@ -124,6 +124,7 @@ export default {
   top: 0;
   width: 80%;
   display: flex;
+  flex-wrap: wrap;
   padding: 0.2rem;
 }
 .right .item {
