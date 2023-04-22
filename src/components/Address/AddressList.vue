@@ -238,7 +238,9 @@
         <button class="v-btn v-cancel" @click="getLocationPositon()">
           重新定位
         </button>
-        <button class="v-btn" @click="makeMaps">确认地址</button>
+        <button class="v-btn" @click="makeMaps" :disabled="disableBtn">
+          确认地址
+        </button>
       </div>
     </van-popup>
 
@@ -300,6 +302,7 @@ export default {
       isEdit: false,
       // 百度地图
       showMaps: false,
+      disableBtn: true,
       mapsAreas: { lng: 116.4, lat: 39.9 },
       selectPoint: { lng: 116.4, lat: 39.9 },
       mapZoom: 13,
@@ -538,11 +541,11 @@ export default {
     // 获取选中查找地址的点
     getSelectMapPointRes(res) {
       const { address, province, city, title } = res;
-
+      console.log(res);
       this.newAddress.province = province;
       this.newAddress.city = city;
       this.newAddress.address =
-        address.replace(
+        address?.replace(
           /^([\u4E00-\u9FA5]{2,}(省|自治区|特别行政区|区|市|县)){1}/,
           ""
         ) + title;
@@ -603,6 +606,18 @@ export default {
       if (!value) {
         this.clearAddresFrom();
       }
+    },
+
+    //
+    newAddress: {
+      deep: true,
+      handler(val) {
+        if (val?.address !== "") {
+          this.disableBtn = false;
+        } else {
+          this.disableBtn = true;
+        }
+      },
     },
   },
 };
