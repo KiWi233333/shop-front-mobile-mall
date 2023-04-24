@@ -2,6 +2,7 @@ const { defineConfig } = require("@vue/cli-service");
 const path = require("path");
 const themePath = path.resolve(__dirname, "./src/style/theme.less");
 module.exports = defineConfig({
+  // publicPath: "./",
   transpileDependencies: true,
   // 定制主题
   css: {
