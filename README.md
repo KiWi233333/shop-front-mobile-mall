@@ -53,7 +53,7 @@ vue2+vuex+router+vant
 
 ## star 趋势图
 
-![Stargazers over time](https://starchart.cc/zongzibinbin/MallChat.svg)
+![Stargazers over time](https://starchart.cc/KiWi233333/shop_front_mobile.svg)
  
 
 ## License
