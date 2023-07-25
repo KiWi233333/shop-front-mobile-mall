@@ -127,7 +127,7 @@ Dialog.setDefaultOptions({
 
 // 百度地图
 Vue.use(BaiduMap, {
-  ak: "4da3Cxy4BG5RtWNa4GOPeCKTlDx7ENtr",
+  ak: "xxxxxxxxxxxx",
   enableDragging: true,
 });
 
