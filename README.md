@@ -1,7 +1,7 @@
  
 <p align="center">
     <a href="" target="_blank">
-      <img src="./public/favicon.ico" width="280" />
+      <img src="./public/favicon.ico" width="40" />
     </a>
 </p>
 
