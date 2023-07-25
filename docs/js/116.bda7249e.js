@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkshop_front_mobile"]=self["webpackChunkshop_front_mobile"]||[]).push([[116],{5116:function(n,t,e){e.r(t),e.d(t,{default:function(){return a}});var u=function(){var n=this,t=n._self._c;return t("h1",[n._v(n._s(n.$route.params?.title??"404"))])},l=[],r={name:"NotFund"},o=r,s=e(1001),f=(0,s.Z)(o,u,l,!1,null,null,null),a=f.exports}}]);
+//# sourceMappingURL=116.bda7249e.js.map
