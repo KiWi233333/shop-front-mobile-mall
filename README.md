@@ -49,12 +49,5 @@ vue2+vuex+router+vant
 #### 2、运行
 ``npm run serve``
 
- 
-
-## star 趋势图
-
-![Stargazers over time](https://starchart.cc/KiWi233333/shop_front_mobile.svg)
- 
-
 ## License
 [Apache License 2.0](./LICENSE)
