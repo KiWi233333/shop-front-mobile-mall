@@ -199,7 +199,7 @@ export default {
     // 状态文字
     getState(p) {
       if (!p?.isPay) return;
-      let res = "";
+      let res;
       if (p.isPay === "未付款") {
         res = "待支付";
       } else if (p.logisticsStatus === "未发货") {
@@ -216,7 +216,7 @@ export default {
     // 状态En
     getStateEn(p) {
       if (!p?.isPay) return;
-      let res = "";
+      let res;
       if (p.isPay === "未付款") {
         res = "unpaid";
       } else if (p.logisticsStatus === "未发货") {

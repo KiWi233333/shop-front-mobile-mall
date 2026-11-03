@@ -5,13 +5,13 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@vant/area-data": "^1.4.0",
     "amfe-flexible": "^2.2.1",
     "axios": "^1.2.2",
-    "bundle-size": "^1.1.5",
     "core-js": "^3.8.3",
     "currency.js": "^2.0.4",
     "qrcodejs2": "^0.0.2",
@@ -23,18 +23,34 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-plugin-router": "~5.0.0",
-    "@vue/cli-plugin-vuex": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
+    "@babel/core": "^7.29.7",
+    "@eslint/js": "^10.0.1",
+    "@vue/cli-plugin-babel": "~5.0.9",
+    "@vue/cli-plugin-router": "~5.0.9",
+    "@vue/cli-plugin-vuex": "~5.0.9",
+    "@vue/cli-service": "~5.0.9",
     "babel-plugin-import": "^1.13.6",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3",
+    "eslint": "^10.14.0",
+    "eslint-plugin-vue": "^10.12.0",
+    "globals": "^17.14.0",
     "less": "^4.1.3",
     "less-loader": "^11.1.0",
-    "vue-template-compiler": "^2.6.14"
+    "vue-template-compiler": "^2.7.16"
+  },
+  "overrides": {
+    "@babel/helpers": "^7.29.10",
+    "@babel/plugin-transform-modules-systemjs": "^7.29.8",
+    "@babel/runtime": "^7.29.10",
+    "@babel/traverse": "^7.29.7",
+    "browserslist": "^4.29.5",
+    "linkify-it": "^5.0.2",
+    "markdown-it": "^14.3.3",
+    "minimatch": "^11.0.4",
+    "postcss": "^8.5.32",
+    "serialize-javascript": "^7.1.4",
+    "webpack": "^5.112.2",
+    "webpack-dev-middleware": "^8.6.0",
+    "webpack-dev-server": "^6.1.0",
+    "ws": "^8.22.1"
   }
 }
